@@ -1,0 +1,302 @@
+namespace POSapp
+{
+    partial class SignUpForm
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SignUpForm));
+            panelRight = new Panel();
+            pictureBoxLogo = new PictureBox();
+            panelMain = new Panel();
+            labelWelcome = new Label();
+            labelEmail = new Label();
+            textBoxEmail = new TextBox();
+            labelUsername = new Label();
+            textBoxUsername = new TextBox();
+            labelPassword = new Label();
+            textBoxPassword = new TextBox();
+            labelConfirmPassword = new Label();
+            textBoxConfirmPassword = new TextBox();
+            checkBoxShowPassword = new CheckBox();
+            linkLogin = new LinkLabel();
+            label2 = new Label();
+            label3 = new Label();
+            checkBox1 = new CheckBox();
+            buttonLogin = new Button();
+            label1 = new Label();
+            panelRight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
+            panelMain.SuspendLayout();
+            SuspendLayout();
+            // 
+            // panelRight
+            // 
+            panelRight.BackColor = Color.FromArgb(40, 60, 80);
+            panelRight.Controls.Add(label3);
+            panelRight.Controls.Add(label2);
+            panelRight.Controls.Add(pictureBoxLogo);
+            panelRight.Dock = DockStyle.Right;
+            panelRight.Location = new Point(440, 0);
+            panelRight.Name = "panelRight";
+            panelRight.Size = new Size(291, 450);
+            panelRight.TabIndex = 1;
+            // 
+            // pictureBoxLogo
+            // 
+            pictureBoxLogo.BackgroundImage = (Image)resources.GetObject("pictureBoxLogo.BackgroundImage");
+            pictureBoxLogo.BackgroundImageLayout = ImageLayout.Zoom;
+            pictureBoxLogo.BorderStyle = BorderStyle.FixedSingle;
+            pictureBoxLogo.ErrorImage = Properties.Resources.logopic2;
+            pictureBoxLogo.InitialImage = Properties.Resources.logopic1;
+            pictureBoxLogo.Location = new Point(59, 75);
+            pictureBoxLogo.Name = "pictureBoxLogo";
+            pictureBoxLogo.Size = new Size(182, 173);
+            pictureBoxLogo.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxLogo.TabIndex = 0;
+            pictureBoxLogo.TabStop = false;
+            // 
+            // panelMain
+            // 
+            panelMain.BackColor = Color.FromArgb(200, 225, 235);
+            panelMain.Controls.Add(label1);
+            panelMain.Controls.Add(buttonLogin);
+            panelMain.Controls.Add(checkBox1);
+            panelMain.Controls.Add(labelWelcome);
+            panelMain.Controls.Add(labelEmail);
+            panelMain.Controls.Add(textBoxEmail);
+            panelMain.Controls.Add(labelUsername);
+            panelMain.Controls.Add(textBoxUsername);
+            panelMain.Controls.Add(labelPassword);
+            panelMain.Controls.Add(textBoxPassword);
+            panelMain.Controls.Add(labelConfirmPassword);
+            panelMain.Controls.Add(textBoxConfirmPassword);
+            panelMain.Controls.Add(checkBoxShowPassword);
+            panelMain.Controls.Add(linkLogin);
+            panelMain.Dock = DockStyle.Fill;
+            panelMain.Location = new Point(0, 0);
+            panelMain.Name = "panelMain";
+            panelMain.Size = new Size(440, 450);
+            panelMain.TabIndex = 0;
+            // 
+            // labelWelcome
+            // 
+            labelWelcome.Font = new Font("Tahoma", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelWelcome.Location = new Point(12, 33);
+            labelWelcome.Name = "labelWelcome";
+            labelWelcome.Size = new Size(419, 55);
+            labelWelcome.TabIndex = 0;
+            labelWelcome.Text = "Welcome, FitPOS!";
+            labelWelcome.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // labelEmail
+            // 
+            labelEmail.Font = new Font("Arial Rounded MT Bold", 11.25F);
+            labelEmail.Location = new Point(113, 119);
+            labelEmail.Name = "labelEmail";
+            labelEmail.Size = new Size(51, 23);
+            labelEmail.TabIndex = 1;
+            labelEmail.Text = "Email";
+            // 
+            // textBoxEmail
+            // 
+            textBoxEmail.Location = new Point(170, 118);
+            textBoxEmail.Name = "textBoxEmail";
+            textBoxEmail.Size = new Size(194, 23);
+            textBoxEmail.TabIndex = 2;
+            // 
+            // labelUsername
+            // 
+            labelUsername.Font = new Font("Arial Rounded MT Bold", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelUsername.Location = new Point(89, 160);
+            labelUsername.Name = "labelUsername";
+            labelUsername.Size = new Size(75, 23);
+            labelUsername.TabIndex = 3;
+            labelUsername.Text = "Username";
+            // 
+            // textBoxUsername
+            // 
+            textBoxUsername.Location = new Point(170, 160);
+            textBoxUsername.Name = "textBoxUsername";
+            textBoxUsername.Size = new Size(194, 23);
+            textBoxUsername.TabIndex = 4;
+            // 
+            // labelPassword
+            // 
+            labelPassword.Font = new Font("Arial Rounded MT Bold", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelPassword.Location = new Point(42, 202);
+            labelPassword.Name = "labelPassword";
+            labelPassword.Size = new Size(128, 23);
+            labelPassword.TabIndex = 5;
+            labelPassword.Text = "Create Password";
+            // 
+            // textBoxPassword
+            // 
+            textBoxPassword.Location = new Point(170, 202);
+            textBoxPassword.Name = "textBoxPassword";
+            textBoxPassword.Size = new Size(194, 23);
+            textBoxPassword.TabIndex = 6;
+            textBoxPassword.UseSystemPasswordChar = true;
+            textBoxPassword.TextChanged += textBoxPassword_TextChanged;
+            // 
+            // labelConfirmPassword
+            // 
+            labelConfirmPassword.Font = new Font("Arial Rounded MT Bold", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelConfirmPassword.Location = new Point(36, 254);
+            labelConfirmPassword.Name = "labelConfirmPassword";
+            labelConfirmPassword.Size = new Size(128, 23);
+            labelConfirmPassword.TabIndex = 7;
+            labelConfirmPassword.Text = "Confirm Password";
+            // 
+            // textBoxConfirmPassword
+            // 
+            textBoxConfirmPassword.Location = new Point(170, 254);
+            textBoxConfirmPassword.Name = "textBoxConfirmPassword";
+            textBoxConfirmPassword.Size = new Size(194, 23);
+            textBoxConfirmPassword.TabIndex = 8;
+            textBoxConfirmPassword.UseSystemPasswordChar = true;
+            textBoxConfirmPassword.TextChanged += textBoxConfirmPassword_TextChanged;
+            // 
+            // checkBoxShowPassword
+            // 
+            checkBoxShowPassword.Font = new Font("Segoe UI Historic", 9.75F);
+            checkBoxShowPassword.Location = new Point(176, 283);
+            checkBoxShowPassword.Name = "checkBoxShowPassword";
+            checkBoxShowPassword.Size = new Size(120, 20);
+            checkBoxShowPassword.TabIndex = 12;
+            checkBoxShowPassword.Text = "Show Password";
+            checkBoxShowPassword.CheckedChanged += checkBoxShowPassword_CheckedChanged;
+            // 
+            // linkLogin
+            // 
+            linkLogin.Font = new Font("Microsoft Sans Serif", 9.75F);
+            linkLogin.Location = new Point(279, 366);
+            linkLogin.Name = "linkLogin";
+            linkLogin.Size = new Size(50, 23);
+            linkLogin.TabIndex = 10;
+            linkLogin.TabStop = true;
+            linkLogin.Text = " Log In";
+            linkLogin.TextAlign = ContentAlignment.MiddleLeft;
+            linkLogin.LinkClicked += linkLogin_LinkClicked;
+            // 
+            // label2
+            // 
+            label2.Font = new Font("Cambria", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.White;
+            label2.Location = new Point(44, 270);
+            label2.Name = "label2";
+            label2.Size = new Size(207, 142);
+            label2.TabIndex = 4;
+            label2.Text = " Re-as| Villacarlos| Serafin | Gabayno | Estera";
+            label2.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Cambria", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.ForeColor = SystemColors.ControlLightLight;
+            label3.Location = new Point(97, 299);
+            label3.Name = "label3";
+            label3.Size = new Size(107, 17);
+            label3.TabIndex = 5;
+            label3.Text = "Developed by:";
+            label3.Click += label3_Click;
+            // 
+            // checkBox1
+            // 
+            checkBox1.Font = new Font("Segoe UI Historic", 9.75F);
+            checkBox1.Location = new Point(176, 228);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(120, 20);
+            checkBox1.TabIndex = 13;
+            checkBox1.Text = "Show Password";
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
+            // buttonLogin
+            // 
+            buttonLogin.BackColor = Color.FromArgb(40, 60, 80);
+            buttonLogin.Font = new Font("Yu Gothic UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonLogin.ForeColor = Color.Transparent;
+            buttonLogin.Location = new Point(186, 316);
+            buttonLogin.Name = "buttonLogin";
+            buttonLogin.Size = new Size(143, 43);
+            buttonLogin.TabIndex = 14;
+            buttonLogin.Text = "Sign-Up";
+            buttonLogin.UseVisualStyleBackColor = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Microsoft Sans Serif", 9.75F);
+            label1.Location = new Point(123, 369);
+            label1.Name = "label1";
+            label1.Size = new Size(163, 16);
+            label1.TabIndex = 15;
+            label1.Text = "Already have an Account?";
+            label1.Click += label1_Click_1;
+            // 
+            // SignUpForm
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(731, 450);
+            Controls.Add(panelMain);
+            Controls.Add(panelRight);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            Name = "SignUpForm";
+            Text = "Sign Up";
+            panelRight.ResumeLayout(false);
+            panelRight.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).EndInit();
+            panelMain.ResumeLayout(false);
+            panelMain.PerformLayout();
+            ResumeLayout(false);
+        }
+
+        private System.Windows.Forms.Panel panelRight;
+        private System.Windows.Forms.PictureBox pictureBoxLogo;
+        private System.Windows.Forms.Panel panelMain;
+        private System.Windows.Forms.Label labelWelcome;
+        private System.Windows.Forms.Label labelEmail;
+        private System.Windows.Forms.TextBox textBoxEmail;
+        private System.Windows.Forms.Label labelUsername;
+        private System.Windows.Forms.TextBox textBoxUsername;
+        private System.Windows.Forms.Label labelPassword;
+        private System.Windows.Forms.TextBox textBoxPassword;
+        private System.Windows.Forms.Label labelConfirmPassword;
+        private System.Windows.Forms.TextBox textBoxConfirmPassword;
+        private System.Windows.Forms.CheckBox checkBoxShowPassword;
+        private System.Windows.Forms.LinkLabel linkLogin;
+
+        #endregion
+        private Label label2;
+        private Label label3;
+        private CheckBox checkBox1;
+        private Button buttonLogin;
+        private Label label1;
+    }
+}
