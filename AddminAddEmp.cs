@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
-using System.Data;
-using Aspose.Pdf.Operators;
 
 namespace POS_project
 {
@@ -60,7 +50,7 @@ namespace POS_project
                             }
                             else
                             {
-                                string insertQuery = "INSERT INTO users (username, password, role, status) VALUES (@username, @password, @role, @status)";
+                                string insertQuery = "INSERT INTO users (username, password, role, status, date) VALUES (@username, @password, @role, @status, @date)";
                                 using (SqlCommand insertCommand = new SqlCommand(insertQuery, connect))
                                 {
                                     insertCommand.Parameters.AddWithValue("@username", add_username.Text.Trim());
@@ -68,13 +58,14 @@ namespace POS_project
                                     insertCommand.Parameters.AddWithValue("@role", Role_user.SelectedItem.ToString());
                                     insertCommand.Parameters.AddWithValue("@status", status_user.SelectedItem.ToString());
                                     DateTime date = DateTime.Today;
-                                    insertCommand.Parameters.AddWithValue("@date_created", date);
+                                    insertCommand.Parameters.AddWithValue("@date", date);
 
                                     int rowsAffected = insertCommand.ExecuteNonQuery();
                                     if (rowsAffected > 0)
                                     {
                                         MessageBox.Show("User added successfully", "Success Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         ClearFields();
+                                        displayAllUsersData();
                                     }
                                     else
                                     {
@@ -170,10 +161,10 @@ namespace POS_project
                                         else
                                         {
                                             MessageBox.Show("Failed to update user", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                                         }
                                     }
                                 }
-
                             }
                         }
                         catch (Exception ex)
@@ -193,21 +184,70 @@ namespace POS_project
         private int getID = 0;
         private void users_data_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex != 1)
+            if (e.RowIndex != -1) // Ensure the clicked row index is valid
             {
-                DataGridViewRow row = dataGridView.Rows[e.RowIndex];
+                DataGridViewRow row = dataGridView.Rows[e.RowIndex]; // Correctly reference the DataGridView control
 
-                int id = (int)row.Cells["0"].Value;
-                string username = row.Cells["1"].Value.ToString();
-                string password = row.Cells["2"].Value.ToString();
-                string role = row.Cells["3"].Value.ToString();
-                string status = row.Cells["4"].Value.ToString();
+                int id = Convert.ToInt32(row.Cells[0].Value); // Access cell values using index
+                string username = row.Cells[1].Value.ToString();
+                string password = row.Cells[2].Value.ToString();
+                string role = row.Cells[3].Value.ToString();
+                string status = row.Cells[4].Value.ToString();
 
                 add_username.Text = username;
                 add_password.Text = password;
                 Role_user.SelectedItem = role;
                 status_user.SelectedItem = status;
 
+                getID = id; // Update the getID field with the selected user's ID
+            }
+        }
+
+        private void Remove_user_Click(object sender, EventArgs e)
+        {
+            if (add_username.Text == "" || add_password.Text == ""
+               || Role_user.SelectedIndex == -1 || status_user.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please fill in all fields", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                if (MessageBox.Show("Are you sure you want to delete this User ID: " + getID + "?", "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    if (checkConnection())
+                    {
+                        try
+                        {
+                            connect.Open();
+                            string SoftDelete = "UPDATE users SET IsDeleted = 1 WHERE id = @id";
+
+                            using (SqlCommand DeleteCommand = new SqlCommand(SoftDelete, connect))
+                            {
+                                DeleteCommand.Parameters.AddWithValue("@id", getID);
+                                int rowsAffected = DeleteCommand.ExecuteNonQuery();
+                                if (rowsAffected > 0)
+                                {
+                                    MessageBox.Show("User Deleted successfully", "Success Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    ClearFields();
+                                    displayAllUsersData();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Failed to delete user", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error Connecting: " + ex, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        finally
+                        {
+                            connect.Close();
+                        }
+                    }
+                }
 
             }
         }

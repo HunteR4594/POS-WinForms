@@ -43,8 +43,14 @@
             label8 = new Label();
             label2 = new Label();
             panel3 = new Panel();
-            dashboard1 = new Dashboard();
+            adminAddCategories2 = new AdminAddCategories();
+            addProducts1 = new AddProducts();
+            adminAddCategories1 = new AdminAddCategories();
+            addminAddEmp2 = new AddminAddEmp();
+            dashboard2 = new Dashboard();
             addminAddEmp1 = new AddminAddEmp();
+            dashboard1 = new Dashboard();
+            addProducts2 = new AddProducts();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -227,6 +233,12 @@
             // 
             // panel3
             // 
+            panel3.Controls.Add(addProducts2);
+            panel3.Controls.Add(adminAddCategories2);
+            panel3.Controls.Add(addProducts1);
+            panel3.Controls.Add(adminAddCategories1);
+            panel3.Controls.Add(addminAddEmp2);
+            panel3.Controls.Add(dashboard2);
             panel3.Controls.Add(addminAddEmp1);
             panel3.Controls.Add(dashboard1);
             panel3.Dock = DockStyle.Fill;
@@ -234,6 +246,51 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(1072, 748);
             panel3.TabIndex = 7;
+            // 
+            // adminAddCategories2
+            // 
+            adminAddCategories2.Location = new Point(6, 0);
+            adminAddCategories2.Name = "adminAddCategories2";
+            adminAddCategories2.Size = new Size(1340, 935);
+            adminAddCategories2.TabIndex = 6;
+            // 
+            // addProducts1
+            // 
+            addProducts1.Location = new Point(-9, 0);
+            addProducts1.Name = "addProducts1";
+            addProducts1.Size = new Size(1340, 935);
+            addProducts1.TabIndex = 5;
+            // 
+            // adminAddCategories1
+            // 
+            adminAddCategories1.Location = new Point(-9, 0);
+            adminAddCategories1.Name = "adminAddCategories1";
+            adminAddCategories1.Size = new Size(1340, 935);
+            adminAddCategories1.TabIndex = 4;
+            // 
+            // addminAddEmp2
+            // 
+            addminAddEmp2.BackColor = SystemColors.ControlLight;
+            addminAddEmp2.Location = new Point(0, 0);
+            addminAddEmp2.Name = "addminAddEmp2";
+            addminAddEmp2.Size = new Size(1340, 935);
+            addminAddEmp2.TabIndex = 3;
+            // 
+            // dashboard2
+            // 
+            dashboard2.BackColor = SystemColors.ControlLight;
+            dashboard2.Location = new Point(-9, 0);
+            dashboard2.Name = "dashboard2";
+            dashboard2.Size = new Size(1340, 935);
+            dashboard2.TabIndex = 2;
+            // 
+            // addminAddEmp1
+            // 
+            addminAddEmp1.BackColor = SystemColors.ControlLight;
+            addminAddEmp1.Location = new Point(0, 0);
+            addminAddEmp1.Name = "addminAddEmp1";
+            addminAddEmp1.Size = new Size(1340, 935);
+            addminAddEmp1.TabIndex = 1;
             // 
             // dashboard1
             // 
@@ -244,12 +301,12 @@
             dashboard1.TabIndex = 0;
             dashboard1.Load += dashboard1_Load;
             // 
-            // addminAddEmp1
+            // addProducts2
             // 
-            addminAddEmp1.Location = new Point(0, 0);
-            addminAddEmp1.Name = "addminAddEmp1";
-            addminAddEmp1.Size = new Size(1340, 935);
-            addminAddEmp1.TabIndex = 1;
+            addProducts2.Location = new Point(0, 0);
+            addProducts2.Name = "addProducts2";
+            addProducts2.Size = new Size(1340, 935);
+            addProducts2.TabIndex = 7;
             // 
             // MainForm
             // 
@@ -323,5 +380,11 @@
         }
         private Label label3;
         private AddminAddEmp addminAddEmp1;
+        private AddminAddEmp addminAddEmp2;
+        private Dashboard dashboard2;
+        private AdminAddCategories adminAddCategories1;
+        private AddProducts addProducts1;
+        private AdminAddCategories adminAddCategories2;
+        private AddProducts addProducts2;
     }
 }

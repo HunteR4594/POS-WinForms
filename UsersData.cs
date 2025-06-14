@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
 namespace POS_project
 {
     internal class UsersData
     {
         private SqlConnection connect;
-        public string ID { get; set; }
+        public int ID { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
         public string Status { get; set; }
-        public string date { get; set; }
+        public string Date { get; set; }
 
         public List<UsersData> AllUsersData()
         {
@@ -24,7 +18,7 @@ namespace POS_project
             using (SqlConnection connect = new SqlConnection(@"Data Source=DESKTOP-5MGMHRD;Initial Catalog=testdb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"))
             {
                 connect.Open();
-                string query = "SELECT * FROM users";
+                string query = "SELECT * FROM users WHERE IsDeleted = 0";
                 using (SqlCommand command = new SqlCommand(query, connect))
                 {
                     SqlDataReader reader = command.ExecuteReader();
@@ -33,12 +27,12 @@ namespace POS_project
                     {
                         UsersData user = new UsersData
                         {
-                            ID = reader["id"].ToString(),
+                            ID = (int)reader["id"],
                             Username = reader["username"].ToString(),
                             Password = reader["password"].ToString(),
                             Role = reader["role"].ToString(),
                             Status = reader["status"].ToString(),
-                            date = reader["date"].ToString()
+                            Date = reader["date"].ToString()
                         };
 
                         usersList.Add(user);

@@ -4,6 +4,12 @@
     <Compile Update="AddminAddEmp.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="AddProducts.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="AdminAddCategories.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Dashboard.cs">
       <SubType>UserControl</SubType>
     </Compile>

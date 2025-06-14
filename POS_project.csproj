@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspose.PDF" Version="25.6.0" />
+    <PackageReference Include="BarCode" Version="2025.6.5" />
     <PackageReference Include="Jenga.NET" Version="4.0.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
@@ -32,6 +33,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Product_Directory\" />
   </ItemGroup>
 
 </Project>
