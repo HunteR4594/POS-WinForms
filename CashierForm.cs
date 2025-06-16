@@ -17,6 +17,7 @@ namespace POS_project
         public CashierForm()
         {
             InitializeComponent();
+            MessageBox.Show("CashierForm Loaded");
 
         }
 

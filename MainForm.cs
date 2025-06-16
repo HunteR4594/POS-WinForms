@@ -5,6 +5,8 @@
         public MainForm()
         {
             InitializeComponent();
+            MessageBox.Show("MainForm Loaded");
+
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -46,6 +48,14 @@
         }
 
         private void button6_Click(object sender, EventArgs e)
+        {
+            panel3.Controls.Clear(); // Clear any existing control in the main content panel
+            POS_project.AdminAddCategories myControl = new POS_project.AdminAddCategories();
+            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
+            panel3.Controls.Add(myControl);
+        }
+
+        private void addProducts5_Load(object sender, EventArgs e)
         {
 
         }

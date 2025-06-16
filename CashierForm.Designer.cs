@@ -106,7 +106,7 @@
             button5.FlatAppearance.BorderSize = 0;
             button5.FlatStyle = FlatStyle.Flat;
             button5.ForeColor = Color.Teal;
-            button5.Image = Properties.Resources.Untitled_design__2_;
+            //button5.Image = Properties.Resources.Untitled_design__2_;
             button5.ImageAlign = ContentAlignment.TopCenter;
             button5.Location = new Point(0, 224);
             button5.Name = "button5";
@@ -122,7 +122,7 @@
             button4.FlatAppearance.BorderSize = 0;
             button4.FlatStyle = FlatStyle.Flat;
             button4.ForeColor = Color.Teal;
-            button4.Image = Properties.Resources.custom;
+            //button4.Image = Properties.Resources.custom;
             button4.ImageAlign = ContentAlignment.TopCenter;
             button4.Location = new Point(-2, 323);
             button4.Name = "button4";
@@ -138,7 +138,7 @@
             button1.FlatAppearance.BorderSize = 0;
             button1.FlatStyle = FlatStyle.Flat;
             button1.ForeColor = Color.Teal;
-            button1.Image = Properties.Resources.dash;
+            //button1.Image = Properties.Resources.dash;
             button1.ImageAlign = ContentAlignment.TopCenter;
             button1.Location = new Point(-2, 133);
             button1.Name = "button1";
@@ -170,7 +170,7 @@
             button3.FlatAppearance.BorderSize = 0;
             button3.FlatStyle = FlatStyle.Flat;
             button3.ForeColor = Color.Teal;
-            button3.Image = Properties.Resources.ptodu;
+            //button3.Image = Properties.Resources.ptodu;
             button3.ImageAlign = ContentAlignment.TopCenter;
             button3.Location = new Point(1, 427);
             button3.Name = "button3";
