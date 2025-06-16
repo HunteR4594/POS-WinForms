@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel1 = new Panel();
             label6 = new Label();
             dataGridViewproducts = new DataGridView();
@@ -60,6 +62,7 @@
             // 
             // panel1
             // 
+            panel1.BackColor = Color.White;
             panel1.Controls.Add(label6);
             panel1.Controls.Add(dataGridViewproducts);
             panel1.Location = new Point(24, 22);
@@ -79,7 +82,23 @@
             // dataGridViewproducts
             // 
             dataGridViewproducts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.Teal;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dataGridViewproducts.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewproducts.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.White;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ActiveCaptionText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dataGridViewproducts.DefaultCellStyle = dataGridViewCellStyle2;
             dataGridViewproducts.Location = new Point(26, 56);
             dataGridViewproducts.Name = "dataGridViewproducts";
             dataGridViewproducts.RowHeadersWidth = 51;
@@ -89,6 +108,7 @@
             // 
             // panel2
             // 
+            panel2.BackColor = Color.White;
             panel2.Controls.Add(Clear_Product);
             panel2.Controls.Add(Remove_Product);
             panel2.Controls.Add(Update_Product);
@@ -136,6 +156,7 @@
             Remove_Product.TabIndex = 16;
             Remove_Product.Text = "Remove";
             Remove_Product.UseVisualStyleBackColor = false;
+            Remove_Product.Click += Remove_Product_Click;
             // 
             // Update_Product
             // 
@@ -302,6 +323,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlLight;
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "AddProducts";

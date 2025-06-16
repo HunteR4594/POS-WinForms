@@ -9,10 +9,8 @@ namespace POS_project
         public AddminAddEmp()
         {
             InitializeComponent();
-
-            displayAllUsersData();
-
             connect = new(@"Data Source=DESKTOP-5MGMHRD;Initial Catalog=testdb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+            displayAllUsersData();
         }
         public void displayAllUsersData()
         {

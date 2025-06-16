@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             panel1 = new Panel();
+            button6 = new Button();
             panel4 = new Panel();
             label1 = new Label();
             button5 = new Button();
@@ -43,6 +44,13 @@
             label8 = new Label();
             label2 = new Label();
             panel3 = new Panel();
+            addminAddEmp3 = new AddminAddEmp();
+            cashierOrder1 = new CashierOrder();
+            addProducts4 = new AddProducts();
+            adminAddCategories3 = new AdminAddCategories();
+            addProducts3 = new AddProducts();
+            dashboard3 = new Dashboard();
+            addProducts2 = new AddProducts();
             adminAddCategories2 = new AdminAddCategories();
             addProducts1 = new AddProducts();
             adminAddCategories1 = new AdminAddCategories();
@@ -50,7 +58,7 @@
             dashboard2 = new Dashboard();
             addminAddEmp1 = new AddminAddEmp();
             dashboard1 = new Dashboard();
-            addProducts2 = new AddProducts();
+            addProducts5 = new AddProducts();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -62,6 +70,7 @@
             // 
             panel1.BackColor = Color.White;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(button6);
             panel1.Controls.Add(panel4);
             panel1.Controls.Add(button5);
             panel1.Controls.Add(button3);
@@ -75,6 +84,23 @@
             panel1.Size = new Size(120, 748);
             panel1.TabIndex = 6;
             panel1.Paint += panel1_Paint;
+            // 
+            // button6
+            // 
+            button6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button6.FlatAppearance.BorderSize = 0;
+            button6.FlatStyle = FlatStyle.Flat;
+            button6.ForeColor = Color.Teal;
+            button6.Image = Properties.Resources.ptodu;
+            button6.ImageAlign = ContentAlignment.TopCenter;
+            button6.Location = new Point(-1, 315);
+            button6.Name = "button6";
+            button6.Size = new Size(115, 69);
+            button6.TabIndex = 18;
+            button6.Text = "Category";
+            button6.TextAlign = ContentAlignment.BottomCenter;
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
             // 
             // panel4
             // 
@@ -105,7 +131,7 @@
             button5.ForeColor = Color.Teal;
             button5.Image = Properties.Resources.Untitled_design__2_;
             button5.ImageAlign = ContentAlignment.TopCenter;
-            button5.Location = new Point(0, 514);
+            button5.Location = new Point(-2, 556);
             button5.Name = "button5";
             button5.Size = new Size(114, 69);
             button5.TabIndex = 16;
@@ -122,11 +148,11 @@
             button3.ForeColor = Color.Teal;
             button3.Image = Properties.Resources.ptodu;
             button3.ImageAlign = ContentAlignment.TopCenter;
-            button3.Location = new Point(-2, 318);
+            button3.Location = new Point(-3, 390);
             button3.Name = "button3";
             button3.Size = new Size(115, 69);
             button3.TabIndex = 15;
-            button3.Text = "Add Category";
+            button3.Text = "Product";
             button3.TextAlign = ContentAlignment.BottomCenter;
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
@@ -139,7 +165,7 @@
             button4.ForeColor = Color.Teal;
             button4.Image = Properties.Resources.custom;
             button4.ImageAlign = ContentAlignment.TopCenter;
-            button4.Location = new Point(-2, 415);
+            button4.Location = new Point(-3, 465);
             button4.Name = "button4";
             button4.Size = new Size(114, 69);
             button4.TabIndex = 14;
@@ -160,7 +186,7 @@
             button2.Name = "button2";
             button2.Size = new Size(120, 69);
             button2.TabIndex = 13;
-            button2.Text = " Add Users";
+            button2.Text = "Users";
             button2.TextAlign = ContentAlignment.BottomCenter;
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
@@ -233,6 +259,13 @@
             // 
             // panel3
             // 
+            panel3.Controls.Add(addProducts5);
+            panel3.Controls.Add(addminAddEmp3);
+            panel3.Controls.Add(cashierOrder1);
+            panel3.Controls.Add(addProducts4);
+            panel3.Controls.Add(adminAddCategories3);
+            panel3.Controls.Add(addProducts3);
+            panel3.Controls.Add(dashboard3);
             panel3.Controls.Add(addProducts2);
             panel3.Controls.Add(adminAddCategories2);
             panel3.Controls.Add(addProducts1);
@@ -247,23 +280,80 @@
             panel3.Size = new Size(1072, 748);
             panel3.TabIndex = 7;
             // 
+            // addminAddEmp3
+            // 
+            addminAddEmp3.BackColor = SystemColors.ControlLight;
+            addminAddEmp3.Location = new Point(0, 0);
+            addminAddEmp3.Name = "addminAddEmp3";
+            addminAddEmp3.Size = new Size(1340, 935);
+            addminAddEmp3.TabIndex = 13;
+            // 
+            // cashierOrder1
+            // 
+            cashierOrder1.BackColor = SystemColors.ControlLight;
+            cashierOrder1.Location = new Point(0, 0);
+            cashierOrder1.Name = "cashierOrder1";
+            cashierOrder1.Size = new Size(1340, 935);
+            cashierOrder1.TabIndex = 12;
+            // 
+            // addProducts4
+            // 
+            addProducts4.BackColor = SystemColors.ControlLight;
+            addProducts4.Location = new Point(0, 0);
+            addProducts4.Name = "addProducts4";
+            addProducts4.Size = new Size(1340, 935);
+            addProducts4.TabIndex = 11;
+            // 
+            // adminAddCategories3
+            // 
+            adminAddCategories3.Location = new Point(0, 0);
+            adminAddCategories3.Name = "adminAddCategories3";
+            adminAddCategories3.Size = new Size(1340, 935);
+            adminAddCategories3.TabIndex = 10;
+            // 
+            // addProducts3
+            // 
+            addProducts3.BackColor = SystemColors.ControlLight;
+            addProducts3.Location = new Point(0, 0);
+            addProducts3.Name = "addProducts3";
+            addProducts3.Size = new Size(1340, 935);
+            addProducts3.TabIndex = 9;
+            // 
+            // dashboard3
+            // 
+            dashboard3.BackColor = SystemColors.ControlLight;
+            dashboard3.Location = new Point(0, 0);
+            dashboard3.Name = "dashboard3";
+            dashboard3.Size = new Size(1340, 935);
+            dashboard3.TabIndex = 8;
+            // 
+            // addProducts2
+            // 
+            addProducts2.BackColor = SystemColors.ControlLight;
+            addProducts2.Location = new Point(0, 0);
+            addProducts2.Name = "addProducts2";
+            addProducts2.Size = new Size(1340, 935);
+            addProducts2.TabIndex = 7;
+            addProducts2.Load += addProducts2_Load;
+            // 
             // adminAddCategories2
             // 
-            adminAddCategories2.Location = new Point(6, 0);
+            adminAddCategories2.Location = new Point(35, 145);
             adminAddCategories2.Name = "adminAddCategories2";
             adminAddCategories2.Size = new Size(1340, 935);
             adminAddCategories2.TabIndex = 6;
             // 
             // addProducts1
             // 
-            addProducts1.Location = new Point(-9, 0);
+            addProducts1.BackColor = SystemColors.ControlLight;
+            addProducts1.Location = new Point(6, 145);
             addProducts1.Name = "addProducts1";
             addProducts1.Size = new Size(1340, 935);
             addProducts1.TabIndex = 5;
             // 
             // adminAddCategories1
             // 
-            adminAddCategories1.Location = new Point(-9, 0);
+            adminAddCategories1.Location = new Point(-9, 91);
             adminAddCategories1.Name = "adminAddCategories1";
             adminAddCategories1.Size = new Size(1340, 935);
             adminAddCategories1.TabIndex = 4;
@@ -271,7 +361,7 @@
             // addminAddEmp2
             // 
             addminAddEmp2.BackColor = SystemColors.ControlLight;
-            addminAddEmp2.Location = new Point(0, 0);
+            addminAddEmp2.Location = new Point(17, 91);
             addminAddEmp2.Name = "addminAddEmp2";
             addminAddEmp2.Size = new Size(1340, 935);
             addminAddEmp2.TabIndex = 3;
@@ -279,7 +369,7 @@
             // dashboard2
             // 
             dashboard2.BackColor = SystemColors.ControlLight;
-            dashboard2.Location = new Point(-9, 0);
+            dashboard2.Location = new Point(0, 54);
             dashboard2.Name = "dashboard2";
             dashboard2.Size = new Size(1340, 935);
             dashboard2.TabIndex = 2;
@@ -287,7 +377,7 @@
             // addminAddEmp1
             // 
             addminAddEmp1.BackColor = SystemColors.ControlLight;
-            addminAddEmp1.Location = new Point(0, 0);
+            addminAddEmp1.Location = new Point(35, 281);
             addminAddEmp1.Name = "addminAddEmp1";
             addminAddEmp1.Size = new Size(1340, 935);
             addminAddEmp1.TabIndex = 1;
@@ -301,12 +391,13 @@
             dashboard1.TabIndex = 0;
             dashboard1.Load += dashboard1_Load;
             // 
-            // addProducts2
+            // addProducts5
             // 
-            addProducts2.Location = new Point(0, 0);
-            addProducts2.Name = "addProducts2";
-            addProducts2.Size = new Size(1340, 935);
-            addProducts2.TabIndex = 7;
+            addProducts5.BackColor = SystemColors.ControlLight;
+            addProducts5.Location = new Point(-1, 0);
+            addProducts5.Name = "addProducts5";
+            addProducts5.Size = new Size(1340, 935);
+            addProducts5.TabIndex = 14;
             // 
             // MainForm
             // 
@@ -386,5 +477,13 @@
         private AddProducts addProducts1;
         private AdminAddCategories adminAddCategories2;
         private AddProducts addProducts2;
+        private AddProducts addProducts4;
+        private AdminAddCategories adminAddCategories3;
+        private AddProducts addProducts3;
+        private Dashboard dashboard3;
+        private CashierOrder cashierOrder1;
+        private Button button6;
+        private AddminAddEmp addminAddEmp3;
+        private AddProducts addProducts5;
     }
 }

@@ -54,6 +54,40 @@ namespace POS_project
             }
             return listdata;
         }
+        
+        public List<ProductData> allAvailableProducts()
+        { 
+            List<ProductData> listdata = new List<ProductData>();
+
+            using (SqlConnection connect = new SqlConnection(@"Data Source=DESKTOP-5MGMHRD;Initial Catalog=testdb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"))
+            {
+                connect.Open();
+                string query = "SELECT * FROM products WHERE status = @status"; // Corrected table name typo
+                using (SqlCommand command = new SqlCommand(query, connect))
+                {   
+                    command.Parameters.AddWithValue("@status", "Available"); // Assuming 'Available' is the status you want to filter by
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        ProductData pData = new ProductData();
+                        pData.ID = (int)reader["id"];
+                        pData.ProdID = reader["prod_id"].ToString();
+                        pData.ProdName = reader["prod_name"].ToString();
+                        pData.Category = reader["category"].ToString();
+                        pData.Price = reader["prod_price"].ToString();
+                        pData.Stock = reader["stock"].ToString();
+                        pData.ImagePath = reader["image_path"].ToString();
+                        pData.Status = reader["status"].ToString();
+                        pData.Date = reader["date_insert"].ToString();
+
+
+                        listdata.Add(pData);
+                    }
+                }
+            }
+            return listdata;
+        }
     }
 
 }

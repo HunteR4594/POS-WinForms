@@ -39,5 +39,15 @@
         {
 
         }
+
+        private void addProducts2_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
