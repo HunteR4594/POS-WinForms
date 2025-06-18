@@ -38,7 +38,7 @@
             Cashier_PriceOr = new Label();
             Cashier_Product_NameOr = new Label();
             Cashier_QuantityOr = new NumericUpDown();
-            Cashier_ProductIDOr = new ComboBox();
+            Cashier_ProductidOr = new ComboBox();
             Cashier_CategoryOr = new ComboBox();
             label6 = new Label();
             label5 = new Label();
@@ -83,7 +83,7 @@
             panel1.Controls.Add(Cashier_PriceOr);
             panel1.Controls.Add(Cashier_Product_NameOr);
             panel1.Controls.Add(Cashier_QuantityOr);
-            panel1.Controls.Add(Cashier_ProductIDOr);
+            panel1.Controls.Add(Cashier_ProductidOr);
             panel1.Controls.Add(Cashier_CategoryOr);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(label5);
@@ -192,15 +192,15 @@
             Cashier_QuantityOr.TabIndex = 9;
             Cashier_QuantityOr.ValueChanged += Cashier_QuantityOr_ValueChanged;
             // 
-            // Cashier_ProductIDOr
+            // Cashier_ProductidOr
             // 
-            Cashier_ProductIDOr.Font = new Font("Segoe UI", 10.8F);
-            Cashier_ProductIDOr.FormattingEnabled = true;
-            Cashier_ProductIDOr.Location = new Point(395, 289);
-            Cashier_ProductIDOr.Margin = new Padding(3, 2, 3, 2);
-            Cashier_ProductIDOr.Name = "Cashier_ProductIDOr";
-            Cashier_ProductIDOr.Size = new Size(160, 27);
-            Cashier_ProductIDOr.TabIndex = 8;
+            Cashier_ProductidOr.Font = new Font("Segoe UI", 10.8F);
+            Cashier_ProductidOr.FormattingEnabled = true;
+            Cashier_ProductidOr.Location = new Point(395, 289);
+            Cashier_ProductidOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_ProductidOr.Name = "Cashier_ProductidOr";
+            Cashier_ProductidOr.Size = new Size(160, 27);
+            Cashier_ProductidOr.TabIndex = 8;
             // 
             // Cashier_CategoryOr
             // 
@@ -247,7 +247,7 @@
             label3.Name = "label3";
             label3.Size = new Size(70, 15);
             label3.TabIndex = 3;
-            label3.Text = "Product ID:";
+            label3.Text = "Product id:";
             // 
             // label2
             // 
@@ -498,7 +498,7 @@
         private DataGridView dataGridView1;
         private Panel panel2;
         private NumericUpDown Cashier_QuantityOr;
-        private ComboBox Cashier_ProductIDOr;
+        private ComboBox Cashier_ProductidOr;
         private ComboBox Cashier_CategoryOr;
         private Label label10;
         private Label label9;

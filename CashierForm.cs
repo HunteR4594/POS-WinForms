@@ -30,9 +30,9 @@ namespace POS_project
         {
             if (MessageBox.Show("Are you sure you want to logout?", "Exit Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                CashierForm loginForm = new CashierForm();
-                loginForm.Show();
-                this.Hide();
+                Form1 loginForm1 = new Form1();
+                this.Close();
+                loginForm1.Show();
             }
         }
 

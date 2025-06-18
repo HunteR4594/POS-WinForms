@@ -46,13 +46,13 @@
             label4 = new Label();
             label5 = new Label();
             label3 = new Label();
-            Add_Product_Stock = new TextBox();
+            Add_Product_stock = new TextBox();
             add_product_name = new Label();
             Product_Name = new TextBox();
             label2 = new Label();
             add_Product_Price = new TextBox();
             label1 = new Label();
-            add_product_ID = new TextBox();
+            add_product_id = new TextBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewproducts).BeginInit();
             panel2.SuspendLayout();
@@ -104,7 +104,7 @@
             dataGridViewproducts.RowHeadersWidth = 51;
             dataGridViewproducts.Size = new Size(971, 229);
             dataGridViewproducts.TabIndex = 0;
-            dataGridViewproducts.CellClick += dataGridView1_CellClick;
+            this.dataGridViewproducts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewproducts_CellClick);
             // 
             // panel2
             // 
@@ -120,13 +120,13 @@
             panel2.Controls.Add(label4);
             panel2.Controls.Add(label5);
             panel2.Controls.Add(label3);
-            panel2.Controls.Add(Add_Product_Stock);
+            panel2.Controls.Add(Add_Product_stock);
             panel2.Controls.Add(add_product_name);
             panel2.Controls.Add(Product_Name);
             panel2.Controls.Add(label2);
             panel2.Controls.Add(add_Product_Price);
             panel2.Controls.Add(label1);
-            panel2.Controls.Add(add_product_ID);
+            panel2.Controls.Add(add_product_id);
             panel2.Location = new Point(24, 335);
             panel2.Name = "panel2";
             panel2.Size = new Size(1025, 384);
@@ -258,15 +258,15 @@
             label3.Name = "label3";
             label3.Size = new Size(48, 20);
             label3.TabIndex = 7;
-            label3.Text = "Stock:";
+            label3.Text = "stock:";
             // 
-            // Add_Product_Stock
+            // Add_Product_stock
             // 
-            Add_Product_Stock.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Add_Product_Stock.Location = new Point(421, 100);
-            Add_Product_Stock.Name = "Add_Product_Stock";
-            Add_Product_Stock.Size = new Size(279, 31);
-            Add_Product_Stock.TabIndex = 6;
+            Add_Product_stock.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Add_Product_stock.Location = new Point(421, 100);
+            Add_Product_stock.Name = "Add_Product_stock";
+            Add_Product_stock.Size = new Size(279, 31);
+            Add_Product_stock.TabIndex = 6;
             // 
             // add_product_name
             // 
@@ -309,15 +309,15 @@
             label1.Name = "label1";
             label1.Size = new Size(82, 20);
             label1.TabIndex = 1;
-            label1.Text = "Product ID:";
+            label1.Text = "Product id:";
             // 
-            // add_product_ID
+            // add_product_id
             // 
-            add_product_ID.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            add_product_ID.Location = new Point(44, 37);
-            add_product_ID.Name = "add_product_ID";
-            add_product_ID.Size = new Size(293, 31);
-            add_product_ID.TabIndex = 0;
+            add_product_id.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            add_product_id.Location = new Point(44, 37);
+            add_product_id.Name = "add_product_id";
+            add_product_id.Size = new Size(293, 31);
+            add_product_id.TabIndex = 0;
             // 
             // AddProducts
             // 
@@ -346,13 +346,13 @@
         private Label label2;
         private TextBox add_Product_Price;
         private Label label1;
-        private TextBox add_product_ID;
+        private TextBox add_product_id;
         private ComboBox Add_Product_Status;
         private ComboBox Add_Category;
         private Label label4;
         private Label label5;
         private Label label3;
-        private TextBox Add_Product_Stock;
+        private TextBox Add_Product_stock;
         private Label add_product_name;
         private TextBox Product_Name;
         private Label label6;
