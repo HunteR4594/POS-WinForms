@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿CREATE TABLE admin
 (
 	id INT PRIMARY KEY IDENTITY (1,1)
@@ -9,3 +10,6 @@
 
 SELECT * FROM admin
 
+=======
+﻿SELECT * FROM products;
+>>>>>>> Stashed changes
