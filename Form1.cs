@@ -1,22 +1,15 @@
-using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Windows.Forms; // Assuming this is a WinForms application
+using POS_project.Migrations;
 
 namespace POS_project
 {
     public partial class Form1 : Form
     {
-        private SqlConnection connect;
+        private readonly AppDbContext _context;
 
         public Form1()
         {
             InitializeComponent();
-            // Connection string: Good practice to keep sensitive info (like Data Source) in App.config/Web.config
-            // Current Location: Caloocan, Metro Manila, Philippines
-            // The Data Source 'DESKTOP-5MGMHRD' suggests a local machine or a specific computer name on the network.
-            // Ensure this machine is accessible from where the application is run,
-            // and SQL Server is configured for remote connections if running on a different machine.
-            connect = new(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\renren\Documents\newDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True");
+            _context = new AppDbContext();
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -36,52 +29,28 @@ namespace POS_project
             {
                 try
                 {
-                    if (connect.State != ConnectionState.Open)
+                    // Check for user existence, password, and active status using EF Core
+                    var user = _context.Users.FirstOrDefault(u => u.Username == username_login.Text && u.Password == passwordlogin.Text && u.Status == "Active");
+
+                    if (user != null)
                     {
-                        connect.Open();
-                    }
-                    string selectData = "SELECT COUNT(*) FROM users WHERE username = @username AND password = @password AND status = @status";
-                    using SqlCommand command = new(selectData, connect);
-                    command.Parameters.AddWithValue("@username", username_login.Text);
-                    command.Parameters.AddWithValue("@password", passwordlogin.Text); // This should be a HASHED password comparison
-                    command.Parameters.AddWithValue("@status", "Active");
+                        MessageBox.Show("Login Successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    int rowCount = (int)command.ExecuteScalar();
-
-                    if (rowCount > 0)
-                    {
-                        // Second SQL query: Retrieve user role if login is successful
-                        // Re-querying username and password for role retrieval is redundant and prone to issues.
-                        // You should retrieve the role in the first query if the user is authenticated.
-                        string selectRole = "SELECT role FROM users WHERE username = @username AND password = @password"; // Typo here: @pass should be @password
-
-                        using (SqlCommand getRole = new SqlCommand(selectRole, connect))
+                        if (user.Role == "Admin")
                         {
-                            getRole.Parameters.AddWithValue("username", username_login.Text.Trim());
-                            getRole.Parameters.AddWithValue("password", passwordlogin.Text.Trim()); // This should also be a HASHED password comparison
-
-                            string userRole = getRole.ExecuteScalar() as string;
-
-
-                            MessageBox.Show("Login Successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                            if (userRole == "Admin")
-                            {
-                                MainForm sForm = new MainForm();
-                                sForm.Show();
-                                this.Hide();
-                            }
-                            else if (userRole == "Cashier")
-                            {
-                                CashierForm sForm = new CashierForm();
-                                sForm.Show();
-                                this.Hide();
-                            }
-                            else 
-                            {
-                                MessageBox.Show("Your account role is not recognized. Please contact support.", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                            }
+                            MainForm sForm = new MainForm();
+                            sForm.Show();
+                            this.Hide();
+                        }
+                        else if (user.Role == "Cashier")
+                        {
+                            CashierForm sForm = new CashierForm();
+                            sForm.Show();
+                            this.Hide();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Your account role is not recognized. Please contact support.", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                     else
@@ -90,24 +59,9 @@ namespace POS_project
                         MessageBox.Show("Invalid Username or Password", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                catch (SqlException ex) // Catch specific SQL exceptions for better error handling
-                {
-                    // More detailed error message for SQL issues
-                    MessageBox.Show($"Database Error: {ex.Message}\n\n{ex.StackTrace}", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                catch (Exception ex) // Catch all other exceptions
+                catch (Exception ex) // Catch all exceptions for now, can be more specific later
                 {
                     MessageBox.Show($"An unexpected error occurred: {ex.Message}\n\n{ex.StackTrace}", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                finally
-                {
-                    // Ensure connection is closed
-                    if (connect.State == ConnectionState.Open)
-                    {
-                        connect.Close();
-                    }
                 }
             }
         }
