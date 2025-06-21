@@ -1,45 +1,46 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using POS_project;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace POS_project
 {
     internal class UsersData
     {
-        private SqlConnection connect;
-        public int ID { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
-        public string Status { get; set; }
-        public string Date { get; set; }
+        private readonly AppDbContext _context;
 
-        public List<UsersData> AllUsersData()
+        public UsersData()
         {
-            List<UsersData> usersList = new List<UsersData>();
-            using (SqlConnection connect = new SqlConnection(@"Data Source=DESKTOP-5MGMHRD;Initial Catalog=testdb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"))
+            _context = new AppDbContext();
+        }
+
+        public List<User> AllUsersData()
+        {
+            return _context.Users.Where(u => !u.IsDeleted).ToList();
+        }
+    }
+
+    public static class PasswordHelper
+    {
+        public static string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
             {
-                connect.Open();
-                string query = "SELECT * FROM users WHERE IsDeleted = 0";
-                using (SqlCommand command = new SqlCommand(query, connect))
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                StringBuilder builder = new StringBuilder();
+                foreach (byte b in bytes)
                 {
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        UsersData user = new UsersData
-                        {
-                            ID = (int)reader["id"],
-                            Username = reader["username"].ToString(),
-                            Password = reader["password"].ToString(),
-                            Role = reader["role"].ToString(),
-                            Status = reader["status"].ToString(),
-                            Date = reader["date"].ToString()
-                        };
-
-                        usersList.Add(user);
-                    }
+                    builder.Append(b.ToString("x2"));
                 }
+                return builder.ToString();
             }
-            return usersList;
+        }
+
+        public static bool VerifyPassword(string enteredPassword, string storedHash)
+        {
+            string enteredHash = HashPassword(enteredPassword);
+            return string.Equals(enteredHash, storedHash);
         }
     }
 }

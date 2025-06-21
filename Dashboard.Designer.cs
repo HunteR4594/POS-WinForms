@@ -87,7 +87,7 @@
             // 
             // pictureBox4
             // 
-            pictureBox4.Image = Properties.Resources.Total_inc;
+            //pictureBox4.Image = Properties.Resources.Total_inc;
             pictureBox4.Location = new Point(12, 22);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(80, 80);
@@ -109,7 +109,7 @@
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = Properties.Resources.inc;
+            //pictureBox3.Image = Properties.Resources.inc;
             pictureBox3.Location = new Point(12, 22);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(80, 80);
@@ -132,7 +132,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = Properties.Resources.cust;
+            //pictureBox2.Image = Properties.Resources.cust;
             pictureBox2.Location = new Point(14, 22);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(80, 80);
@@ -177,7 +177,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.emp1;
+            //pictureBox1.Image = Properties.Resources.emp1;
             pictureBox1.Location = new Point(14, 22);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(80, 80);

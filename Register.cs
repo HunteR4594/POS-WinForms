@@ -1,17 +1,17 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Data;
+﻿using System.Windows.Forms;
+using System.Linq;
 
 namespace POS_project
 {
 
     public partial class Register : Form
     {
-        private SqlConnection connect;
+        private readonly AppDbContext _context;
 
         public Register()
         {
             InitializeComponent();
-            connect = new(@"Data Source=DESKTOP-5MGMHRD;Initial Catalog=testdb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+            _context = new AppDbContext();
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -38,95 +38,68 @@ namespace POS_project
 
         private void Sign_up_Click(object sender, EventArgs e)
         {
-            if (username_register.Text == "" || password_register.Text == "" || cpassword_register.Text == "")
+            if (string.IsNullOrEmpty(username_register.Text) || string.IsNullOrEmpty(password_register.Text) || string.IsNullOrEmpty(cpassword_register.Text))
             {
                 MessageBox.Show("Please fill in all fields", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             else
             {
-                if (checkConnection())
+                try
                 {
-                    try
+                    // Check if email already exists using EF Core
+                    if (_context.Users.Any(u => u.Email == email_register.Text.Trim()))
                     {
-                        connect.Open();
-                        string checkUser = "SELECT COUNT(*) FROM admin WHERE email = @email";
-                        using (SqlCommand checkCommand = new SqlCommand(checkUser, connect))
+                        MessageBox.Show("Email already exists. Please use a different email.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else if (!email_register.Text.Contains('@'))
+                    {
+                        MessageBox.Show("Please enter a valid email address.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else if (username_register.Text.Length < 5)
+                    {
+                        MessageBox.Show("Username must be at least 5 characters long.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else if (password_register.Text.Length < 8)
+                    {
+                        MessageBox.Show("Password must be at least 8 characters long.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else if (password_register.Text != cpassword_register.Text)
+                    {
+                        MessageBox.Show("Passwords do not match. Please try again.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else
+                    {
+                        // Create new user and add to context
+                        User newUser = new User
                         {
-                            DateTime date = DateTime.Today;
-                            checkCommand.Parameters.AddWithValue("@email", email_register.Text.Trim());
-                            int userExists = (int)checkCommand.ExecuteScalar();
-                            if (userExists > 0)
-                            {
-                                MessageBox.Show("Email already exists. Please use a different email.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            else if (!email_register.Text.Contains('@')) // Fixed the issue by using Contains method
-                            {
-                                MessageBox.Show("Please enter a valid email address.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            else if (username_register.Text.Length < 5)
-                            {
-                                MessageBox.Show("Username must be at least 5 characters long.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            else if (password_register.Text.Length < 8)
-                            {
-                                MessageBox.Show("Password must be at least 8 characters long.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            else if (password_register.Text != cpassword_register.Text)
-                            {
-                                MessageBox.Show("Passwords do not match. Please try again.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            else
-                            {
-                                string insertData = "INSERT INTO admin (username, password, email, date_created) VALUES (@username, @password, @email, @date_created)";
-                                using (SqlCommand insertCommand = new(insertData, connect))
-                                {
-                                    insertCommand.Parameters.AddWithValue("@email", email_register.Text);
-                                    insertCommand.Parameters.AddWithValue("@username", username_register.Text);
-                                    insertCommand.Parameters.AddWithValue("@password", password_register.Text);
-                                    insertCommand.Parameters.AddWithValue("@date_created", DateTime.Now);
-                                    int rowsAffected = insertCommand.ExecuteNonQuery();
-                                    if (rowsAffected > 0)
-                                    {
-                                        MessageBox.Show("Registration Successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        Form1 sForm = new Form1();
-                                        sForm.Show();
-                                        this.Hide();
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Registration Failed. Please try again.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error Connecting: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    finally
-                    {
-                        connect.Close();
+                            Email = email_register.Text,
+                            Username = username_register.Text,
+                            Password = PasswordHelper.HashPassword(password_register.Text),
+                            Role = "Cashier", // Default role for new registrations
+                            Status = "Active", // Default status for new registrations
+                            Date = DateTime.Now,
+                            IsDeleted = false
+                        };
+
+                        _context.Users.Add(newUser);
+                        _context.SaveChanges(); // Save changes to the database
+
+                        MessageBox.Show("Registration Successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Form1 sForm = new Form1();
+                        sForm.Show();
+                        this.Hide();
                     }
                 }
-            }
-        }
-
-        public bool checkConnection()
-        {
-            if (connect.State == ConnectionState.Closed)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

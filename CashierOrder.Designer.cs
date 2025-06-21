@@ -2,12 +2,12 @@
 {
     partial class CashierOrder
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,19 +22,23 @@
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
             panel1 = new Panel();
+            DiscountValue = new Label();
+            Discount_CashierOr = new Button();
             Clear_CashierOr = new Button();
             Remove_CashierOr = new Button();
             Add_CashierOr = new Button();
+            Cashier_PriceOr = new Label();
+            Cashier_Product_NameOr = new Label();
             Cashier_QuantityOr = new NumericUpDown();
-            Cashier_ProductIDOr = new ComboBox();
+            Cashier_ProductidOr = new ComboBox();
             Cashier_CategoryOr = new ComboBox();
             label6 = new Label();
             label5 = new Label();
@@ -44,18 +48,22 @@
             label1 = new Label();
             dataGridView1 = new DataGridView();
             panel2 = new Panel();
-            Cashier_ChangeOr = new Label();
+            label12 = new Label();
+            label8 = new Label();
+            label7 = new Label();
+            Discount_Label = new Label();
             Cashier_Total_PriceOr = new Label();
+            label9 = new Label();
+            Cashier_AmountOr = new TextBox();
+            label10 = new Label();
+            Cashier_ChangeOr = new Label();
+            label11 = new Label();
+            vatLabel = new Label();
+            vatValue = new Label();
             Cashier_ReceiptOr = new Button();
             Cashier_Pay_OrdersOr = new Button();
-            Cashier_AmountOr = new TextBox();
-            label11 = new Label();
-            label10 = new Label();
-            label9 = new Label();
             dataGridView2 = new DataGridView();
             appDbContextBindingSource = new BindingSource(components);
-            Cashier_PriceOr = new Label();
-            Cashier_Product_NameOr = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Cashier_QuantityOr).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -67,13 +75,15 @@
             // panel1
             // 
             panel1.BackColor = Color.White;
+            panel1.Controls.Add(DiscountValue);
+            panel1.Controls.Add(Discount_CashierOr);
             panel1.Controls.Add(Clear_CashierOr);
             panel1.Controls.Add(Remove_CashierOr);
             panel1.Controls.Add(Add_CashierOr);
             panel1.Controls.Add(Cashier_PriceOr);
             panel1.Controls.Add(Cashier_Product_NameOr);
             panel1.Controls.Add(Cashier_QuantityOr);
-            panel1.Controls.Add(Cashier_ProductIDOr);
+            panel1.Controls.Add(Cashier_ProductidOr);
             panel1.Controls.Add(Cashier_CategoryOr);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(label5);
@@ -89,6 +99,29 @@
             panel1.Size = new Size(578, 519);
             panel1.TabIndex = 0;
             // 
+            // DiscountValue
+            // 
+            DiscountValue.AutoSize = true;
+            DiscountValue.Location = new Point(475, 393);
+            DiscountValue.Name = "DiscountValue";
+            DiscountValue.Size = new Size(56, 15);
+            DiscountValue.TabIndex = 16;
+            DiscountValue.Text = "Discount";
+            // 
+            // Discount_CashierOr
+            // 
+            Discount_CashierOr.BackColor = Color.Teal;
+            Discount_CashierOr.FlatStyle = FlatStyle.Flat;
+            Discount_CashierOr.ForeColor = Color.White;
+            Discount_CashierOr.Location = new Point(312, 384);
+            Discount_CashierOr.Margin = new Padding(3, 2, 3, 2);
+            Discount_CashierOr.Name = "Discount_CashierOr";
+            Discount_CashierOr.Size = new Size(116, 32);
+            Discount_CashierOr.TabIndex = 15;
+            Discount_CashierOr.Text = "Discount";
+            Discount_CashierOr.UseVisualStyleBackColor = false;
+            Discount_CashierOr.Click += Discount_CashierOr_Click;
+            // 
             // Clear_CashierOr
             // 
             Clear_CashierOr.BackColor = Color.Teal;
@@ -101,7 +134,7 @@
             Clear_CashierOr.TabIndex = 14;
             Clear_CashierOr.Text = "Clear";
             Clear_CashierOr.UseVisualStyleBackColor = false;
-            this.Clear_CashierOr.Click += new System.EventHandler(this.Clear_CashierOr_Click); // ADD THIS LINE
+            Clear_CashierOr.Click += Clear_CashierOr_Click;
             // 
             // Remove_CashierOr
             // 
@@ -115,7 +148,7 @@
             Remove_CashierOr.TabIndex = 13;
             Remove_CashierOr.Text = "Remove";
             Remove_CashierOr.UseVisualStyleBackColor = false;
-            this.Remove_CashierOr.Click += new System.EventHandler(this.Remove_CashierOr_Click); // ADD THIS LINE
+            Remove_CashierOr.Click += Remove_CashierOr_Click;
             // 
             // Add_CashierOr
             // 
@@ -129,7 +162,25 @@
             Add_CashierOr.TabIndex = 12;
             Add_CashierOr.Text = "Add";
             Add_CashierOr.UseVisualStyleBackColor = false;
-            this.Add_CashierOr.Click += new System.EventHandler(this.Add_CashierOr_Click); // ADD THIS LINE
+            Add_CashierOr.Click += Add_CashierOr_Click;
+            // 
+            // Cashier_PriceOr
+            // 
+            Cashier_PriceOr.AutoSize = true;
+            Cashier_PriceOr.Location = new Point(125, 393);
+            Cashier_PriceOr.Name = "Cashier_PriceOr";
+            Cashier_PriceOr.Size = new Size(35, 15);
+            Cashier_PriceOr.TabIndex = 11;
+            Cashier_PriceOr.Text = "Price\r\n";
+            // 
+            // Cashier_Product_NameOr
+            // 
+            Cashier_Product_NameOr.AutoSize = true;
+            Cashier_Product_NameOr.Location = new Point(125, 344);
+            Cashier_Product_NameOr.Name = "Cashier_Product_NameOr";
+            Cashier_Product_NameOr.Size = new Size(51, 15);
+            Cashier_Product_NameOr.TabIndex = 10;
+            Cashier_Product_NameOr.Text = "Product";
             // 
             // Cashier_QuantityOr
             // 
@@ -141,15 +192,15 @@
             Cashier_QuantityOr.TabIndex = 9;
             Cashier_QuantityOr.ValueChanged += Cashier_QuantityOr_ValueChanged;
             // 
-            // Cashier_ProductIDOr
+            // Cashier_ProductidOr
             // 
-            Cashier_ProductIDOr.Font = new Font("Segoe UI", 10.8F);
-            Cashier_ProductIDOr.FormattingEnabled = true;
-            Cashier_ProductIDOr.Location = new Point(395, 289);
-            Cashier_ProductIDOr.Margin = new Padding(3, 2, 3, 2);
-            Cashier_ProductIDOr.Name = "Cashier_ProductIDOr";
-            Cashier_ProductIDOr.Size = new Size(160, 27);
-            Cashier_ProductIDOr.TabIndex = 8;
+            Cashier_ProductidOr.Font = new Font("Segoe UI", 10.8F);
+            Cashier_ProductidOr.FormattingEnabled = true;
+            Cashier_ProductidOr.Location = new Point(395, 289);
+            Cashier_ProductidOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_ProductidOr.Name = "Cashier_ProductidOr";
+            Cashier_ProductidOr.Size = new Size(160, 27);
+            Cashier_ProductidOr.TabIndex = 8;
             // 
             // Cashier_CategoryOr
             // 
@@ -183,7 +234,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(325, 340);
+            label4.Location = new Point(312, 341);
             label4.Name = "label4";
             label4.Size = new Size(58, 15);
             label4.TabIndex = 4;
@@ -196,7 +247,7 @@
             label3.Name = "label3";
             label3.Size = new Size(70, 15);
             label3.TabIndex = 3;
-            label3.Text = "Product ID:";
+            label3.Text = "Product id:";
             // 
             // label2
             // 
@@ -225,19 +276,25 @@
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(542, 212);
             dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick); // ADD THIS LINE
+            dataGridView1.CellClick += dataGridView1_CellClick;
             // 
             // panel2
             // 
             panel2.BackColor = Color.White;
-            panel2.Controls.Add(Cashier_ChangeOr);
+            panel2.Controls.Add(label12);
+            panel2.Controls.Add(label8);
+            panel2.Controls.Add(label7);
+            panel2.Controls.Add(Discount_Label);
             panel2.Controls.Add(Cashier_Total_PriceOr);
+            panel2.Controls.Add(label9);
+            panel2.Controls.Add(Cashier_AmountOr);
+            panel2.Controls.Add(label10);
+            panel2.Controls.Add(Cashier_ChangeOr);
+            panel2.Controls.Add(label11);
+            panel2.Controls.Add(vatLabel);
+            panel2.Controls.Add(vatValue);
             panel2.Controls.Add(Cashier_ReceiptOr);
             panel2.Controls.Add(Cashier_Pay_OrdersOr);
-            panel2.Controls.Add(Cashier_AmountOr);
-            panel2.Controls.Add(label11);
-            panel2.Controls.Add(label10);
-            panel2.Controls.Add(label9);
             panel2.Controls.Add(dataGridView2);
             panel2.Location = new Point(616, 21);
             panel2.Margin = new Padding(3, 2, 3, 2);
@@ -245,25 +302,124 @@
             panel2.Size = new Size(301, 519);
             panel2.TabIndex = 1;
             // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label12.Location = new Point(242, 301);
+            label12.Name = "label12";
+            label12.Size = new Size(31, 15);
+            label12.TabIndex = 22;
+            label12.Text = "0.00";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label8.Location = new Point(26, 301);
+            label8.Name = "label8";
+            label8.Size = new Size(95, 15);
+            label8.TabIndex = 21;
+            label8.Text = "Partial Price (₱):";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label7.Location = new Point(242, 326);
+            label7.Name = "label7";
+            label7.Size = new Size(31, 15);
+            label7.TabIndex = 20;
+            label7.Text = "0.00";
+            // 
+            // Discount_Label
+            // 
+            Discount_Label.AutoSize = true;
+            Discount_Label.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Discount_Label.Location = new Point(62, 326);
+            Discount_Label.Name = "Discount_Label";
+            Discount_Label.Size = new Size(59, 15);
+            Discount_Label.TabIndex = 19;
+            Discount_Label.Text = "Discount:";
+            // 
+            // Cashier_Total_PriceOr
+            // 
+            Cashier_Total_PriceOr.AutoSize = true;
+            Cashier_Total_PriceOr.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            Cashier_Total_PriceOr.Location = new Point(233, 275);
+            Cashier_Total_PriceOr.Name = "Cashier_Total_PriceOr";
+            Cashier_Total_PriceOr.Size = new Size(40, 20);
+            Cashier_Total_PriceOr.TabIndex = 17;
+            Cashier_Total_PriceOr.Text = "0.00";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            label9.Location = new Point(13, 275);
+            label9.Name = "label9";
+            label9.Size = new Size(112, 20);
+            label9.TabIndex = 12;
+            label9.Text = "Total Price (₱):";
+            // 
+            // Cashier_AmountOr
+            // 
+            Cashier_AmountOr.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Cashier_AmountOr.Location = new Point(116, 381);
+            Cashier_AmountOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_AmountOr.Name = "Cashier_AmountOr";
+            Cashier_AmountOr.Size = new Size(157, 27);
+            Cashier_AmountOr.TabIndex = 15;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label10.Location = new Point(26, 393);
+            label10.Name = "label10";
+            label10.Size = new Size(74, 15);
+            label10.TabIndex = 13;
+            label10.Text = "Amount (₱):";
+            // 
             // Cashier_ChangeOr
             // 
             Cashier_ChangeOr.AutoSize = true;
             Cashier_ChangeOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            Cashier_ChangeOr.Location = new Point(116, 376);
+            Cashier_ChangeOr.Location = new Point(116, 412);
             Cashier_ChangeOr.Name = "Cashier_ChangeOr";
             Cashier_ChangeOr.Size = new Size(31, 15);
             Cashier_ChangeOr.TabIndex = 18;
             Cashier_ChangeOr.Text = "0.00";
             // 
-            // Cashier_Total_PriceOr
+            // label11
             // 
-            Cashier_Total_PriceOr.AutoSize = true;
-            Cashier_Total_PriceOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            Cashier_Total_PriceOr.Location = new Point(116, 294);
-            Cashier_Total_PriceOr.Name = "Cashier_Total_PriceOr";
-            Cashier_Total_PriceOr.Size = new Size(31, 15);
-            Cashier_Total_PriceOr.TabIndex = 17;
-            Cashier_Total_PriceOr.Text = "0.00";
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label11.Location = new Point(49, 412);
+            label11.Name = "label11";
+            label11.Size = new Size(51, 15);
+            label11.TabIndex = 14;
+            label11.Text = "Change:";
+            // 
+            // vatLabel
+            // 
+            vatLabel.AutoSize = true;
+            vatLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            vatLabel.Location = new Point(55, 350);
+            vatLabel.Name = "vatLabel";
+            vatLabel.Size = new Size(66, 15);
+            vatLabel.TabIndex = 23;
+            vatLabel.Text = "VAT (12%):";
+            // 
+            // vatValue
+            // 
+            vatValue.AutoSize = true;
+            vatValue.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            vatValue.Location = new Point(242, 350);
+            vatValue.Name = "vatValue";
+            vatValue.Size = new Size(31, 15);
+            vatValue.TabIndex = 24;
+            vatValue.Text = "0.00";
             // 
             // Cashier_ReceiptOr
             // 
@@ -271,14 +427,14 @@
             Cashier_ReceiptOr.FlatStyle = FlatStyle.Flat;
             Cashier_ReceiptOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             Cashier_ReceiptOr.ForeColor = Color.White;
-            Cashier_ReceiptOr.Location = new Point(26, 464);
+            Cashier_ReceiptOr.Location = new Point(26, 474);
             Cashier_ReceiptOr.Margin = new Padding(3, 2, 3, 2);
             Cashier_ReceiptOr.Name = "Cashier_ReceiptOr";
             Cashier_ReceiptOr.Size = new Size(247, 32);
             Cashier_ReceiptOr.TabIndex = 16;
             Cashier_ReceiptOr.Text = "Receipt";
             Cashier_ReceiptOr.UseVisualStyleBackColor = false;
-            this.Cashier_ReceiptOr.Click += new System.EventHandler(this.Cashier_ReceiptOr_Click); // ADD THIS LINE
+            Cashier_ReceiptOr.Click += Cashier_ReceiptOr_Click;
             // 
             // Cashier_Pay_OrdersOr
             // 
@@ -286,54 +442,14 @@
             Cashier_Pay_OrdersOr.FlatStyle = FlatStyle.Flat;
             Cashier_Pay_OrdersOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             Cashier_Pay_OrdersOr.ForeColor = Color.White;
-            Cashier_Pay_OrdersOr.Location = new Point(26, 410);
+            Cashier_Pay_OrdersOr.Location = new Point(26, 438);
             Cashier_Pay_OrdersOr.Margin = new Padding(3, 2, 3, 2);
             Cashier_Pay_OrdersOr.Name = "Cashier_Pay_OrdersOr";
             Cashier_Pay_OrdersOr.Size = new Size(247, 32);
             Cashier_Pay_OrdersOr.TabIndex = 15;
             Cashier_Pay_OrdersOr.Text = "Pay Orders";
             Cashier_Pay_OrdersOr.UseVisualStyleBackColor = false;
-            this.Cashier_Pay_OrdersOr.Click += new System.EventHandler(this.Cashier_Pay_OrdersOr_Click); // ADD THIS LINE
-
-            // 
-            // Cashier_AmountOr
-            // 
-            Cashier_AmountOr.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Cashier_AmountOr.Location = new Point(116, 334);
-            Cashier_AmountOr.Margin = new Padding(3, 2, 3, 2);
-            Cashier_AmountOr.Name = "Cashier_AmountOr";
-            Cashier_AmountOr.Size = new Size(157, 27);
-            Cashier_AmountOr.TabIndex = 15;
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label11.Location = new Point(54, 376);
-            label11.Name = "label11";
-            label11.Size = new Size(51, 15);
-            label11.TabIndex = 14;
-            label11.Text = "Change:";
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label10.Location = new Point(26, 336);
-            label10.Name = "label10";
-            label10.Size = new Size(74, 15);
-            label10.TabIndex = 13;
-            label10.Text = "Amount (₱):";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label9.Location = new Point(13, 294);
-            label9.Name = "label9";
-            label9.Size = new Size(87, 15);
-            label9.TabIndex = 12;
-            label9.Text = "Total Price (₱):";
+            Cashier_Pay_OrdersOr.Click += Cashier_Pay_OrdersOr_Click;
             // 
             // dataGridView2
             // 
@@ -348,24 +464,6 @@
             // appDbContextBindingSource
             // 
             appDbContextBindingSource.DataSource = typeof(AppDbContext);
-            // 
-            // Cashier_PriceOr
-            // 
-            Cashier_PriceOr.AutoSize = true;
-            Cashier_PriceOr.Location = new Point(125, 393);
-            Cashier_PriceOr.Name = "Cashier_PriceOr";
-            Cashier_PriceOr.Size = new Size(60, 15);
-            Cashier_PriceOr.TabIndex = 11;
-            Cashier_PriceOr.Text = "Category:";
-            // 
-            // Cashier_Product_NameOr
-            // 
-            Cashier_Product_NameOr.AutoSize = true;
-            Cashier_Product_NameOr.Location = new Point(125, 344);
-            Cashier_Product_NameOr.Name = "Cashier_Product_NameOr";
-            Cashier_Product_NameOr.Size = new Size(60, 15);
-            Cashier_Product_NameOr.TabIndex = 10;
-            Cashier_Product_NameOr.Text = "Category:";
             // 
             // CashierOrder
             // 
@@ -400,7 +498,7 @@
         private DataGridView dataGridView1;
         private Panel panel2;
         private NumericUpDown Cashier_QuantityOr;
-        private ComboBox Cashier_ProductIDOr;
+        private ComboBox Cashier_ProductidOr;
         private ComboBox Cashier_CategoryOr;
         private Label label10;
         private Label label9;
@@ -417,5 +515,15 @@
         private BindingSource appDbContextBindingSource;
         private Label Cashier_PriceOr;
         private Label Cashier_Product_NameOr;
+        private Button Discount_CashierOr;
+        private Label label12; // Partial Price Value
+        private Label label8;  // Partial Price Label
+        private Label label7;  // Discount Value
+        private Label Discount_Label; // Discount Label
+        private Label DiscountValue; // Label for displaying active discount
+
+        // NEW: VAT Labels
+        private Label vatLabel; // ADD THIS LINE
+        private Label vatValue; // ADD THIS LINE
     }
 }

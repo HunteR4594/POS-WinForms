@@ -1,24 +1,29 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Linq;
+using System.Windows.Forms;
+using System.IO;
+using System;
+using System.Drawing; // Added for Image.FromFile
 
 namespace POS_project
 {
     public partial class AddProducts : UserControl
     {
-
-        private string connectionString = @"Data Source=DESKTOP-5MGMHRD;Initial Catalog=testdb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+        private readonly AppDbContext _context;
+        private int getid = 0;
 
         public AddProducts()
         {
             InitializeComponent();
-            // Call displayCategories directly. It will manage its own connection.
+            _context = new AppDbContext();
             displayCategories();
-            displayAllProducts(); // Assuming you'll have a method to display products
+            displayAllProducts();
+            // Attach the CellClick event handler here if it's not done in Designer.cs
+            // dataGridViewproducts.CellClick += dataGridViewproducts_CellClick;
         }
 
-        // CategoryItem class is fine as is
         public class CategoryItem
         {
-            public int Id { get; set; }
+            public int id { get; set; }
             public string Name { get; set; }
 
             public override string ToString() => Name;
@@ -26,63 +31,45 @@ namespace POS_project
 
         public void displayCategories()
         {
+            // Clear existing items to prevent duplicates on refresh
+            Add_Category.Items.Clear();
 
-            using (SqlConnection connect = new SqlConnection(connectionString))
+            var categories = _context.Categories.ToList();
+            foreach (var category in categories)
             {
-                try
+                Add_Category.Items.Add(new CategoryItem
                 {
-                    connect.Open();
-
-                    string selectData = "SELECT id, category FROM categories";
-                    using (SqlCommand cmd = new SqlCommand(selectData, connect))
-                    {
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            // Clear existing items to prevent duplicates on refresh
-                            Add_Category.Items.Clear();
-
-                            if (reader.HasRows)
-                            {
-                                while (reader.Read())
-                                {
-                                    // Store CategoryItem objects to associate ID with Name
-                                    Add_Category.Items.Add(new CategoryItem
-                                    {
-                                        Id = reader.GetInt32(reader.GetOrdinal("id")),
-                                        Name = reader.GetString(reader.GetOrdinal("category"))
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading categories: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                // The 'using' statement handles connect.Close() automatically here
+                    id = category.id,
+                    Name = category.CategoryName
+                });
             }
         }
 
-
         public void displayAllProducts()
         {
-            ProductData pData = new ProductData();
-            List<ProductData> listdata = pData.AllProductData();
-
-            dataGridViewproducts.DataSource = listdata; // Clear existing data source to avoid duplicates
+            dataGridViewproducts.DataSource = _context.Products
+                .Select(p => new
+                {
+                    p.id,
+                    p.prod_id,
+                    p.prod_name,
+                    prod_price = p.prod_price.ToString("F2"),
+                    p.category,
+                    p.stock,
+                    p.status,
+                    FormattedDate = p.date_insert.ToString("yyyy-MM-dd"),
+                    p.image_path // Include image_path to retrieve it
+                })
+                .ToList();
         }
-
 
         public bool AreFieldsEmpty()
         {
-            // Use string.IsNullOrWhiteSpace for text fields
-            return string.IsNullOrWhiteSpace(add_product_ID.Text) ||
-                   string.IsNullOrWhiteSpace(add_product_name.Text) ||
+            return string.IsNullOrWhiteSpace(add_product_id.Text) ||
+                   string.IsNullOrWhiteSpace(Product_Name.Text) || // Corrected: use Product_Name TextBox
                    Add_Category.SelectedIndex == -1 ||
                    string.IsNullOrWhiteSpace(add_Product_Price.Text) ||
-                   string.IsNullOrWhiteSpace(Add_Product_Stock.Text) ||
+                   string.IsNullOrWhiteSpace(Add_Product_stock.Text) ||
                    Add_Product_Status.SelectedIndex == -1 ||
                    Import_pic.ImageLocation == null;
         }
@@ -95,130 +82,105 @@ namespace POS_project
                 return;
             }
 
-            // Validate numeric inputs
             if (!decimal.TryParse(add_Product_Price.Text.Trim(), out decimal price))
             {
                 MessageBox.Show("Please enter a valid price.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (!int.TryParse(Add_Product_Stock.Text.Trim(), out int stock))
+            if (!int.TryParse(Add_Product_stock.Text.Trim(), out int stock))
             {
                 MessageBox.Show("Please enter a valid stock quantity.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-
-            // Create connection locally for this operation to ensure proper scope and disposal
-            using (SqlConnection connect = new SqlConnection(connectionString))
+            try
             {
+                if (_context.Products.Any(p => p.prod_id == add_product_id.Text.Trim()))
+                {
+                    MessageBox.Show("Product id: " + add_product_id.Text.Trim() + " already exists!", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string productid = add_product_id.Text.Trim();
+                string relativePath = Path.Combine("Product_Directory", productid + ".jpg");
+                string fullimage_path = Path.Combine(baseDirectory, relativePath);
+
+                string directoryPath = Path.GetDirectoryName(fullimage_path);
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
                 try
                 {
-                    connect.Open();
-
-                    string selectProductQuery = "SELECT COUNT(*) FROM products WHERE prod_id = @prodID";
-                    using (SqlCommand checkCommand = new SqlCommand(selectProductQuery, connect))
-                    {
-                        checkCommand.Parameters.AddWithValue("@prodID", add_product_ID.Text.Trim());
-                        int count = (int)checkCommand.ExecuteScalar();
-                        if (count > 0)
-                        {
-                            MessageBox.Show("Product ID: " + add_product_ID.Text.Trim() + " already exists!", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                    }
-
-
-                    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                    string productID = add_product_ID.Text.Trim();
-                    string relativePath = Path.Combine("Product_Directory", productID + ".jpg");
-                    string fullImagePath = Path.Combine(baseDirectory, relativePath);
-
-                    string directoryPath = Path.GetDirectoryName(fullImagePath);
-
-                    if (!Directory.Exists(directoryPath))
-                    {
-                        Directory.CreateDirectory(directoryPath);
-                    }
-
-
-                    try
-                    {
-                        File.Copy(Import_pic.ImageLocation, fullImagePath, true);
-                    }
-                    catch (IOException ioEx)
-                    {
-                        MessageBox.Show("Error copying image file: " + ioEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    catch (Exception fileEx)
-                    {
-                        MessageBox.Show("An unexpected error occurred during image copy: " + fileEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-
-
-                    string insertData = "INSERT INTO products (prod_id, prod_name, category, prod_price, stock, image_path, status, date_insert)" +
-                                        " VALUES (@prodID, @prodName, @category, @prodPrice, @stock, @imagePath, @status, @dateInsert)";
-
-                    using (SqlCommand insertCommand = new SqlCommand(insertData, connect))
-                    {
-                        DateTime date = DateTime.Today;
-                        insertCommand.Parameters.AddWithValue("@prodID", productID);
-                        insertCommand.Parameters.AddWithValue("@prodName", Product_Name.Text.Trim());
-
-
-                        CategoryItem selectedCategory = Add_Category.SelectedItem as CategoryItem;
-                        insertCommand.Parameters.AddWithValue("@category", selectedCategory?.Name ?? string.Empty);
-
-                        insertCommand.Parameters.AddWithValue("@prodPrice", price);
-                        insertCommand.Parameters.AddWithValue("@stock", stock);
-                        insertCommand.Parameters.AddWithValue("@imagePath", fullImagePath);
-                        insertCommand.Parameters.AddWithValue("@status", Add_Product_Status.SelectedItem.ToString());
-                        insertCommand.Parameters.AddWithValue("@dateInsert", date.ToString("yyyy-MM-dd"));
-
-                        insertCommand.ExecuteNonQuery();
-
-                        MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
-                        ClearFields();
-                        displayAllProducts();
-                    }
+                    File.Copy(Import_pic.ImageLocation, fullimage_path, true);
                 }
-                catch (Exception ex)
+                catch (IOException ioEx)
                 {
-
-                    MessageBox.Show("Error adding product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error copying image file: " + ioEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+                catch (Exception fileEx)
+                {
+                    MessageBox.Show("An unexpected error occurred during image copy: " + fileEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                CategoryItem selectedCategory = Add_Category.SelectedItem as CategoryItem;
+
+                Product newProduct = new Product
+                {
+                    prod_id = productid,
+                    prod_name = Product_Name.Text.Trim(), // Corrected: use Product_Name TextBox
+                    category = selectedCategory?.Name ?? string.Empty,
+                    prod_price = price,
+                    stock = stock, // Store as int
+                    image_path = fullimage_path,
+                    status = Add_Product_Status.SelectedItem.ToString(),
+                    date_insert = DateTime.Now
+                };
+
+                _context.Products.Add(newProduct);
+                _context.SaveChanges();
+
+                MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ClearFields();
+                displayAllProducts();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error adding product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-
         private void ClearFields()
         {
-            add_product_ID.Text = "";
-            Product_Name.Text = "";
+            add_product_id.Text = "";
+            Product_Name.Text = ""; // Corrected: Clear Product_Name TextBox
             Add_Category.SelectedIndex = -1;
             add_Product_Price.Text = "";
-            Add_Product_Stock.Text = "";
+            Add_Product_stock.Text = "";
             Add_Product_Status.SelectedIndex = -1;
             Import_pic.Image = null;
-
+            Import_pic.ImageLocation = null; // Also clear ImageLocation
+            getid = 0; // Reset getid when clearing fields
         }
-
 
         private void Import_Click(object sender, EventArgs e)
         {
             try
             {
                 OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "Image Files(*.jpg; *.jpeg; *.png; *.gif; *.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp"; // Added more image types
+                dialog.Filter = "Image Files(*.jpg; *.jpeg; *.png; *.gif; *.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
                 dialog.Title = "Select Product Image";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     Import_pic.ImageLocation = dialog.FileName;
+                    Import_pic.Image = Image.FromFile(dialog.FileName); // Display the image immediately
                 }
                 else
                 {
@@ -231,37 +193,61 @@ namespace POS_project
             }
         }
 
-        private int getID = 0;
-        private object dataGridView1;
-
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridViewproducts_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Ensure the sender is cast to DataGridView
-            if (sender is DataGridView dataGridView)
+            if (e.RowIndex != -1) // Ensure a valid row is clicked
             {
-                if (e.RowIndex != -1)
+                DataGridViewRow row = dataGridViewproducts.Rows[e.RowIndex];
+
+                // Retrieve values directly from DataGridView cells based on column names
+                // Ensure these column names match what you're binding in displayAllProducts
+                getid = Convert.ToInt32(row.Cells["id"].Value);
+                add_product_id.Text = row.Cells["prod_id"].Value?.ToString();
+                Product_Name.Text = row.Cells["prod_name"].Value?.ToString(); // Corrected: set Product_Name TextBox
+                Add_Category.Text = row.Cells["category"].Value?.ToString();
+                add_Product_Price.Text = row.Cells["prod_price"].Value?.ToString(); // Already formatted as "F2"
+                Add_Product_stock.Text = row.Cells["stock"].Value?.ToString(); // stock is int, retrieved as object, convert to string
+                Add_Product_Status.Text = row.Cells["status"].Value?.ToString();
+
+                string imagePath = row.Cells["image_path"].Value?.ToString(); // Retrieve image_path
+
+                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
                 {
-                    DataGridViewRow row = dataGridView.Rows[e.RowIndex]; // Access the row at the clicked index
-
-                    getID = Convert.ToInt32(row.Cells[0].Value); // Assuming the first column contains the product ID
-
-                    add_product_ID.Text = row.Cells[1].Value?.ToString();
-                    Product_Name.Text = row.Cells[2].Value?.ToString();
-                    Add_Category.Text = row.Cells[3].Value?.ToString();
-                    add_Product_Price.Text = row.Cells[4].Value?.ToString();
-                    Add_Product_Stock.Text = row.Cells[5].Value?.ToString();
-                    Add_Product_Status.SelectedItem = row.Cells[7].Value?.ToString();
-                    Import_pic.ImageLocation = row.Cells[6].Value?.ToString(); // Assuming the 6th column contains the image path
+                    try
+                    {
+                        Import_pic.Image = Image.FromFile(imagePath);
+                        Import_pic.ImageLocation = imagePath; // Set ImageLocation as well for update logic
+                    }
+                    catch (OutOfMemoryException)
+                    {
+                        MessageBox.Show("Invalid image format or image is corrupted.", "Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Import_pic.Image = null;
+                        Import_pic.ImageLocation = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error loading image: {ex.Message}", "Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Import_pic.Image = null;
+                        Import_pic.ImageLocation = null;
+                    }
                 }
-            }
-            else
-            {
-                MessageBox.Show("Unexpected sender type. Expected DataGridView.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else
+                {
+                    Import_pic.Image = null;
+                    Import_pic.ImageLocation = null;
+                }
             }
         }
 
+
         private void Update_Product_Click(object sender, EventArgs e)
         {
+            if (getid == 0) // Check if a product is selected for update
+            {
+                MessageBox.Show("Please select a product to update.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (AreFieldsEmpty())
             {
                 MessageBox.Show("Please fill all required fields.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -273,115 +259,104 @@ namespace POS_project
                 MessageBox.Show("Please enter a valid price.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (!int.TryParse(Add_Product_Stock.Text.Trim(), out int stock))
+            if (!int.TryParse(Add_Product_stock.Text.Trim(), out int stock))
             {
                 MessageBox.Show("Please enter a valid stock quantity.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure you want to update this product?", "Update Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Are you sure you want to update Product id: " + getid + "?", "Update Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                using (SqlConnection connect = new SqlConnection(connectionString))
+                try
                 {
-                    try
+                    Product productToUpdate = _context.Products.FirstOrDefault(p => p.id == getid);
+                    if (productToUpdate != null)
                     {
-                        connect.Open();
-
-                        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                        string productID = add_product_ID.Text.Trim();
-
-                        // Determine file extension from the image currently in the PictureBox, or default.
-                        string fileExtension = ".jpg"; // Default extension
-                        if (Import_pic.Image != null)
+                        // Check for duplicate product ID only if it's being changed
+                        if (productToUpdate.prod_id != add_product_id.Text.Trim() && _context.Products.Any(p => p.prod_id == add_product_id.Text.Trim()))
                         {
-                            // Attempt to get the format from the image in the PictureBox
-                            if (System.Drawing.Imaging.ImageFormat.Jpeg.Equals(Import_pic.Image.RawFormat))
-                                fileExtension = ".jpg";
-                            else if (System.Drawing.Imaging.ImageFormat.Png.Equals(Import_pic.Image.RawFormat))
-                                fileExtension = ".png";
-                            else if (System.Drawing.Imaging.ImageFormat.Gif.Equals(Import_pic.Image.RawFormat))
-                                fileExtension = ".gif";
-                            else if (System.Drawing.Imaging.ImageFormat.Bmp.Equals(Import_pic.Image.RawFormat))
-                                fileExtension = ".bmp";
+                            MessageBox.Show("Product id already exists for another product.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
 
-                        string relativePath = Path.Combine("Product_Directory", productID + fileExtension);
-                        string fullImagePath = Path.Combine(baseDirectory, relativePath);
+                        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                        string productid = add_product_id.Text.Trim();
+                        string relativePath = Path.Combine("Product_Directory", productid + ".jpg");
+                        string fullimage_path = Path.Combine(baseDirectory, relativePath);
 
-                        string directoryPath = Path.GetDirectoryName(fullImagePath);
+                        string directoryPath = Path.GetDirectoryName(fullimage_path);
 
                         if (!Directory.Exists(directoryPath))
                         {
                             Directory.CreateDirectory(directoryPath);
                         }
 
-                        try
+                        // Handle image update logic
+                        // Scenario 1: New image selected (ImageLocation is different from existing path, or existing path is null/empty)
+                        if (Import_pic.ImageLocation != null && Import_pic.ImageLocation != productToUpdate.image_path)
                         {
-                            // Save the image from the PictureBox to the target file path.
-                            // The image in PictureBox is already in memory (from Import_Click),
-                            // so this avoids locking the original source file.
-                            if (Import_pic.Image != null)
+                            // Delete old image if it exists and is different
+                            if (!string.IsNullOrEmpty(productToUpdate.image_path) && File.Exists(productToUpdate.image_path))
                             {
-                                Import_pic.Image.Save(fullImagePath);
+                                File.Delete(productToUpdate.image_path);
                             }
-                            else
+                            try
                             {
-                                // If there's no image in PictureBox (e.g., cleared), you might want to:
-                                // 1. Delete the existing image file for this product, or
-                                // 2. Set image_path in DB to NULL, or
-                                // 3. Keep the existing image path in DB.
-                                // For this fix, we'll assume a new image must always be present.
-                                MessageBox.Show("No image selected for update. Please select an image.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                File.Copy(Import_pic.ImageLocation, fullimage_path, true);
+                                productToUpdate.image_path = fullimage_path;
+                            }
+                            catch (IOException ioEx)
+                            {
+                                MessageBox.Show("Error copying image file: " + ioEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            catch (Exception fileEx)
+                            {
+                                MessageBox.Show("An unexpected error occurred during image copy: " + fileEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
                         }
-                        catch (Exception fileEx)
+                        // Scenario 2: Image was cleared (Import_pic.Image is null, but there was an old path)
+                        else if (Import_pic.Image == null && !string.IsNullOrEmpty(productToUpdate.image_path))
                         {
-                            MessageBox.Show("Error saving updated product image: " + fileEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-
-                        string updateData = "UPDATE products SET prod_name = @prodName, category = @category, prod_price = @prodPrice, " +
-                                            "stock = @stock, image_path = @imagePath, status = @status, date_insert = @dateInsert " +
-                                            "WHERE prod_id = @prodID";
-
-                        using (SqlCommand updateCommand = new SqlCommand(updateData, connect))
-                        {
-                            DateTime date = DateTime.Today;
-                            updateCommand.Parameters.AddWithValue("@prodID", productID);
-                            updateCommand.Parameters.AddWithValue("@prodName", Product_Name.Text.Trim());
-
-                            CategoryItem selectedCategory = Add_Category.SelectedItem as CategoryItem;
-                            updateCommand.Parameters.AddWithValue("@category", selectedCategory?.Name ?? string.Empty);
-
-                            updateCommand.Parameters.AddWithValue("@prodPrice", price);
-                            updateCommand.Parameters.AddWithValue("@stock", stock);
-                            updateCommand.Parameters.AddWithValue("@imagePath", relativePath); // Store relative path
-                            updateCommand.Parameters.AddWithValue("@status", Add_Product_Status.SelectedItem.ToString());
-                            updateCommand.Parameters.AddWithValue("@dateInsert", date.ToString("yyyy-MM-dd"));
-
-                            int rowsAffected = updateCommand.ExecuteNonQuery();
-
-                            if (rowsAffected > 0)
+                            if (File.Exists(productToUpdate.image_path))
                             {
-                                MessageBox.Show("Product updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                File.Delete(productToUpdate.image_path);
                             }
-                            else
-                            {
-                                MessageBox.Show("No product found with the specified Product ID for update.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-
-                            ClearFields();
-                            displayAllProducts();
+                            productToUpdate.image_path = string.Empty; // Clear the path in DB
                         }
+                        // Scenario 3: No new image selected, and old image not cleared (path remains the same)
+                        // Do nothing, path remains as is
+
+                        CategoryItem selectedCategory = Add_Category.SelectedItem as CategoryItem;
+
+                        productToUpdate.prod_id = productid;
+                        productToUpdate.prod_name = Product_Name.Text.Trim(); // Corrected: use Product_Name TextBox
+                        productToUpdate.category = selectedCategory?.Name ?? string.Empty;
+                        productToUpdate.prod_price = price;
+                        productToUpdate.stock = stock;
+                        productToUpdate.status = Add_Product_Status.SelectedItem.ToString();
+                        // date_insert is typically not updated on product modification
+
+                        _context.SaveChanges();
+
+                        MessageBox.Show("Product updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        ClearFields();
+                        displayAllProducts();
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show("Error updating product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Product not found.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error updating product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
         private void Clear_Product_Click(object sender, EventArgs e)
         {
             ClearFields();
@@ -389,94 +364,50 @@ namespace POS_project
 
         private void Remove_Product_Click(object sender, EventArgs e)
         {
-            // Input validation: Ensure a product ID is present before attempting to delete
-            if (string.IsNullOrWhiteSpace(add_product_ID.Text))
+            // Use getid, which is set in CellClick
+            if (getid == 0) // Check if a product is actually selected
             {
-                MessageBox.Show("Please select a product to delete from the table.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a product to delete.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (MessageBox.Show("Are you sure you want to delete this product?", "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Are you sure you want to delete Product id: " + add_product_id.Text + "?", "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                string productID = add_product_ID.Text.Trim();
-                string imagePathFromDb = null; // To store the image path before deleting the DB record
-
-                using (SqlConnection connect = new SqlConnection(connectionString))
+                try
                 {
-                    try
+                    Product productToDelete = _context.Products.FirstOrDefault(p => p.id == getid);
+                    if (productToDelete != null)
                     {
-                        connect.Open();
-
-                        // --- Step 1: Retrieve the image_path from the database before deleting the record ---
-                        string getImagePathQuery = "SELECT image_path FROM products WHERE prod_id = @prodID";
-                        using (SqlCommand getImageCmd = new SqlCommand(getImagePathQuery, connect))
+                        // Optionally delete the associated image file
+                        if (!string.IsNullOrEmpty(productToDelete.image_path) && File.Exists(productToDelete.image_path))
                         {
-                            getImageCmd.Parameters.AddWithValue("@prodID", productID);
-                            object result = getImageCmd.ExecuteScalar();
-                            if (result != null && result != DBNull.Value)
+                            try
                             {
-                                imagePathFromDb = result.ToString();
+                                File.Delete(productToDelete.image_path);
+                            }
+                            catch (Exception fileEx)
+                            {
+                                // Log or show a warning, but don't prevent product deletion if image deletion fails
+                                MessageBox.Show($"Warning: Could not delete image file: {fileEx.Message}", "File Deletion Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
 
-                        // --- Step 2: Delete the product record from the database ---
-                        string deleteCommand = "DELETE FROM products WHERE prod_id = @prodID";
-                        using (SqlCommand deleted = new SqlCommand(deleteCommand, connect))
-                        {
-                            deleted.Parameters.AddWithValue("@prodID", productID);
+                        _context.Products.Remove(productToDelete);
+                        _context.SaveChanges();
 
-                            int rowsAffected = deleted.ExecuteNonQuery();
+                        MessageBox.Show("Product deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                            if (rowsAffected > 0)
-                            {
-                                MessageBox.Show("Product deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                // --- Step 3: Delete the associated image file from disk ---
-                                if (!string.IsNullOrEmpty(imagePathFromDb))
-                                {
-                                    string fullImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, imagePathFromDb);
-                                    if (File.Exists(fullImagePath))
-                                    {
-                                        try
-                                        {
-                                            // Ensure PictureBox doesn't hold a lock on the image if it's currently displayed
-                                            if (Import_pic.ImageLocation == fullImagePath) // Check if the displayed image is the one being deleted
-                                            {
-                                                Import_pic.Image.Dispose(); // Dispose to release file handle
-                                                Import_pic.Image = null;    // Clear the picture box
-                                            }
-                                            File.Delete(fullImagePath);
-                                            // You might want to log this or give a message if deletion fails for some reason
-                                        }
-                                        catch (IOException ioEx)
-                                        {
-                                            MessageBox.Show("Could not delete image file: " + ioEx.Message, "File Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                        }
-                                        catch (Exception fileEx)
-                                        {
-                                            MessageBox.Show("An unexpected error occurred during image file deletion: " + fileEx.Message, "File Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Optional: Message if the file path was in DB but file didn't exist
-                                        // MessageBox.Show("Image file not found on disk: " + fullImagePath, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("No product found with the specified Product ID for delete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-
-                            ClearFields();
-                            displayAllProducts();
-                        }
+                        ClearFields();
+                        displayAllProducts();
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show("Error deleting product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Product not found.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

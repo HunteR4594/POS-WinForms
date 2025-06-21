@@ -34,12 +34,18 @@
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            panel3.Controls.Clear(); // Clear any existing control in the main content panel
+            POS_project.AddProducts myControl = new POS_project.AddProducts();
+            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
+            panel3.Controls.Add(myControl);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            panel3.Controls.Clear(); // Clear any existing control in the main content panel
+            POS_project.Dashboard myControl = new POS_project.Dashboard();
+            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
+            panel3.Controls.Add(myControl);
         }
 
         private void addProducts2_Load(object sender, EventArgs e)
