@@ -21,9 +21,9 @@ namespace POS_Gabayno
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Inventory Inventory = new Inventory();
-            Inventory.Show();
-            this.Hide();
+            //Inventory Inventory = new Inventory();
+            //Inventory.Show();
+            //this.Hide();
 
         }
 

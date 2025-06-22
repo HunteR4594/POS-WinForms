@@ -1,4 +1,10 @@
-﻿using POS_project.Migrations;
+﻿using POS_project.Migrations; // Keep if EF Core still requires it internally for some reason, otherwise can remove
+using System;
+using System.Drawing;
+using System.IO; // Still needed for File, Directory, Path
+using System.Linq;
+using System.Windows.Forms;
+using ZXing; // Assuming ZXing library is installed and this using is for BarcodeFormat etc.
 
 namespace POS_project
 {
@@ -13,21 +19,21 @@ namespace POS_project
             _context = new AppDbContext();
             displayCategories();
             displayAllProducts();
-            // Attach the CellClick event handler here if it's not done in Designer.cs
-            // dataGridViewproducts.CellClick += dataGridViewproducts_CellClick;
+            // Only attach ONCE!
+            this.dataGridViewproducts.CellClick += dataGridViewproducts_CellClick;
         }
 
+        // FIX: Made 'Name' property nullable to satisfy CS8618 warning
         public class CategoryItem
         {
             public int id { get; set; }
-            public string Name { get; set; }
+            public string? Name { get; set; } // Changed to nullable string
 
             public override string ToString() => Name;
         }
 
         public void displayCategories()
         {
-            // Clear existing items to prevent duplicates on refresh
             Add_Category.Items.Clear();
 
             var categories = _context.Categories.ToList();
@@ -43,35 +49,57 @@ namespace POS_project
 
         public void displayAllProducts()
         {
-            dataGridViewproducts.DataSource = _context.Products
-                .Select(p => new
+            try
+            {
+                dataGridViewproducts.DataSource = _context.Products
+                    .Select(p => new
+                    {
+                        p.id,
+                        p.prod_id,
+                        p.prod_name,
+                        prod_price = p.prod_price.ToString("F2"),
+                        p.category,
+                        p.stock,
+                        p.status,
+                        FormattedDate = p.date_insert.ToString("yyyy-MM-dd"),
+                        // REMOVED: p.image_path, // <--- REMOVED
+                        p.barcode     // This is now the path to the barcode image
+                    })
+                    .ToList();
+
+                // Add View Barcode button column if it doesn't exist
+                if (dataGridViewproducts.Columns["ViewBarcode"] == null)
                 {
-                    p.id,
-                    p.prod_id,
-                    p.prod_name,
-                    prod_price = p.prod_price.ToString("F2"),
-                    p.category,
-                    p.stock,
-                    p.status,
-                    FormattedDate = p.date_insert.ToString("yyyy-MM-dd"),
-                    p.image_path // Include image_path to retrieve it
-                })
-                .ToList();
+                    DataGridViewButtonColumn viewBarcodeColumn = new DataGridViewButtonColumn();
+                    viewBarcodeColumn.Name = "ViewBarcode";
+                    viewBarcodeColumn.HeaderText = "View Barcode";
+                    viewBarcodeColumn.Text = "View";
+                    viewBarcodeColumn.UseColumnTextForButtonValue = true;
+                    viewBarcodeColumn.Width = 100;
+                    dataGridViewproducts.Columns.Add(viewBarcodeColumn);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading available products: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Log the exception (e.g., to a file or console) for debugging
+                Console.WriteLine($"Database Error in displayAllProducts: {ex.Message}");
+            }
         }
 
         public bool AreFieldsEmpty()
         {
             return string.IsNullOrWhiteSpace(add_product_id.Text) ||
-                   string.IsNullOrWhiteSpace(Product_Name.Text) || // Corrected: use Product_Name TextBox
+                   string.IsNullOrWhiteSpace(Product_Name.Text) ||
                    Add_Category.SelectedIndex == -1 ||
                    string.IsNullOrWhiteSpace(add_Product_Price.Text) ||
                    string.IsNullOrWhiteSpace(Add_Product_stock.Text) ||
-                   Add_Product_Status.SelectedIndex == -1 ||
-                   Import_pic.ImageLocation == null;
+                   string.IsNullOrWhiteSpace(Add_Product_Status.SelectedItem?.ToString()); // Check selected item directly
         }
 
         private void Add_Product_Click(object sender, EventArgs e)
         {
+            // Removed check for Import_pic.ImageLocation
             if (AreFieldsEmpty())
             {
                 MessageBox.Show("Please fill all required fields.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -91,49 +119,32 @@ namespace POS_project
 
             try
             {
-                if (_context.Products.Any(p => p.prod_id == add_product_id.Text.Trim()))
+                string productId = add_product_id.Text.Trim();
+                if (_context.Products.Any(p => p.prod_id == productId))
                 {
-                    MessageBox.Show("Product id: " + add_product_id.Text.Trim() + " already exists!", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Product id: " + productId + " already exists!", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                string productid = add_product_id.Text.Trim();
-                string relativePath = Path.Combine("Product_Directory", productid + ".jpg");
-                string fullimage_path = Path.Combine(baseDirectory, relativePath);
-
-                string directoryPath = Path.GetDirectoryName(fullimage_path);
-
-                if (!Directory.Exists(directoryPath))
+                // Barcode handling - generate and save the barcode image
+                string? barcodeFilePath = BarcodeUtility.GenerateAndSaveProductBarcode(productId, productId, BarcodeFormat.CODE_128);
+                if (barcodeFilePath == null)
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    MessageBox.Show("Failed to generate barcode image. Product not added.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return; // Aborting if barcode generation fails
                 }
 
-                try
-                {
-                    File.Copy(Import_pic.ImageLocation, fullimage_path, true);
-                }
-                catch (IOException ioEx)
-                {
-                    MessageBox.Show("Error copying image file: " + ioEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                catch (Exception fileEx)
-                {
-                    MessageBox.Show("An unexpected error occurred during image copy: " + fileEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                CategoryItem selectedCategory = Add_Category.SelectedItem as CategoryItem;
+                CategoryItem? selectedCategory = Add_Category.SelectedItem as CategoryItem;
 
                 Product newProduct = new Product
                 {
-                    prod_id = productid,
-                    prod_name = Product_Name.Text.Trim(), // Corrected: use Product_Name TextBox
+                    prod_id = productId,
+                    prod_name = Product_Name.Text.Trim(),
                     category = selectedCategory?.Name ?? string.Empty,
                     prod_price = price,
-                    stock = stock, // Store as int
-                    image_path = fullimage_path,
+                    stock = stock,
+                    image_path = string.Empty, // Provide a default value for the required property
+                    barcode = barcodeFilePath, // Save the path to the barcode image
                     status = Add_Product_Status.SelectedItem.ToString(),
                     date_insert = DateTime.Now
                 };
@@ -141,109 +152,131 @@ namespace POS_project
                 _context.Products.Add(newProduct);
                 _context.SaveChanges();
 
-                MessageBox.Show("Product added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Product added successfully with barcode!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearFields();
                 displayAllProducts();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error adding product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorMsg = ex.Message;
+                if (ex.InnerException != null)
+                    errorMsg += "\nInner: " + ex.InnerException.Message;
+                MessageBox.Show("Error adding product: " + errorMsg, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Error in Add_Product_Click: {errorMsg}\nStackTrace: {ex.StackTrace}");
             }
         }
 
         private void ClearFields()
         {
             add_product_id.Text = "";
-            Product_Name.Text = ""; // Corrected: Clear Product_Name TextBox
+            Product_Name.Text = "";
             Add_Category.SelectedIndex = -1;
             add_Product_Price.Text = "";
             Add_Product_stock.Text = "";
             Add_Product_Status.SelectedIndex = -1;
-            Import_pic.Image = null;
-            Import_pic.ImageLocation = null; // Also clear ImageLocation
-            getid = 0; // Reset getid when clearing fields
+            barcodePreview.Image = null; // Clear barcode preview
+            getid = 0;
         }
 
-        private void Import_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "Image Files(*.jpg; *.jpeg; *.png; *.gif; *.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
-                dialog.Title = "Select Product Image";
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    Import_pic.ImageLocation = dialog.FileName;
-                    Import_pic.Image = Image.FromFile(dialog.FileName); // Display the image immediately
-                }
-                else
-                {
-                    MessageBox.Show("No image selected.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error importing image: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        // REMOVED: private void Import_Click(object sender, EventArgs e) {...} // <--- REMOVED
 
         private void dataGridViewproducts_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex != -1) // Ensure a valid row is clicked
+            if (e.RowIndex != -1)
             {
+                // Handle View Barcode button click
+                if (e.ColumnIndex == dataGridViewproducts.Columns["ViewBarcode"]?.Index) // Added null check for column
+                {
+                    string? productId = dataGridViewproducts.Rows[e.RowIndex].Cells["prod_id"].Value?.ToString();
+                    string? barcodePath = dataGridViewproducts.Rows[e.RowIndex].Cells["barcode"].Value?.ToString(); // Get barcode path from DB
+
+                    if (!string.IsNullOrEmpty(barcodePath) && File.Exists(barcodePath))
+                    {
+                        ShowBarcodeForm(productId, barcodePath);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Barcode image not found for this product. It might not have been generated or the file is missing.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    return; // Exit if button was clicked
+                }
+
+                // Handle regular row selection
                 DataGridViewRow row = dataGridViewproducts.Rows[e.RowIndex];
 
-                // Retrieve values directly from DataGridView cells based on column names
-                // Ensure these column names match what you're binding in displayAllProducts
                 getid = Convert.ToInt32(row.Cells["id"].Value);
                 add_product_id.Text = row.Cells["prod_id"].Value?.ToString();
-                Product_Name.Text = row.Cells["prod_name"].Value?.ToString(); // Corrected: set Product_Name TextBox
+                Product_Name.Text = row.Cells["prod_name"].Value?.ToString();
                 Add_Category.Text = row.Cells["category"].Value?.ToString();
-                add_Product_Price.Text = row.Cells["prod_price"].Value?.ToString(); // Already formatted as "F2"
-                Add_Product_stock.Text = row.Cells["stock"].Value?.ToString(); // stock is int, retrieved as object, convert to string
+                add_Product_Price.Text = row.Cells["prod_price"].Value?.ToString();
+                Add_Product_stock.Text = row.Cells["stock"].Value?.ToString();
                 Add_Product_Status.Text = row.Cells["status"].Value?.ToString();
 
-                string imagePath = row.Cells["image_path"].Value?.ToString(); // Retrieve image_path
-
-                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                // Load barcode preview image if path exists
+                string? barcodePathFromDb = row.Cells["barcode"].Value?.ToString();
+                if (!string.IsNullOrEmpty(barcodePathFromDb) && File.Exists(barcodePathFromDb))
                 {
                     try
                     {
-                        Import_pic.Image = Image.FromFile(imagePath);
-                        Import_pic.ImageLocation = imagePath; // Set ImageLocation as well for update logic
-                    }
-                    catch (OutOfMemoryException)
-                    {
-                        MessageBox.Show("Invalid image format or image is corrupted.", "Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Import_pic.Image = null;
-                        Import_pic.ImageLocation = null;
+                        using (FileStream fs = new FileStream(barcodePathFromDb, FileMode.Open, FileAccess.Read))
+                        {
+                            barcodePreview.Image = Image.FromStream(fs);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error loading image: {ex.Message}", "Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Import_pic.Image = null;
-                        Import_pic.ImageLocation = null;
+                        MessageBox.Show($"Error loading barcode preview: {ex.Message}", "Barcode Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        barcodePreview.Image = null;
                     }
                 }
                 else
                 {
-                    Import_pic.Image = null;
-                    Import_pic.ImageLocation = null;
+                    barcodePreview.Image = null;
                 }
             }
         }
 
+        private void ShowBarcodeForm(string? productId, string barcodePath)
+        {
+            try
+            {
+                Form barcodeForm = new Form();
+                barcodeForm.Text = $"Barcode for Product: {productId ?? "N/A"}";
+                barcodeForm.Size = new Size(400, 300);
+                barcodeForm.StartPosition = FormStartPosition.CenterParent;
+                barcodeForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                barcodeForm.MaximizeBox = false;
+
+                PictureBox barcodePictureBox = new PictureBox();
+                barcodePictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                barcodePictureBox.Dock = DockStyle.Fill;
+
+                // Load barcode image from stream to prevent file locking
+                using (FileStream fs = new FileStream(barcodePath, FileMode.Open, FileAccess.Read))
+                {
+                    barcodePictureBox.Image = Image.FromStream(fs);
+                }
+
+                barcodeForm.Controls.Add(barcodePictureBox);
+                barcodeForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error displaying barcode: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Error in ShowBarcodeForm: {ex.Message}");
+            }
+        }
 
         private void Update_Product_Click(object sender, EventArgs e)
         {
-            if (getid == 0) // Check if a product is selected for update
+            if (getid == 0)
             {
                 MessageBox.Show("Please select a product to update.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            // Removed check for Import_pic.ImageLocation
             if (AreFieldsEmpty())
             {
                 MessageBox.Show("Please fill all required fields.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -261,76 +294,55 @@ namespace POS_project
                 return;
             }
 
-            if (MessageBox.Show("Are you sure you want to update Product id: " + getid + "?", "Update Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Are you sure you want to update Product id: " + add_product_id.Text + "?", "Update Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
-                    Product productToUpdate = _context.Products.FirstOrDefault(p => p.id == getid);
+                    Product? productToUpdate = _context.Products.FirstOrDefault(p => p.id == getid); // Added '?' for nullable
                     if (productToUpdate != null)
                     {
-                        // Check for duplicate product ID only if it's being changed
-                        if (productToUpdate.prod_id != add_product_id.Text.Trim() && _context.Products.Any(p => p.prod_id == add_product_id.Text.Trim()))
+                        string newProductId = add_product_id.Text.Trim();
+
+                        // Check for duplicate product ID only if it's being changed to a different ID
+                        if (productToUpdate.prod_id != newProductId && _context.Products.Any(p => p.prod_id == newProductId))
                         {
-                            MessageBox.Show("Product id already exists for another product.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Product ID already exists for another product. Please choose a unique ID.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
 
-                        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                        string productid = add_product_id.Text.Trim();
-                        string relativePath = Path.Combine("Product_Directory", productid + ".jpg");
-                        string fullimage_path = Path.Combine(baseDirectory, relativePath);
-
-                        string directoryPath = Path.GetDirectoryName(fullimage_path);
-
-                        if (!Directory.Exists(directoryPath))
+                        // Barcode handling for update (regenerate if product ID changes)
+                        string? newBarcodePath = productToUpdate.barcode;
+                        if (productToUpdate.prod_id != newProductId)
                         {
-                            Directory.CreateDirectory(directoryPath);
-                        }
-
-                        // Handle image update logic
-                        // Scenario 1: New image selected (ImageLocation is different from existing path, or existing path is null/empty)
-                        if (Import_pic.ImageLocation != null && Import_pic.ImageLocation != productToUpdate.image_path)
-                        {
-                            // Delete old image if it exists and is different
-                            if (!string.IsNullOrEmpty(productToUpdate.image_path) && File.Exists(productToUpdate.image_path))
+                            // Delete old barcode image if path exists and it's different
+                            if (!string.IsNullOrEmpty(productToUpdate.barcode) && File.Exists(productToUpdate.barcode))
                             {
-                                File.Delete(productToUpdate.image_path);
+                                try
+                                {
+                                    File.Delete(productToUpdate.barcode);
+                                }
+                                catch (Exception barcodeDelEx)
+                                {
+                                    MessageBox.Show($"Warning: Could not delete old barcode image file: {barcodeDelEx.Message}", "Barcode Deletion Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
                             }
-                            try
+                            newBarcodePath = BarcodeUtility.GenerateAndSaveProductBarcode(newProductId, newProductId, BarcodeFormat.CODE_128);
+                            if (newBarcodePath == null)
                             {
-                                File.Copy(Import_pic.ImageLocation, fullimage_path, true);
-                                productToUpdate.image_path = fullimage_path;
-                            }
-                            catch (IOException ioEx)
-                            {
-                                MessageBox.Show("Error copying image file: " + ioEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                            catch (Exception fileEx)
-                            {
-                                MessageBox.Show("An unexpected error occurred during image copy: " + fileEx.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Failed to regenerate barcode image for updated product. Update aborted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
                         }
-                        // Scenario 2: Image was cleared (Import_pic.Image is null, but there was an old path)
-                        else if (Import_pic.Image == null && !string.IsNullOrEmpty(productToUpdate.image_path))
-                        {
-                            if (File.Exists(productToUpdate.image_path))
-                            {
-                                File.Delete(productToUpdate.image_path);
-                            }
-                            productToUpdate.image_path = string.Empty; // Clear the path in DB
-                        }
-                        // Scenario 3: No new image selected, and old image not cleared (path remains the same)
-                        // Do nothing, path remains as is
 
-                        CategoryItem selectedCategory = Add_Category.SelectedItem as CategoryItem;
+                        CategoryItem? selectedCategory = Add_Category.SelectedItem as CategoryItem;
 
-                        productToUpdate.prod_id = productid;
-                        productToUpdate.prod_name = Product_Name.Text.Trim(); // Corrected: use Product_Name TextBox
+                        productToUpdate.prod_id = newProductId;
+                        productToUpdate.prod_name = Product_Name.Text.Trim();
                         productToUpdate.category = selectedCategory?.Name ?? string.Empty;
                         productToUpdate.prod_price = price;
                         productToUpdate.stock = stock;
+                        // REMOVED: productToUpdate.image_path = newImagePath; // <--- REMOVED
+                        productToUpdate.barcode = newBarcodePath; // Update with the new/existing path
                         productToUpdate.status = Add_Product_Status.SelectedItem.ToString();
                         // date_insert is typically not updated on product modification
 
@@ -349,6 +361,7 @@ namespace POS_project
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error updating product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine($"Error in Update_Product_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 }
             }
         }
@@ -360,8 +373,7 @@ namespace POS_project
 
         private void Remove_Product_Click(object sender, EventArgs e)
         {
-            // Use getid, which is set in CellClick
-            if (getid == 0) // Check if a product is actually selected
+            if (getid == 0)
             {
                 MessageBox.Show("Please select a product to delete.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -371,20 +383,21 @@ namespace POS_project
             {
                 try
                 {
-                    Product productToDelete = _context.Products.FirstOrDefault(p => p.id == getid);
+                    Product? productToDelete = _context.Products.FirstOrDefault(p => p.id == getid); // Added '?' for nullable
                     if (productToDelete != null)
                     {
-                        // Optionally delete the associated image file
-                        if (!string.IsNullOrEmpty(productToDelete.image_path) && File.Exists(productToDelete.image_path))
+                        // REMOVED: Delete associated image file // <--- REMOVED all image deletion logic
+
+                        // Delete associated barcode file
+                        if (!string.IsNullOrEmpty(productToDelete.barcode) && File.Exists(productToDelete.barcode))
                         {
                             try
                             {
-                                File.Delete(productToDelete.image_path);
+                                File.Delete(productToDelete.barcode);
                             }
-                            catch (Exception fileEx)
+                            catch (Exception barcodeDelEx)
                             {
-                                // Log or show a warning, but don't prevent product deletion if image deletion fails
-                                MessageBox.Show($"Warning: Could not delete image file: {fileEx.Message}", "File Deletion Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                MessageBox.Show($"Warning: Could not delete barcode image file: {barcodeDelEx.Message}", "Barcode Image Deletion Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
 
@@ -404,7 +417,85 @@ namespace POS_project
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error deleting product: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine($"Error in Remove_Product_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 }
+            }
+        }
+
+        private void GenerateBarcode_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(add_product_id.Text.Trim()))
+            {
+                MessageBox.Show("Please enter a Product ID first to generate a barcode preview.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                string productId = add_product_id.Text.Trim();
+
+                // Generate barcode and display preview (does not save to file here)
+                Bitmap? barcodeBitmap = BarcodeUtility.GenerateCode128Barcode(productId);
+                if (barcodeBitmap != null)
+                {
+                    barcodePreview.Image = barcodeBitmap;
+                    MessageBox.Show($"Barcode preview generated successfully for Product ID: {productId}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to generate barcode preview. Please check the Product ID.", "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error generating barcode preview: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Error in GenerateBarcode_Click: {ex.Message}");
+            }
+        }
+
+        private void GenerateAllBarcodes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var productsWithoutBarcodes = _context.Products.Where(p => string.IsNullOrEmpty(p.barcode)).ToList();
+
+                if (!productsWithoutBarcodes.Any())
+                {
+                    MessageBox.Show("All products already have barcodes!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                int generatedCount = 0;
+                foreach (var product in productsWithoutBarcodes)
+                {
+                    try
+                    {
+                        string? barcodePath = BarcodeUtility.GenerateAndSaveProductBarcode(product.prod_id, product.prod_id, BarcodeFormat.CODE_128);
+                        if (barcodePath != null)
+                        {
+                            product.barcode = barcodePath;
+                            generatedCount++;
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Failed to generate barcode for product {product.prod_id}. Skipping this product.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error generating barcode for product {product.prod_id}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+
+                _context.SaveChanges();
+                displayAllProducts();
+
+                MessageBox.Show($"Successfully generated barcodes for {generatedCount} products!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error generating barcodes for all products: " + ex.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Error in GenerateAllBarcodes_Click: {ex.Message}");
             }
         }
     }

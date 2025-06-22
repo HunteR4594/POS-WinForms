@@ -308,31 +308,6 @@ namespace POS_project
             MessageBox.Show("Customer button clicked!");
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // Add your logic for button2 click event here.
-            MessageBox.Show("Add Users button clicked!");
-
-            // IMPORTANT: Replace 'pnlContentArea' with the actual name of your main content panel
-            panel3.Controls.Clear(); // Clear any existing control in the main content panel
-            POS_project.AddminAddEmp myControl = new POS_project.AddminAddEmp();
-            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
-            panel3.Controls.Add(myControl);
-
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // Add your logic for button1 click event here.
-            MessageBox.Show("Dashboard button clicked!");
-        }
-
-        private void dashboard1_Load(object sender, EventArgs e)
-        {
-            // Add your logic for the Dashboard load event here.
-            //MessageBox.Show("Dashboard loaded!");
-        }
         private Label label3;
         private CashierOrder cashierOrder1;
         private Button btnCategory;

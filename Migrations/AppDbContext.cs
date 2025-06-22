@@ -12,6 +12,7 @@ namespace POS_project.Migrations
         public DbSet<Category> Categories { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleItem> SaleItems { get; set; } // NEW: DbSet for SaleItems
+        public DbSet<Customer> Customers { get; set; } // NEW: DbSet for Customers
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,7 +28,15 @@ namespace POS_project.Migrations
                 .HasColumnType("decimal(18,2)"); // Adjust precision and scale as needed for your database
 
             modelBuilder.Entity<Sale>()
-                .Property(s => s.TotalAmount)
+                .Property(s => s.total_price) // Renamed from TotalAmount
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.amount) // New property
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.change) // New property
                 .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<SaleItem>()
@@ -43,6 +52,19 @@ namespace POS_project.Migrations
                 .HasOne(si => si.Sale)        // SaleItem has one Sale
                 .WithMany(s => s.SaleItems)   // Sale has many SaleItems
                 .HasForeignKey(si => si.SaleId); // Foreign key in SaleItem table
+
+            // Configure decimal precision for Customer total_price, amount, and change
+            modelBuilder.Entity<Customer>()
+                .Property(c => c.total_price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Customer>()
+                .Property(c => c.amount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Customer>()
+                .Property(c => c.change)
+                .HasColumnType("decimal(18,2)");
         }
     }
 
@@ -66,11 +88,13 @@ namespace POS_project.Migrations
         public required string prod_id { get; set; }
         public required string prod_name { get; set; }
         public required string category { get; set; }
-        public required decimal prod_price { get; set; } // Changed to decimal as per your AppDbContext.cs
-        public required int stock { get; set; }         // Changed to int as per your AppDbContext.cs
+        public required decimal prod_price { get; set; }
+        public required int stock { get; set; }
         public required string image_path { get; set; }
         public required string status { get; set; }
         public required DateTime date_insert { get; set; }
+        public string? barcode { get; set; } // Added this property
+
     }
 
     public class Category
@@ -79,31 +103,46 @@ namespace POS_project.Migrations
         public required string CategoryName { get; set; }
     }
 
-    public class Sale
+    public class Sale // Maps to CustomerOrderEntry
     {
         public int id { get; set; }
-        public DateTime SaleDate { get; set; }
-        public decimal TotalAmount { get; set; } // This will be the grand total of the sale
+        public required string customer_id { get; set; } // Added based on CustomerOrderEntry
+        public decimal total_price { get; set; } // Renamed from TotalAmount, maps to total_price in CustomerOrderEntry
+        public decimal amount { get; set; } // Added based on CustomerOrderEntry
+        public decimal change { get; set; } // Added based on CustomerOrderEntry
+        public DateTime order_date { get; set; } // Renamed from SaleDate, maps to order_date in CustomerOrderEntry
 
         // Navigation property for SaleItems related to this Sale
         public ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
     }
 
-    // NEW: SaleItem entity to record individual products within a sale
-    public class SaleItem
+    public class SaleItem // Maps to orders
     {
-        public int Id { get; set; } // Primary key for SaleItem
+        public int id { get; set; } // Renamed from Id, maps to id in orders
         public int SaleId { get; set; } // Foreign key to the Sale table
 
-        public required string ProdId { get; set; } // Product ID (e.g., from Product.prod_id)
-        public required string ProdName { get; set; } // Product Name
-        public int Quantity { get; set; }
-        public decimal OrigPrice { get; set; } // Original unit price of the product
-        public decimal TotalPrice { get; set; } // Subtotal for this line item (after discount, before VAT for consistency with receipt)
-                                                // Note: Your DataTable has 'Final Subtotal' which includes VAT.
-                                                // We will store the final subtotal per item here.
+        public required string ProdId { get; set; } // Maps to prod_id in orders
+        public required string ProdName { get; set; } // Maps to prod_name in orders
+        public required string customer_id { get; set; } // Added based on orders
+        public required string category { get; set; } // Added based on orders
+        public int Quantity { get; set; } // Maps to qty in orders
+        public decimal OrigPrice { get; set; } // Maps to orig_price in orders
+        public decimal TotalPrice { get; set; } // Maps to total_price in orders
+        public DateTime order_date { get; set; } // Added based on orders
 
         // Navigation property back to the Sale
         public Sale Sale { get; set; } // Required for EF Core relationship
+    }
+
+    // Customer entity (already added in previous turn)
+    public class Customer
+    {
+        public int id { get; set; }
+        public required string customer_id { get; set; }
+        public required string prod_id { get; set; }
+        public required decimal total_price { get; set; }
+        public required decimal amount { get; set; }
+        public required decimal change { get; set; }
+        public required DateTime order_date { get; set; }
     }
 }

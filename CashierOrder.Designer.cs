@@ -33,7 +33,7 @@ namespace POS_project
             components = new System.ComponentModel.Container();
             panel1 = new Panel();
             Cashier_SearchOr = new Button();
-            textBox1 = new TextBox();
+            searchBox = new TextBox();
             Cashier_ScanOr = new Button();
             DiscountValue = new Label();
             Discount_CashierOr = new Button();
@@ -81,7 +81,7 @@ namespace POS_project
             // 
             panel1.BackColor = Color.White;
             panel1.Controls.Add(Cashier_SearchOr);
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(searchBox);
             panel1.Controls.Add(Cashier_ScanOr);
             panel1.Controls.Add(DiscountValue);
             panel1.Controls.Add(Discount_CashierOr);
@@ -120,13 +120,13 @@ namespace POS_project
             Cashier_SearchOr.Text = "Search";
             Cashier_SearchOr.UseVisualStyleBackColor = false;
             // 
-            // textBox1
+            // searchBox
             // 
-            textBox1.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBox1.Location = new Point(20, 236);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(210, 27);
-            textBox1.TabIndex = 18;
+            searchBox.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            searchBox.Location = new Point(20, 236);
+            searchBox.Name = "searchBox";
+            searchBox.Size = new Size(210, 27);
+            searchBox.TabIndex = 18;
             // 
             // Cashier_ScanOr
             // 
@@ -244,9 +244,6 @@ namespace POS_project
             Cashier_ProductidOr.Name = "Cashier_ProductidOr";
             Cashier_ProductidOr.Size = new Size(160, 27);
             Cashier_ProductidOr.TabIndex = 8;
-
-            // Update the event handler assignment to use the renamed method
-            //Cashier_ProductidOr.SelectedValueChanged += Cashier_ProductidOr_SelectedIndexChanged_1;
             // 
             // Cashier_CategoryOr
             // 
@@ -574,7 +571,7 @@ namespace POS_project
         // NEW: VAT Labels
         private Label vatLabel; // ADD THIS LINE
         private Label vatValue; // ADD THIS LINE
-        private TextBox textBox1;
+        private TextBox searchBox;
         private Button Cashier_ScanOr;
         private Button Cashier_SearchOr;
     }

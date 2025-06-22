@@ -36,6 +36,9 @@ namespace POS_project
             displayAllAvailableProducts(); // Load available products into dataGridView1 using EF Core
             displayCategories(); // Load categories into ComboBox using EF Core
             UpdateTotals(); // Initialize all total labels to 0.00
+
+            // *** IMPORTANT: Attach the event handler for the search button here ***
+            Cashier_SearchOr.Click += Cashier_SearchOr_Click;
         }
 
         // --- Method: Initialize Order List Table ---
@@ -112,20 +115,26 @@ namespace POS_project
         // --- Cashier_CategoryOr_SelectedIndexChanged to filter DataGridView and populate ProductID ComboBox ---
         private void Cashier_CategoryOr_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Only proceed if the change was not programmatic to avoid infinite loops or unintended resets
+            if (isProgrammaticUpdate)
+            {
+                return;
+            }
+
             string selectedCategory = Cashier_CategoryOr.SelectedItem?.ToString();
 
             Cashier_ProductidOr.Items.Clear();
             ClearProductInputs();
 
-
             if (selectedCategory == "All")
             {
-                displayAllAvailableProducts();
+                displayAllAvailableProducts(); // Reload all available products
             }
             else if (selectedCategory != null)
             {
                 try
                 {
+                    // Filter products by the selected category and status
                     var filteredProducts = _context.Products
                                                    .Where(p => p.category == selectedCategory && p.status == "Available")
                                                    .OrderBy(p => p.prod_name)
@@ -133,6 +142,7 @@ namespace POS_project
                                                    .ToList();
                     dataGridView1.DataSource = filteredProducts;
 
+                    // Populate the Product ID ComboBox with IDs from the filtered products
                     foreach (Product p in filteredProducts)
                     {
                         Cashier_ProductidOr.Items.Add(p.prod_id);
@@ -155,18 +165,17 @@ namespace POS_project
 
                 if (selectedProduct != null)
                 {
-                    isProgrammaticUpdate = true;
+                    isProgrammaticUpdate = true; // Set flag before programmatic changes
                     Cashier_CategoryOr.SelectedItem = selectedProduct.category;
                     Cashier_ProductidOr.SelectedItem = selectedProduct.prod_id;
-                    isProgrammaticUpdate = false;
+                    isProgrammaticUpdate = false; // Reset flag after programmatic changes
+
                     Cashier_Product_NameOr.Text = selectedProduct.prod_name;
                     Cashier_PriceOr.Text = selectedProduct.prod_price.ToString("F2");
                     Cashier_QuantityOr.Value = 1;
                 }
             }
         }
-      
-
 
         // --- Add_CashierOr_Click (Corrected Stock Logic and DataTable Population) ---
         private void Add_CashierOr_Click(object sender, EventArgs e)
@@ -431,7 +440,7 @@ namespace POS_project
                         OrigPrice = Convert.ToDecimal(row["Original Unit Price"]),
                         TotalPrice = Convert.ToDecimal(row["Final Subtotal"]),
                         customer_id = "DefaultCustomer",
-                        category = "DefaultCategory",
+                        category = "DefaultCategory", // You might want to get the actual category from the product if available in orderListTable
                         order_date = DateTime.Now
                     };
                     newSale.SaleItems.Add(saleItem);
@@ -618,6 +627,42 @@ namespace POS_project
                                 MessageBoxIcon.Error);
                 isProgrammaticUpdate = false; // Ensure flag is reset even if an error occurs.
                 return false; // Indicate failure to find product due to error
+            }
+        }
+
+        // --- NEW: Method to filter dataGridView1 by product name using the search box ---
+        private void Cashier_SearchOr_Click(object sender, EventArgs e)
+        {
+            string searchText = searchBox.Text.Trim(); // Get search text from textBox1
+
+            if (string.IsNullOrEmpty(searchText))
+            {
+                displayAllAvailableProducts(); // If search box is empty, show all products
+                return;
+            }
+
+            try
+            {
+                // Filter products by name (case-insensitive contains) and status "Available"
+                // REMOVED StringComparison.OrdinalIgnoreCase to allow EF Core translation.
+                // Case-insensitivity will now depend on the database's collation settings.
+                var filteredProducts = _context.Products
+                                               .Where(p => p.status == "Available" &&
+                                                           p.prod_name.Contains(searchText)) // Removed StringComparison.OrdinalIgnoreCase
+                                               .OrderBy(p => p.prod_name)
+                                               .AsNoTracking()
+                                               .ToList();
+
+                dataGridView1.DataSource = filteredProducts; // Update dataGridView1 with filtered results
+
+                if (filteredProducts.Count == 0)
+                {
+                    MessageBox.Show("No products found matching your search criteria.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error searching products: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
