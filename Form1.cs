@@ -1,5 +1,4 @@
-using System.Windows.Forms;
-using System.Linq; // Add this for LINQ queries
+using POS_project.Migrations;
 
 namespace POS_project
 {
@@ -31,9 +30,9 @@ namespace POS_project
                 try
                 {
                     // Check for user existence, password, and active status using EF Core
-                    var user = _context.Users.FirstOrDefault(u => u.Username == username_login.Text && u.Status == "Active");
+                    var user = _context.Users.FirstOrDefault(u => u.Username == username_login.Text && u.Password == passwordlogin.Text && u.Status == "Active");
 
-                    if (user != null && PasswordHelper.VerifyPassword(passwordlogin.Text, user.Password))
+                    if (user != null)
                     {
                         MessageBox.Show("Login Successful!", "Information Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -93,11 +92,6 @@ namespace POS_project
         {
             // Toggle password visibility
             passwordlogin.PasswordChar = showpassword.Checked ? '\0' : '*';
-        }
-
-        private void passwordlogin_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

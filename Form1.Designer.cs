@@ -61,7 +61,6 @@
             passwordlogin.PasswordChar = '*';
             passwordlogin.Size = new Size(385, 27);
             passwordlogin.TabIndex = 2;
-            passwordlogin.TextChanged += passwordlogin_TextChanged;
             // 
             // Login
             // 

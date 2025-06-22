@@ -1,4 +1,6 @@
-﻿namespace POS_project
+﻿using POS_project.Migrations;
+
+namespace POS_project
 {
     partial class CashierOrder
     {
@@ -201,6 +203,7 @@
             Cashier_ProductidOr.Name = "Cashier_ProductidOr";
             Cashier_ProductidOr.Size = new Size(160, 27);
             Cashier_ProductidOr.TabIndex = 8;
+            Cashier_ProductidOr.SelectedValueChanged += Cashier_ProductidOr_SelectedIndexChanged;
             // 
             // Cashier_CategoryOr
             // 

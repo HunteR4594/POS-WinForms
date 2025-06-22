@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using POS_project.Migrations;
 
 namespace POS_project
 {

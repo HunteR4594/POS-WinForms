@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows.Forms;
+﻿using POS_project.Migrations;
 
 namespace POS_project
 {

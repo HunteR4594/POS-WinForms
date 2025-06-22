@@ -31,4 +31,3 @@ CREATE TABLE Sales (
     SaleDate DATETIME NOT NULL,
     TotalAmount DECIMAL(10, 2) NOT NULL
 );
-

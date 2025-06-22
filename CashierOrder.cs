@@ -3,6 +3,8 @@ using System.Linq; // Required for LINQ queries
 using System.Windows.Forms; // Required for WinForms components (MessageBox, UserControl)
 using System; // Required for Convert, DateTime etc.
 using Microsoft.EntityFrameworkCore; // Required for EF Core operations
+using System.Collections.Generic;
+using POS_project.Migrations; // Required for List<T>
 
 namespace POS_project
 {
@@ -22,6 +24,9 @@ namespace POS_project
         private double netSalesBeforeVAT = 0.0;           // (grossSubtotalBeforeDiscount - totalLineDiscountAmount)
         private double totalVATAmount = 0.0;              // 12% of netSalesBeforeVAT
         private const double VAT_RATE = 0.12; // 12% VAT rate
+
+        // Flag to prevent re-triggering Cashier_CategoryOr_SelectedIndexChanged during programmatic updates
+        private bool isProgrammaticUpdate = false;
 
         public CashierOrder()
         {
@@ -82,7 +87,7 @@ namespace POS_project
             }
         }
 
-        // --- MODIFIED: displayCategories() to use EF Core and Category entity ---
+        // --- MODIFIED: displayCategories() to use EF Core and Category entity and add "All" ---
         public void displayCategories()
         {
             try
@@ -96,10 +101,12 @@ namespace POS_project
                                          .ToList(); // Executes the query and returns a List<string>
 
                 Cashier_CategoryOr.Items.Clear(); // Clear existing items in the ComboBox
+                Cashier_CategoryOr.Items.Add("All"); // Add "All" as the first option
                 foreach (string category in categories)
                 {
                     Cashier_CategoryOr.Items.Add(category); // Add each category name to the ComboBox
                 }
+                Cashier_CategoryOr.SelectedIndex = 0; // Select "All" by default
             }
             catch (Exception ex)
             {
@@ -107,36 +114,45 @@ namespace POS_project
             }
         }
 
-        // --- MODIFIED: Cashier_CategoryOr_SelectedIndexChanged to use EF Core and Product entity ---
+        // --- MODIFIED: Cashier_CategoryOr_SelectedIndexChanged to filter DataGridView and populate ProductID ComboBox ---
         private void Cashier_CategoryOr_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedCategory = Cashier_CategoryOr.SelectedItem?.ToString();
 
-            if (selectedCategory != null)
+            // Clear product ID combo box first
+            Cashier_ProductidOr.Items.Clear();
+            // Clear other fields to prevent stale data if user changes category
+            ClearProductInputs();
+
+
+            if (selectedCategory == "All") // If "All" is selected, show all available products
+            {
+                displayAllAvailableProducts(); // This will load all available products into dataGridView1
+            }
+            else if (selectedCategory != null) // If a specific category is selected
             {
                 try
                 {
-                    // Query product IDs for the selected category that are 'Available' using EF Core and LINQ
-                    var productIds = _context.Products
-                                             .Where(p => p.category == selectedCategory && p.status == "Available")
-                                             .Select(p => p.prod_id) // Selects just the prod_id string
-                                             .OrderBy(p => p)
-                                             .AsNoTracking() // Recommended for read-only data
-                                             .ToList(); // Executes the query and returns a List<string>
+                    // Filter dataGridView1 based on selected category
+                    var filteredProducts = _context.Products
+                                                   .Where(p => p.category == selectedCategory && p.status == "Available")
+                                                   .OrderBy(p => p.prod_name) // Order by product name for display
+                                                   .AsNoTracking()
+                                                   .ToList();
+                    dataGridView1.DataSource = filteredProducts;
 
-                    Cashier_ProductidOr.Items.Clear(); // Using Cashier_ProductidOr (lowercase 'id') as per Designer.cs
-                    ClearProductInputs(); // Clear other related input fields
-
-                    foreach (string productId in productIds)
+                    // Populate Cashier_ProductidOr with product IDs of the filtered products
+                    foreach (Product p in filteredProducts) // Use Product entity directly
                     {
-                        Cashier_ProductidOr.Items.Add(productId); // Add each product ID to the ComboBox
+                        Cashier_ProductidOr.Items.Add(p.prod_id);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error loading products for category: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Error filtering products or loading product IDs: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            // No else block needed for null selectedCategory anymore, as "All" will always be selected by default
         }
 
         // --- MODIFIED: dataGridView1_CellClick to correctly update Category and Product ID ---
@@ -150,20 +166,82 @@ namespace POS_project
 
                 if (selectedProduct != null)
                 {
-                    // First, set the category. This will trigger Cashier_CategoryOr_SelectedIndexChanged
-                    // which in turn populates Cashier_ProductidOr with products from that category.
+                    // Temporarily set flag to indicate programmatic update
+                    // This flag is crucial to prevent re-triggering the full filtering logic
+                    // when Cashier_CategoryOr.SelectedItem is set programmatically.
+                    isProgrammaticUpdate = true;
+
+                    // 1. Set the category ComboBox. This will trigger Cashier_CategoryOr_SelectedIndexChanged.
+                    //    Cashier_CategoryOr_SelectedIndexChanged will now filter dataGridView1 and populate Cashier_ProductidOr.
                     Cashier_CategoryOr.SelectedItem = selectedProduct.category;
 
-                    // Now that Cashier_ProductidOr is populated for the correct category,
-                    // we can set the specific product ID.
+                    // 2. Now that Cashier_ProductidOr is populated for the correct category,
+                    //    we can safely set the specific product ID from the clicked row.
                     Cashier_ProductidOr.SelectedItem = selectedProduct.prod_id;
 
+                    // Reset the flag immediately after programmatic updates are complete
+                    isProgrammaticUpdate = false;
+
+                    // These lines will now consistently set the product name, price, and quantity
+                    // without being prematurely cleared by Cashier_CategoryOr_SelectedIndexChanged.
                     Cashier_Product_NameOr.Text = selectedProduct.prod_name;
                     Cashier_PriceOr.Text = selectedProduct.prod_price.ToString("F2"); // Use prod_price (decimal)
                     Cashier_QuantityOr.Value = 1; // Reset quantity to 1 for new selection
                 }
             }
         }
+
+        // --- NEW: Cashier_ProductidOr_SelectedIndexChanged event handler ---
+        private void Cashier_ProductidOr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Only proceed if the update is NOT programmatic (i.e., user-initiated)
+            // or if it IS programmatic but the product ID is valid.
+            // This prevents clearing fields when Cashier_CategoryOr_SelectedIndexChanged populates the list.
+
+            string selectedProductId = Cashier_ProductidOr.SelectedItem?.ToString();
+
+            // It's important to only clear/update if a valid product ID is selected by the user.
+            // If the item is deselected or null due to programmatic changes (e.g. category change clearing the list),
+            // we don't want to clear the inputs here, as dataGridView1_CellClick handles it.
+            if (!isProgrammaticUpdate && selectedProductId != null)
+            {
+                try
+                {
+                    // Find the product in the database based on the selected Product ID
+                    Product selectedProduct = _context.Products
+                                                      .AsNoTracking()
+                                                      .FirstOrDefault(p => p.prod_id == selectedProductId);
+
+                    if (selectedProduct != null)
+                    {
+                        // Update the product name and price display fields
+                        Cashier_Product_NameOr.Text = selectedProduct.prod_name;
+                        Cashier_PriceOr.Text = selectedProduct.prod_price.ToString("F2");
+                        Cashier_QuantityOr.Value = 1; // Reset quantity to 1 for new selection
+                    }
+                    else
+                    {
+                        // Product not found (shouldn't happen if database is consistent)
+                        ClearProductInputs(); // Clear inputs if product not found
+                        MessageBox.Show("Selected product ID not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ClearProductInputs(); // Clear inputs on error
+                    MessageBox.Show("Error loading product details: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else if (!isProgrammaticUpdate && selectedProductId == null)
+            {
+                // This condition handles a user explicitly selecting a blank item (if available)
+                // or if the list becomes empty due to a user-driven category change.
+                ClearProductInputs();
+            }
+            // If isProgrammaticUpdate is true, this event was triggered by dataGridView1_CellClick.
+            // In that case, dataGridView1_CellClick is already responsible for setting Cashier_Product_NameOr and Cashier_PriceOr.
+        }
+
 
         // --- MODIFIED: Add_CashierOr_Click (Corrected Stock Logic and DataTable Population) ---
         private void Add_CashierOr_Click(object sender, EventArgs e)
@@ -186,7 +264,6 @@ namespace POS_project
             double originalPricePerUnitVATInclusive = Convert.ToDouble(Cashier_PriceOr.Text);
 
             // Fetch product from DB to check current stock using EF Core
-            // Use .Find() if searching by primary key (id), or FirstOrDefault() for other properties
             Product productInDb = _context.Products.FirstOrDefault(p => p.prod_id == prodId);
 
             if (productInDb == null)
@@ -275,10 +352,6 @@ namespace POS_project
                 productInDb.stock -= quantity; // Deduct stock from the tracked entity
                 _context.SaveChanges(); // Save changes to the database
                 displayAllAvailableProducts(); // Refresh the display of available products
-                if (productInDb.stock < productInDb.ReorderLevel)
-                {
-                    MessageBox.Show($"Warning: Stock for {productInDb.prod_name} is low! Current stock: {productInDb.stock}, Reorder level: {productInDb.ReorderLevel}", "Low Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
             }
             catch (Exception ex)
             {
@@ -332,9 +405,7 @@ namespace POS_project
             Cashier_ProductidOr.SelectedIndex = -1; // Deselect
             Cashier_Product_NameOr.Text = "";
             Cashier_PriceOr.Text = "0.00"; // Reset price display
-            Cashier_QuantityOr.Value = 0; // Reset quantity
-            currentDiscountType = string.Empty; // Reset active discount type   
-            currentDiscountValue = 0.0; // Reset active discount value
+            Cashier_QuantityOr.Value = 1; // Reset quantity
         }
 
         private void Cashier_QuantityOr_ValueChanged(object sender, EventArgs e)
@@ -442,7 +513,7 @@ namespace POS_project
             MessageBox.Show("Order list cleared and stock returned.", "Cleared", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // --- MODIFIED: Cashier_Pay_OrdersOr_Click (Save CustomerOrderEntry records) ---
+        // --- MODIFIED: Cashier_Pay_OrdersOr_Click (NEW Sale and SaleItem Recording Logic) ---
         private void Cashier_Pay_OrdersOr_Click(object sender, EventArgs e)
         {
             if (orderListTable.Rows.Count == 0)
@@ -450,10 +521,6 @@ namespace POS_project
                 MessageBox.Show("No items in the order to pay for.", "Empty Order", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            // Assign a default customer ID since no input field is available
-            // If you wish to make this dynamic or allow user input, you'll need to add a TextBox for customer ID in your designer.
-            string customerId = "Walk-in Customer"; 
 
             if (string.IsNullOrEmpty(Cashier_AmountOr.Text))
             {
@@ -485,45 +552,46 @@ namespace POS_project
             Cashier_ChangeOr.Text = change.ToString("C2");
             MessageBox.Show($"Payment successful! Change: {change.ToString("C2")}", "Payment Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // --- Save Sale record and CustomerOrderEntry records to database ---
+            // --- NEW: Logic to Save Sale and SaleItems to Database ---
             try
             {
-                // 1. Save the overall Sale record
+                // Create a new Sale record
                 Sale newSale = new Sale
                 {
                     SaleDate = DateTime.Now,
                     TotalAmount = (decimal)totalDue // Use totalDue (Final Grand Total) for the sale record
+                    // If you had a UserId, CashierId, etc., you'd add them here
+                    // e.g., UserId = GetCurrentUserId();
                 };
-                _context.Sales.Add(newSale);
-                // _context.SaveChanges(); // Will save all pending changes together after adding CustomerOrderEntries
+                _context.Sales.Add(newSale); // Add the Sale to the context
 
-                // 2. Save individual CustomerOrderEntry records for each item in the orderListTable
+                // Create SaleItem records for each product in the orderListTable
                 foreach (DataRow row in orderListTable.Rows)
                 {
-                    string prodId = row["Product ID"].ToString();
-                    double itemFinalSubtotal = Convert.ToDouble(row["Final Subtotal"]);
-                    int quantity = Convert.ToInt32(row["Quantity"]); // Get quantity
-
-                    // Corrected to use the appropriate DbSet<CustomerOrderEntry> instead of 'object'
-                    CustomerOrderEntry newCustomerOrderEntry = new CustomerOrderEntry
+                    // Ensure you are using the correct column names from your orderListTable
+                    SaleItem saleItem = new SaleItem
                     {
-                        customer_id = customerId, // Will be "Walk-in Customer" or a value from UI if added
-                        prod_id = prodId,
-                        total_price = (decimal)itemFinalSubtotal, // This is the final subtotal for THIS product line item
-                        amount = (decimal)amountReceived, // The total amount received for the whole transaction
-                        change = (decimal)change,         // The total change for the whole transaction
-                        order_date = DateTime.Now
+                        // SaleId will be automatically linked by EF Core due to navigation property configuration
+                        ProdId = row["Product ID"].ToString(),
+                        ProdName = row["Product Name"].ToString(),
+                        Quantity = Convert.ToInt32(row["Quantity"]),
+                        OrigPrice = Convert.ToDecimal(row["Original Unit Price"]), // Original unit price
+                        TotalPrice = Convert.ToDecimal(row["Final Subtotal"]) // Final subtotal for this item line (after discount, VAT-inclusive)
                     };
-                    _context.Set<CustomerOrderEntry>().Add(newCustomerOrderEntry);
+                    // Add SaleItem to the Sale's collection; EF Core will handle the foreign key relationship
+                    newSale.SaleItems.Add(saleItem);
                 }
 
-                _context.SaveChanges(); // Save all changes (Sale and CustomerOrderEntries) to the database
-                MessageBox.Show("Sale and Customer Order Entries recorded successfully!", "Transaction Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _context.SaveChanges(); // Save all changes (Sale and SaleItems) to the database
+
+                MessageBox.Show("Sale and Sale Items recorded successfully!", "Sale Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error saving transaction records: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error saving sale record and items: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Important: Consider rollback strategies if this fails partially.
             }
+            // --- END NEW Logic ---
 
             // Offer receipt printing and then clear order
             DialogResult result = MessageBox.Show("Payment successful! Do you want to print a receipt?", "Print Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -544,10 +612,6 @@ namespace POS_project
             }
 
             string receiptContent = "--- Receipt ---\n";
-            // Add Customer ID to receipt (now using the default "Walk-in Customer")
-            string customerId = "Walk-in Customer"; // Or get from a UI element if you add one later
-            receiptContent += $"Customer ID: {customerId}\n";
-            receiptContent += "-------------------------------------------------------------------------------\n";
             // Item line headers (using tabs for simple alignment for items)
             receiptContent += "ProdID\tName\tQty\tOrig Price\tFinal Price\n";
             receiptContent += "-------------------------------------------------------------------------------\n";
@@ -589,7 +653,7 @@ namespace POS_project
             MessageBox.Show(receiptContent, "Receipt", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // --- MODIFIED: Discount_CashierOr_Click (Re-applies discount to all items on click) ---
+        // --- MODIFIED: Discount_CashierOr_Click (Removed re-calculation loop) ---
         private void Discount_CashierOr_Click(object sender, EventArgs e)
         {
             using (DiscountForm discountForm = new DiscountForm())
@@ -599,7 +663,7 @@ namespace POS_project
                 {
                     currentDiscountType = discountForm.SelectedDiscountType;
                     currentDiscountValue = discountForm.DiscountValue;
-                    isDiscountActive = true;
+                    isDiscountActive = true; // Set flag that a discount is ready to be applied to the next item
 
                     if (currentDiscountType == "Cash")
                     {
@@ -612,59 +676,8 @@ namespace POS_project
 
                     MessageBox.Show($"Discount set: {currentDiscountType} - {currentDiscountValue}", "Discount Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Re-calculate all items in the order list with the new discount
-                    // This creates a copy, clears the original, re-adds, and updates totals
-                    DataTable tempOrderList = orderListTable.Copy();
-                    orderListTable.Clear(); // Clear the current order list
-
-                    foreach (DataRow oldRow in tempOrderList.Rows)
-                    {
-                        string prodId = oldRow["Product ID"].ToString();
-                        string prodName = oldRow["Product Name"].ToString();
-                        int quantity = Convert.ToInt32(oldRow["Quantity"]);
-                        double originalPricePerUnit = Convert.ToDouble(oldRow["Original Unit Price"]); // Get original price from old row
-
-                        double originalSubtotal = originalPricePerUnit * quantity;
-                        double lineDiscountAmount = 0.0;
-                        double finalPricePerUnit = originalPricePerUnit; // Default to original
-                        double finalSubtotal = originalSubtotal;
-
-                        // Apply the NEW current discount to this item
-                        if (currentDiscountType == "Cash")
-                        {
-                            lineDiscountAmount = quantity * currentDiscountValue;
-                            if (lineDiscountAmount > originalSubtotal)
-                            {
-                                lineDiscountAmount = originalSubtotal; // Discount cannot exceed item's original subtotal
-                            }
-                            finalSubtotal = originalSubtotal - lineDiscountAmount;
-                            finalPricePerUnit = originalPricePerUnit - currentDiscountValue;
-                            if (finalPricePerUnit < 0) finalPricePerUnit = 0;
-                            if (finalSubtotal < 0) finalSubtotal = 0;
-                        }
-                        else if (currentDiscountType == "Percent")
-                        {
-                            double percentFactor = currentDiscountValue / 100.0;
-                            lineDiscountAmount = originalSubtotal * percentFactor;
-                            finalSubtotal = originalSubtotal - lineDiscountAmount;
-                            finalPricePerUnit = originalPricePerUnit * (1 - percentFactor);
-                            if (finalPricePerUnit < 0) finalPricePerUnit = 0;
-                            if (finalSubtotal < 0) finalSubtotal = 0;
-                        }
-
-                        // Add back to the main orderListTable with updated calculated values
-                        orderListTable.Rows.Add(
-                            prodId,
-                            prodName,
-                            quantity,
-                            originalPricePerUnit,       // "Original Unit Price"
-                            finalPricePerUnit,          // "Unit Price After Discount"
-                            originalSubtotal,           // "Original Subtotal"
-                            lineDiscountAmount,         // "Line Discount Amount"
-                            finalSubtotal               // "Final Subtotal"
-                        );
-                    }
-                    UpdateTotals(); // Recalculate and update all summary totals based on the re-calculated DataTable
+                    // IMPORTANT: Removed the loop that re-calculated discounts for existing items.
+                    // The discount will now only be applied to the next item added via Add_CashierOr_Click.
                 }
                 else
                 {
@@ -676,86 +689,6 @@ namespace POS_project
                     MessageBox.Show("Discount application cancelled.", "Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-        }
-
-        public void AddProductByBarcode(string prodId)
-        {
-            if (string.IsNullOrEmpty(prodId))
-            {
-                MessageBox.Show("Invalid barcode.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Fetch product from DB to check current stock using EF Core
-            Product productInDb = _context.Products.FirstOrDefault(p => p.prod_id == prodId);
-
-            if (productInDb == null)
-            {
-                MessageBox.Show("Product not found in database: " + prodId, "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            int quantity = 1;
-            if (productInDb.stock < quantity)
-            {
-                MessageBox.Show($"Not enough stock available for {productInDb.prod_name}. Available: {productInDb.stock}", "Out of Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Check if product already exists in the order list (DataTable) for merging
-            bool productExistsInOrderList = false;
-            foreach (DataRow row in orderListTable.Rows)
-            {
-                if (row["Product ID"].ToString() == prodId)
-                {
-                    // Update existing row's quantities and subtotals
-                    row["Quantity"] = Convert.ToInt32(row["Quantity"]) + quantity;
-                    double originalPricePerUnit = Convert.ToDouble(row["Original Unit Price"]);
-                    double originalSubtotal = originalPricePerUnit * quantity;
-                    row["Original Subtotal"] = Convert.ToDouble(row["Original Subtotal"]) + originalSubtotal;
-                    // No discount logic for barcode add; can be extended
-                    row["Line Discount Amount"] = Convert.ToDouble(row["Line Discount Amount"]);
-                    row["Final Subtotal"] = Convert.ToDouble(row["Final Subtotal"]) + originalSubtotal;
-                    row["Unit Price After Discount"] = originalPricePerUnit;
-                    productExistsInOrderList = true;
-                    break;
-                }
-            }
-
-            if (!productExistsInOrderList)
-            {
-                double price = Convert.ToDouble(productInDb.prod_price);
-                double subtotal = price * quantity;
-                orderListTable.Rows.Add(
-                    prodId,
-                    productInDb.prod_name,
-                    quantity,
-                    price, // "Original Unit Price"
-                    price, // "Unit Price After Discount"
-                    subtotal, // "Original Subtotal"
-                    0.0, // "Line Discount Amount"
-                    subtotal // "Final Subtotal"
-                );
-            }
-
-            // Deduct stock immediately upon adding to order list
-            try
-            {
-                productInDb.stock -= quantity;
-                _context.SaveChanges();
-                displayAllAvailableProducts();
-                if (productInDb.stock < productInDb.ReorderLevel)
-                {
-                    MessageBox.Show($"Warning: Stock for {productInDb.prod_name} is low! Current stock: {productInDb.stock}, Reorder level: {productInDb.ReorderLevel}", "Low Stock Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Database error updating stock during Add: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            UpdateTotals();
-            ClearProductInputs();
         }
     }
 }

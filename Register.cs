@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using System.Linq;
+﻿using POS_project.Migrations;
 
 namespace POS_project
 {
@@ -80,7 +79,7 @@ namespace POS_project
                         {
                             Email = email_register.Text,
                             Username = username_register.Text,
-                            Password = PasswordHelper.HashPassword(password_register.Text),
+                            Password = password_register.Text,
                             Role = "Cashier", // Default role for new registrations
                             Status = "Active", // Default status for new registrations
                             Date = DateTime.Now,

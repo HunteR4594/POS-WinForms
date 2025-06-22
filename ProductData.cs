@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using POS_project.Migrations;
 
 namespace POS_project
 {
@@ -16,18 +15,10 @@ namespace POS_project
         {
             return _context.Products.ToList();
         }
-        
-        public List<Product> allAvailableProducts()
-        { 
-            return _context.Products.Where(p => p.status == "Available").ToList();
-        }
 
-        public static List<Product> GetLowStockProducts()
+        public List<Product> allAvailableProducts()
         {
-            using (var context = new AppDbContext())
-            {
-                return context.Products.Where(p => p.stock < p.ReorderLevel).ToList();
-            }
+            return _context.Products.Where(p => p.status == "Available").ToList();
         }
     }
 }
