@@ -34,13 +34,13 @@
             label6 = new Label();
             dataGridViewproducts = new DataGridView();
             panel2 = new Panel();
+            barcodePreview = new PictureBox();
+            label7 = new Label();
             Clear_Product = new Button();
             Remove_Product = new Button();
             Update_Product = new Button();
             Add_Product = new Button();
-            Import = new Button();
-            panel3 = new Panel();
-            Import_pic = new PictureBox();
+            GenerateBarcode = new Button();
             Add_Product_Status = new ComboBox();
             Add_Category = new ComboBox();
             label4 = new Label();
@@ -56,8 +56,7 @@
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewproducts).BeginInit();
             panel2.SuspendLayout();
-            panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)Import_pic).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)barcodePreview).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -104,17 +103,17 @@
             dataGridViewproducts.RowHeadersWidth = 51;
             dataGridViewproducts.Size = new Size(971, 229);
             dataGridViewproducts.TabIndex = 0;
-            this.dataGridViewproducts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewproducts_CellClick);
             // 
             // panel2
             // 
             panel2.BackColor = Color.White;
+            panel2.Controls.Add(barcodePreview);
+            panel2.Controls.Add(label7);
             panel2.Controls.Add(Clear_Product);
             panel2.Controls.Add(Remove_Product);
             panel2.Controls.Add(Update_Product);
             panel2.Controls.Add(Add_Product);
-            panel2.Controls.Add(Import);
-            panel2.Controls.Add(panel3);
+            panel2.Controls.Add(GenerateBarcode);
             panel2.Controls.Add(Add_Product_Status);
             panel2.Controls.Add(Add_Category);
             panel2.Controls.Add(label4);
@@ -131,6 +130,23 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1025, 384);
             panel2.TabIndex = 1;
+            // 
+            // barcodePreview
+            // 
+            barcodePreview.Location = new Point(726, 77);
+            barcodePreview.Name = "barcodePreview";
+            barcodePreview.Size = new Size(271, 100);
+            barcodePreview.TabIndex = 18;
+            barcodePreview.TabStop = false;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(44, 144);
+            label7.Name = "label7";
+            label7.Size = new Size(122, 20);
+            label7.TabIndex = 17;
+            label7.Text = "Barcode Preview:";
             // 
             // Clear_Product
             // 
@@ -184,35 +200,18 @@
             Add_Product.UseVisualStyleBackColor = false;
             Add_Product.Click += Add_Product_Click;
             // 
-            // Import
+            // GenerateBarcode
             // 
-            Import.BackColor = Color.Teal;
-            Import.FlatStyle = FlatStyle.Flat;
-            Import.ForeColor = Color.White;
-            Import.Location = new Point(849, 144);
-            Import.Name = "Import";
-            Import.Size = new Size(94, 35);
-            Import.TabIndex = 13;
-            Import.Text = "Import";
-            Import.UseVisualStyleBackColor = false;
-            Import.Click += Import_Click;
-            // 
-            // panel3
-            // 
-            panel3.Controls.Add(Import_pic);
-            panel3.Location = new Point(824, 34);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(151, 97);
-            panel3.TabIndex = 12;
-            // 
-            // Import_pic
-            // 
-            Import_pic.Location = new Point(0, 0);
-            Import_pic.Name = "Import_pic";
-            Import_pic.Size = new Size(151, 97);
-            Import_pic.SizeMode = PictureBoxSizeMode.StretchImage;
-            Import_pic.TabIndex = 0;
-            Import_pic.TabStop = false;
+            GenerateBarcode.BackColor = Color.Teal;
+            GenerateBarcode.FlatStyle = FlatStyle.Flat;
+            GenerateBarcode.ForeColor = Color.White;
+            GenerateBarcode.Location = new Point(770, 37);
+            GenerateBarcode.Name = "GenerateBarcode";
+            GenerateBarcode.Size = new Size(190, 35);
+            GenerateBarcode.TabIndex = 13;
+            GenerateBarcode.Text = "Generate Bar code";
+            GenerateBarcode.UseVisualStyleBackColor = false;
+            GenerateBarcode.Click += GenerateBarcode_Click;
             // 
             // Add_Product_Status
             // 
@@ -256,7 +255,7 @@
             label3.AutoSize = true;
             label3.Location = new Point(421, 77);
             label3.Name = "label3";
-            label3.Size = new Size(48, 20);
+            label3.Size = new Size(46, 20);
             label3.TabIndex = 7;
             label3.Text = "stock:";
             // 
@@ -307,7 +306,7 @@
             label1.AutoSize = true;
             label1.Location = new Point(44, 14);
             label1.Name = "label1";
-            label1.Size = new Size(82, 20);
+            label1.Size = new Size(80, 20);
             label1.TabIndex = 1;
             label1.Text = "Product id:";
             // 
@@ -333,8 +332,7 @@
             ((System.ComponentModel.ISupportInitialize)dataGridViewproducts).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            panel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)Import_pic).EndInit();
+            ((System.ComponentModel.ISupportInitialize)barcodePreview).EndInit();
             ResumeLayout(false);
         }
 
@@ -356,12 +354,12 @@
         private Label add_product_name;
         private TextBox Product_Name;
         private Label label6;
-        private Button Import;
-        private Panel panel3;
-        private PictureBox Import_pic;
+        private Button GenerateBarcode;
         private Button Clear_Product;
         private Button Remove_Product;
         private Button Update_Product;
         private Button Add_Product;
+        private PictureBox barcodePreview;
+        private Label label7;
     }
 }
