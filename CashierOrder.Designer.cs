@@ -32,6 +32,9 @@ namespace POS_project
         {
             components = new System.ComponentModel.Container();
             panel1 = new Panel();
+            Cashier_SearchOr = new Button();
+            textBox1 = new TextBox();
+            Cashier_ScanOr = new Button();
             DiscountValue = new Label();
             Discount_CashierOr = new Button();
             Clear_CashierOr = new Button();
@@ -77,6 +80,9 @@ namespace POS_project
             // panel1
             // 
             panel1.BackColor = Color.White;
+            panel1.Controls.Add(Cashier_SearchOr);
+            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(Cashier_ScanOr);
             panel1.Controls.Add(DiscountValue);
             panel1.Controls.Add(Discount_CashierOr);
             panel1.Controls.Add(Clear_CashierOr);
@@ -100,6 +106,41 @@ namespace POS_project
             panel1.Name = "panel1";
             panel1.Size = new Size(578, 519);
             panel1.TabIndex = 0;
+            // 
+            // Cashier_SearchOr
+            // 
+            Cashier_SearchOr.BackColor = Color.Teal;
+            Cashier_SearchOr.FlatStyle = FlatStyle.Flat;
+            Cashier_SearchOr.ForeColor = Color.White;
+            Cashier_SearchOr.Location = new Point(246, 236);
+            Cashier_SearchOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_SearchOr.Name = "Cashier_SearchOr";
+            Cashier_SearchOr.Size = new Size(87, 30);
+            Cashier_SearchOr.TabIndex = 19;
+            Cashier_SearchOr.Text = "Search";
+            Cashier_SearchOr.UseVisualStyleBackColor = false;
+            // 
+            // textBox1
+            // 
+            textBox1.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBox1.Location = new Point(20, 236);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(210, 27);
+            textBox1.TabIndex = 18;
+            // 
+            // Cashier_ScanOr
+            // 
+            Cashier_ScanOr.BackColor = Color.Teal;
+            Cashier_ScanOr.FlatStyle = FlatStyle.Flat;
+            Cashier_ScanOr.ForeColor = Color.White;
+            Cashier_ScanOr.Location = new Point(475, 236);
+            Cashier_ScanOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_ScanOr.Name = "Cashier_ScanOr";
+            Cashier_ScanOr.Size = new Size(87, 32);
+            Cashier_ScanOr.TabIndex = 17;
+            Cashier_ScanOr.Text = "Scan";
+            Cashier_ScanOr.UseVisualStyleBackColor = false;
+            Cashier_ScanOr.Click += Cashier_ScanOr_Click;
             // 
             // DiscountValue
             // 
@@ -203,7 +244,9 @@ namespace POS_project
             Cashier_ProductidOr.Name = "Cashier_ProductidOr";
             Cashier_ProductidOr.Size = new Size(160, 27);
             Cashier_ProductidOr.TabIndex = 8;
-            Cashier_ProductidOr.SelectedValueChanged += Cashier_ProductidOr_SelectedIndexChanged;
+
+            // Update the event handler assignment to use the renamed method
+            //Cashier_ProductidOr.SelectedValueChanged += Cashier_ProductidOr_SelectedIndexChanged_1;
             // 
             // Cashier_CategoryOr
             // 
@@ -248,7 +291,7 @@ namespace POS_project
             label3.AutoSize = true;
             label3.Location = new Point(312, 294);
             label3.Name = "label3";
-            label3.Size = new Size(70, 15);
+            label3.Size = new Size(67, 15);
             label3.TabIndex = 3;
             label3.Text = "Product id:";
             // 
@@ -277,7 +320,7 @@ namespace POS_project
             dataGridView1.Margin = new Padding(3, 2, 3, 2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(542, 212);
+            dataGridView1.Size = new Size(542, 183);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellClick += dataGridView1_CellClick;
             // 
@@ -464,10 +507,6 @@ namespace POS_project
             dataGridView2.Size = new Size(276, 245);
             dataGridView2.TabIndex = 12;
             // 
-            // appDbContextBindingSource
-            // 
-            appDbContextBindingSource.DataSource = typeof(AppDbContext);
-            // 
             // CashierOrder
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -488,6 +527,13 @@ namespace POS_project
             ((System.ComponentModel.ISupportInitialize)appDbContextBindingSource).EndInit();
             ResumeLayout(false);
         }
+        // Add this method to handle the SelectedValueChanged event for Cashier_ProductidOr
+        // Rename one of the methods to resolve ambiguity
+        //private void Cashier_ProductidOr_SelectedIndexChanged_1(object sender, EventArgs e)
+        //{
+        //    // Add your logic here for handling the event
+        //    MessageBox.Show("Product ID selection changed.");
+        //}
 
         #endregion
 
@@ -528,5 +574,8 @@ namespace POS_project
         // NEW: VAT Labels
         private Label vatLabel; // ADD THIS LINE
         private Label vatValue; // ADD THIS LINE
+        private TextBox textBox1;
+        private Button Cashier_ScanOr;
+        private Button Cashier_SearchOr;
     }
 }
