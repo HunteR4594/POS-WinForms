@@ -37,7 +37,7 @@ namespace POS_project
             displayCategories(); // Load categories into ComboBox using EF Core
             UpdateTotals(); // Initialize all total labels to 0.00
 
-            // *** IMPORTANT: Attach the event handler for the search button here ***
+            // Attach the event handler for the search button here
             Cashier_SearchOr.Click += Cashier_SearchOr_Click;
         }
 
@@ -115,37 +115,36 @@ namespace POS_project
         // --- Cashier_CategoryOr_SelectedIndexChanged to filter DataGridView and populate ProductID ComboBox ---
         private void Cashier_CategoryOr_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Only proceed if the change was not programmatic to avoid infinite loops or unintended resets
-            if (isProgrammaticUpdate)
-            {
-                return;
-            }
-
             string selectedCategory = Cashier_CategoryOr.SelectedItem?.ToString();
 
+            // Always clear and repopulate Cashier_ProductidOr and related inputs
+            // This ensures Cashier_ProductidOr is ready for selection based on the new category.
             Cashier_ProductidOr.Items.Clear();
             ClearProductInputs();
 
-            if (selectedCategory == "All")
-            {
-                displayAllAvailableProducts(); // Reload all available products
-            }
-            else if (selectedCategory != null)
+            if (selectedCategory != null)
             {
                 try
                 {
-                    // Filter products by the selected category and status
-                    var filteredProducts = _context.Products
-                                                   .Where(p => p.category == selectedCategory && p.status == "Available")
-                                                   .OrderBy(p => p.prod_name)
-                                                   .AsNoTracking()
-                                                   .ToList();
-                    dataGridView1.DataSource = filteredProducts;
+                    // Fetch products for the selected category (or all if "All" is selected)
+                    var productsForCategory = _context.Products
+                                                     .Where(p => (selectedCategory == "All" || p.category == selectedCategory) && p.status == "Available")
+                                                     .OrderBy(p => p.prod_name)
+                                                     .AsNoTracking()
+                                                     .ToList();
 
-                    // Populate the Product ID ComboBox with IDs from the filtered products
-                    foreach (Product p in filteredProducts)
+                    // Always populate Cashier_ProductidOr with relevant product IDs
+                    foreach (Product p in productsForCategory)
                     {
                         Cashier_ProductidOr.Items.Add(p.prod_id);
+                    }
+
+                    // Only update dataGridView1 if the change was *not* programmatic (i.e., user selected category)
+                    // If it was programmatic (from dataGridView1_CellClick), dataGridView1 already has the correct data
+                    // or is being updated by the click event, so re-filtering here would be redundant or cause issues.
+                    if (!isProgrammaticUpdate)
+                    {
+                        dataGridView1.DataSource = productsForCategory; // Update dataGridView1 with filtered results
                     }
                 }
                 catch (Exception ex)
@@ -165,14 +164,23 @@ namespace POS_project
 
                 if (selectedProduct != null)
                 {
-                    isProgrammaticUpdate = true; // Set flag before programmatic changes
-                    Cashier_CategoryOr.SelectedItem = selectedProduct.category;
-                    Cashier_ProductidOr.SelectedItem = selectedProduct.prod_id;
-                    isProgrammaticUpdate = false; // Reset flag after programmatic changes
+                    isProgrammaticUpdate = true; // Set flag to indicate programmatic update
 
+                    // Set the category. This will trigger Cashier_CategoryOr_SelectedIndexChanged.
+                    // The modified Cashier_CategoryOr_SelectedIndexChanged will now correctly
+                    // populate Cashier_ProductidOr with items for 'selectedProduct.category'.
+                    Cashier_CategoryOr.SelectedItem = selectedProduct.category;
+
+                    // Now that Cashier_ProductidOr has been repopulated, we can safely
+                    // set its SelectedItem to the product ID from the clicked row.
+                    Cashier_ProductidOr.SelectedItem = selectedProduct.prod_id;
+
+                    // Populate other display fields
                     Cashier_Product_NameOr.Text = selectedProduct.prod_name;
                     Cashier_PriceOr.Text = selectedProduct.prod_price.ToString("F2");
                     Cashier_QuantityOr.Value = 1;
+
+                    isProgrammaticUpdate = false; // Reset the flag after updates are complete
                 }
             }
         }
@@ -595,8 +603,9 @@ namespace POS_project
                     // from firing during these programmatic updates.
                     isProgrammaticUpdate = true;
 
-                    // 1. Set the category in the ComboBox. This might trigger an event
-                    //    that repopulates the Product ID ComboBox.
+                    // 1. Set the category in the ComboBox. This will trigger Cashier_CategoryOr_SelectedIndexChanged.
+                    //    The modified Cashier_CategoryOr_SelectedIndexChanged will now correctly
+                    //    populate Cashier_ProductidOr with items for 'scannedProduct.category'.
                     Cashier_CategoryOr.SelectedItem = scannedProduct.category;
 
                     // 2. Now that the Product ID list is correctly filtered for the category,
@@ -644,11 +653,10 @@ namespace POS_project
             try
             {
                 // Filter products by name (case-insensitive contains) and status "Available"
-                // REMOVED StringComparison.OrdinalIgnoreCase to allow EF Core translation.
-                // Case-insensitivity will now depend on the database's collation settings.
+                // This assumes your database's collation is case-insensitive for prod_name.
                 var filteredProducts = _context.Products
                                                .Where(p => p.status == "Available" &&
-                                                           p.prod_name.Contains(searchText)) // Removed StringComparison.OrdinalIgnoreCase
+                                                           p.prod_name.Contains(searchText))
                                                .OrderBy(p => p.prod_name)
                                                .AsNoTracking()
                                                .ToList();
