@@ -29,34 +29,27 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            panel4 = new Panel();
-            pictureBox4 = new PictureBox();
-            panel5 = new Panel();
-            pictureBox3 = new PictureBox();
-            panel3 = new Panel();
-            pictureBox2 = new PictureBox();
-            panel2 = new Panel();
+            cashier_Username = new ComboBox();
+            FilterFortheTable = new ComboBox();
+            presetDateTime_comboBox = new ComboBox();
+            button4 = new Button();
+            button3 = new Button();
+            button2 = new Button();
+            button1 = new Button();
+            label10 = new Label();
             label3 = new Label();
-            label2 = new Label();
-            pictureBox1 = new PictureBox();
+            endTime_picker = new DateTimePicker();
+            startTime_picker = new DateTimePicker();
             panel6 = new Panel();
             label1 = new Label();
             dataGridView1 = new DataGridView();
+            productName_or_id_search = new TextBox();
+            button5 = new Button();
+            label2 = new Label();
             label4 = new Label();
-            label5 = new Label();
-            label6 = new Label();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
+            button6 = new Button();
+            button7 = new Button();
             panel1.SuspendLayout();
-            panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
-            panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
-            panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
@@ -64,245 +57,233 @@
             // panel1
             // 
             panel1.BackColor = Color.White;
-            panel1.Controls.Add(panel4);
-            panel1.Controls.Add(panel5);
-            panel1.Controls.Add(panel3);
-            panel1.Controls.Add(panel2);
-            panel1.Location = new Point(16, 40);
+            panel1.Controls.Add(button7);
+            panel1.Controls.Add(button6);
+            panel1.Controls.Add(label4);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(button5);
+            panel1.Controls.Add(productName_or_id_search);
+            panel1.Controls.Add(cashier_Username);
+            panel1.Controls.Add(FilterFortheTable);
+            panel1.Controls.Add(presetDateTime_comboBox);
+            panel1.Controls.Add(button4);
+            panel1.Controls.Add(button3);
+            panel1.Controls.Add(button2);
+            panel1.Controls.Add(button1);
+            panel1.Controls.Add(label10);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(endTime_picker);
+            panel1.Controls.Add(startTime_picker);
+            panel1.Location = new Point(14, 30);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1040, 197);
+            panel1.Size = new Size(910, 148);
             panel1.TabIndex = 0;
             // 
-            // panel4
+            // cashier_Username
             // 
-            panel4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel4.BackColor = Color.Teal;
-            panel4.Controls.Add(label8);
-            panel4.Controls.Add(label9);
-            panel4.Controls.Add(pictureBox4);
-            panel4.Location = new Point(782, 39);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(246, 118);
-            panel4.TabIndex = 3;
+            cashier_Username.FormattingEnabled = true;
+            cashier_Username.Items.AddRange(new object[] { "Today", "Yesterday", "Last 7 Days", "This Month", "Last Month", "Custom Range" });
+            cashier_Username.Location = new Point(234, 61);
+            cashier_Username.Name = "cashier_Username";
+            cashier_Username.Size = new Size(240, 23);
+            cashier_Username.TabIndex = 14;
             // 
-            // pictureBox4
+            // FilterFortheTable
             // 
-            //pictureBox4.Image = Properties.Resources.Total_inc;
-            pictureBox4.Location = new Point(12, 22);
-            pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(80, 80);
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox4.TabIndex = 3;
-            pictureBox4.TabStop = false;
+            FilterFortheTable.FormattingEnabled = true;
+            FilterFortheTable.Items.AddRange(new object[] { "Today", "Yesterday", "Last 7 Days", "This Month", "Last Month", "Custom Range" });
+            FilterFortheTable.Location = new Point(234, 108);
+            FilterFortheTable.Name = "FilterFortheTable";
+            FilterFortheTable.Size = new Size(240, 23);
+            FilterFortheTable.TabIndex = 13;
             // 
-            // panel5
+            // presetDateTime_comboBox
             // 
-            panel5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel5.BackColor = Color.Teal;
-            panel5.Controls.Add(label6);
-            panel5.Controls.Add(label7);
-            panel5.Controls.Add(pictureBox3);
-            panel5.Location = new Point(526, 39);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(246, 118);
-            panel5.TabIndex = 2;
+            presetDateTime_comboBox.FormattingEnabled = true;
+            presetDateTime_comboBox.Items.AddRange(new object[] { "Today", "Yesterday", "Last 7 Days", "This Month", "Last Month", "Custom Range" });
+            presetDateTime_comboBox.Location = new Point(16, 108);
+            presetDateTime_comboBox.Name = "presetDateTime_comboBox";
+            presetDateTime_comboBox.Size = new Size(99, 23);
+            presetDateTime_comboBox.TabIndex = 2;
             // 
-            // pictureBox3
+            // button4
             // 
-            //pictureBox3.Image = Properties.Resources.inc;
-            pictureBox3.Location = new Point(12, 22);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(80, 80);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 2;
-            pictureBox3.TabStop = false;
-            pictureBox3.Click += this.pictureBox2_Click;
+            button4.BackColor = Color.Teal;
+            button4.ForeColor = SystemColors.Control;
+            button4.Location = new Point(642, 14);
+            button4.Name = "button4";
+            button4.Size = new Size(118, 39);
+            button4.TabIndex = 12;
+            button4.Text = "CLEAR";
+            button4.UseVisualStyleBackColor = false;
             // 
-            // panel3
+            // button3
             // 
-            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel3.BackColor = Color.Teal;
-            panel3.Controls.Add(label4);
-            panel3.Controls.Add(label5);
-            panel3.Controls.Add(pictureBox2);
-            panel3.Location = new Point(269, 39);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(246, 118);
-            panel3.TabIndex = 1;
+            button3.BackColor = Color.Teal;
+            button3.ForeColor = SystemColors.Control;
+            button3.Location = new Point(642, 92);
+            button3.Name = "button3";
+            button3.Size = new Size(118, 39);
+            button3.TabIndex = 11;
+            button3.Text = "GENERATE REPORT";
+            button3.UseVisualStyleBackColor = false;
             // 
-            // pictureBox2
+            // button2
             // 
-            //pictureBox2.Image = Properties.Resources.cust;
-            pictureBox2.Location = new Point(14, 22);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(80, 80);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 1;
-            pictureBox2.TabStop = false;
-            pictureBox2.Click += pictureBox2_Click;
+            button2.BackColor = Color.Teal;
+            button2.ForeColor = SystemColors.Control;
+            button2.Location = new Point(766, 92);
+            button2.Name = "button2";
+            button2.Size = new Size(113, 39);
+            button2.TabIndex = 10;
+            button2.Text = "PRINT REPORT";
+            button2.UseVisualStyleBackColor = false;
             // 
-            // panel2
+            // button1
             // 
-            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel2.BackColor = Color.Teal;
-            panel2.Controls.Add(label3);
-            panel2.Controls.Add(label2);
-            panel2.Controls.Add(pictureBox1);
-            panel2.Location = new Point(12, 39);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(246, 118);
-            panel2.TabIndex = 0;
+            button1.BackColor = Color.Teal;
+            button1.ForeColor = SystemColors.Control;
+            button1.Location = new Point(766, 14);
+            button1.Name = "button1";
+            button1.Size = new Size(113, 39);
+            button1.TabIndex = 9;
+            button1.Text = "EXPORT CSV";
+            button1.UseVisualStyleBackColor = false;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(16, 61);
+            label10.Name = "label10";
+            label10.Size = new Size(57, 15);
+            label10.TabIndex = 8;
+            label10.Text = "End time:";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.White;
-            label3.Location = new Point(113, 82);
+            label3.Location = new Point(16, 12);
             label3.Name = "label3";
-            label3.Size = new Size(75, 23);
-            label3.TabIndex = 2;
-            label3.Text = "All Users";
+            label3.Size = new Size(60, 15);
+            label3.TabIndex = 7;
+            label3.Text = "start time:";
             // 
-            // label2
+            // endTime_picker
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.ForeColor = Color.White;
-            label2.Location = new Point(113, 25);
-            label2.Name = "label2";
-            label2.Size = new Size(22, 25);
-            label2.TabIndex = 1;
-            label2.Text = "0";
+            endTime_picker.Location = new Point(16, 79);
+            endTime_picker.Name = "endTime_picker";
+            endTime_picker.Size = new Size(200, 23);
+            endTime_picker.TabIndex = 5;
             // 
-            // pictureBox1
+            // startTime_picker
             // 
-            //pictureBox1.Image = Properties.Resources.emp1;
-            pictureBox1.Location = new Point(14, 22);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(80, 80);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
+            startTime_picker.Location = new Point(16, 30);
+            startTime_picker.Name = "startTime_picker";
+            startTime_picker.Size = new Size(200, 23);
+            startTime_picker.TabIndex = 4;
             // 
             // panel6
             // 
             panel6.BackColor = Color.White;
             panel6.Controls.Add(label1);
             panel6.Controls.Add(dataGridView1);
-            panel6.Location = new Point(16, 266);
+            panel6.Location = new Point(14, 194);
+            panel6.Margin = new Padding(3, 2, 3, 2);
             panel6.Name = "panel6";
-            panel6.Size = new Size(1040, 460);
+            panel6.Size = new Size(910, 351);
             panel6.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(28, 34);
+            label1.Location = new Point(16, 10);
             label1.Name = "label1";
-            label1.Size = new Size(201, 28);
+            label1.Size = new Size(161, 21);
             label1.TabIndex = 1;
             label1.Text = "All Today's Customer";
             // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(18, 75);
+            dataGridView1.Location = new Point(16, 33);
+            dataGridView1.Margin = new Padding(3, 2, 3, 2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1004, 360);
+            dataGridView1.Size = new Size(878, 299);
             dataGridView1.TabIndex = 0;
+            // 
+            // productName_or_id_search
+            // 
+            productName_or_id_search.Location = new Point(234, 12);
+            productName_or_id_search.Name = "productName_or_id_search";
+            productName_or_id_search.Size = new Size(240, 23);
+            productName_or_id_search.TabIndex = 15;
+            // 
+            // button5
+            // 
+            button5.BackColor = Color.Teal;
+            button5.ForeColor = SystemColors.Control;
+            button5.Location = new Point(480, 12);
+            button5.Name = "button5";
+            button5.Size = new Size(103, 23);
+            button5.TabIndex = 16;
+            button5.Text = "SEARCH";
+            button5.UseVisualStyleBackColor = false;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(234, 43);
+            label2.Name = "label2";
+            label2.Size = new Size(49, 15);
+            label2.TabIndex = 17;
+            label2.Text = "Cashier:";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.ForeColor = Color.White;
-            label4.Location = new Point(108, 79);
+            label4.Location = new Point(234, 90);
             label4.Name = "label4";
-            label4.Size = new Size(115, 23);
-            label4.TabIndex = 4;
-            label4.Text = "All Customers";
+            label4.Size = new Size(36, 15);
+            label4.TabIndex = 18;
+            label4.Text = "Filter:";
             // 
-            // label5
+            // button6
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.ForeColor = Color.White;
-            label5.Location = new Point(108, 22);
-            label5.Name = "label5";
-            label5.Size = new Size(22, 25);
-            label5.TabIndex = 3;
-            label5.Text = "0";
+            button6.BackColor = Color.Teal;
+            button6.ForeColor = SystemColors.Control;
+            button6.Location = new Point(642, 52);
+            button6.Name = "button6";
+            button6.Size = new Size(118, 39);
+            button6.TabIndex = 19;
+            button6.Text = "REFRESH";
+            button6.UseVisualStyleBackColor = false;
             // 
-            // label6
+            // button7
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.ForeColor = Color.White;
-            label6.Location = new Point(109, 82);
-            label6.Name = "label6";
-            label6.Size = new Size(127, 23);
-            label6.TabIndex = 6;
-            label6.Text = "Today's Income";
+            button7.BackColor = Color.Teal;
+            button7.ForeColor = SystemColors.Control;
+            button7.Location = new Point(766, 52);
+            button7.Name = "button7";
+            button7.Size = new Size(113, 39);
+            button7.TabIndex = 20;
+            button7.Text = "EXPORT EXCEL";
+            button7.UseVisualStyleBackColor = false;
             // 
-            // label7
+            // Reports
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.ForeColor = Color.White;
-            label7.Location = new Point(109, 25);
-            label7.Name = "label7";
-            label7.Size = new Size(63, 25);
-            label7.TabIndex = 5;
-            label7.Text = "$10.00";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label8.ForeColor = Color.White;
-            label8.Location = new Point(106, 82);
-            label8.Name = "label8";
-            label8.Size = new Size(108, 23);
-            label8.TabIndex = 8;
-            label8.Text = "Total Income";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI Semibold", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label9.ForeColor = Color.White;
-            label9.Location = new Point(106, 25);
-            label9.Name = "label9";
-            label9.Size = new Size(63, 25);
-            label9.TabIndex = 7;
-            label9.Text = "$10.00";
-            // 
-            // Dashboard
-            // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLight;
             Controls.Add(panel6);
             Controls.Add(panel1);
-            Name = "Dashboard";
-            Size = new Size(1072, 748);
-            //Load += Dashboard_Load;
+            Margin = new Padding(3, 2, 3, 2);
+            Name = "Reports";
+            Size = new Size(938, 561);
             panel1.ResumeLayout(false);
-            panel4.ResumeLayout(false);
-            panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
-            panel5.ResumeLayout(false);
-            panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            panel1.PerformLayout();
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
@@ -312,24 +293,25 @@
         #endregion
 
         private Panel panel1;
-        private Panel panel4;
-        private Panel panel5;
-        private Panel panel3;
-        private Panel panel2;
         private Panel panel6;
         private Label label1;
         private DataGridView dataGridView1;
-        private PictureBox pictureBox4;
-        private PictureBox pictureBox3;
-        private PictureBox pictureBox2;
+        private Label label10;
         private Label label3;
-        private Label label2;
-        private PictureBox pictureBox1;
-        private Label label8;
-        private Label label9;
-        private Label label6;
-        private Label label7;
+        private DateTimePicker endTime_picker;
+        private DateTimePicker startTime_picker;
+        private Button button3;
+        private Button button2;
+        private Button button1;
+        private ComboBox presetDateTime_comboBox;
+        private Button button4;
+        private ComboBox cashier_Username;
+        private ComboBox FilterFortheTable;
+        private Button button7;
+        private Button button6;
         private Label label4;
-        private Label label5;
+        private Label label2;
+        private Button button5;
+        private TextBox productName_or_id_search;
     }
 }

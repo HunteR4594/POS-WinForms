@@ -1,8 +1,8 @@
-﻿using System.Data; // Still needed for DataTable (for orderListTable)
-using System.Linq; // Required for LINQ queries
-using System.Windows.Forms; // Required for WinForms components (MessageBox, UserControl)
-using System; // Required for Convert, DateTime etc.
-using Microsoft.EntityFrameworkCore; // Required for EF Core operations
+﻿using System.Data;
+using System.Linq;
+using System.Windows.Forms;
+using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using POS_project.Migrations; // Required for List<T>
 
@@ -27,6 +27,7 @@ namespace POS_project
 
         // Flag to prevent re-triggering Cashier_CategoryOr_SelectedIndexChanged during programmatic updates
         private bool isProgrammaticUpdate = false;
+        private int _cashierId = 1; // Assuming a default cashier ID for testing; update with actual cashier ID from login
 
         public CashierOrder()
         {
@@ -36,9 +37,6 @@ namespace POS_project
             displayAllAvailableProducts(); // Load available products into dataGridView1 using EF Core
             displayCategories(); // Load categories into ComboBox using EF Core
             UpdateTotals(); // Initialize all total labels to 0.00
-
-            // Attach the event handler for the search button here
-            Cashier_SearchOr.Click += Cashier_SearchOr_Click;
         }
 
         // --- Method: Initialize Order List Table ---
@@ -54,12 +52,16 @@ namespace POS_project
             orderListTable.Columns.Add("Original Subtotal", typeof(double)); // (Original Unit Price * Quantity) - VAT Inclusive
             orderListTable.Columns.Add("Line Discount Amount", typeof(double)); // The actual discount amount for this item line
             orderListTable.Columns.Add("Final Subtotal", typeof(double)); // (Original Subtotal - Line Discount Amount) - Still VAT Inclusive
+            orderListTable.Columns.Add("Product PK ID", typeof(int)); // New column for actual product Primary Key ID
+            orderListTable.Columns.Add("Category", typeof(string)); // New column for category name
 
             dataGridView2.DataSource = orderListTable; // Bind the DataTable to dataGridView2
 
             // Configure column visibility and formatting for dataGridView2
             dataGridView2.Columns["Original Unit Price"].Visible = false; // Usually hidden on UI, but needed for calculations
             dataGridView2.Columns["Line Discount Amount"].Visible = false; // Can be hidden or shown
+            dataGridView2.Columns["Product PK ID"].Visible = false; // Hide the actual Product PK ID
+            dataGridView2.Columns["Category"].Visible = false; // Hide category as it's often not displayed on receipt lines
 
             // Ensure currency formatting for relevant columns displayed on the grid
             dataGridView2.Columns["Unit Price After Discount"].DefaultCellStyle.Format = "C2";
@@ -117,34 +119,28 @@ namespace POS_project
         {
             string selectedCategory = Cashier_CategoryOr.SelectedItem?.ToString();
 
-            // Always clear and repopulate Cashier_ProductidOr and related inputs
-            // This ensures Cashier_ProductidOr is ready for selection based on the new category.
             Cashier_ProductidOr.Items.Clear();
             ClearProductInputs();
 
-            if (selectedCategory != null)
+
+            if (selectedCategory == "All")
+            {
+                displayAllAvailableProducts();
+            }
+            else if (selectedCategory != null)
             {
                 try
                 {
-                    // Fetch products for the selected category (or all if "All" is selected)
-                    var productsForCategory = _context.Products
-                                                     .Where(p => (selectedCategory == "All" || p.category == selectedCategory) && p.status == "Available")
-                                                     .OrderBy(p => p.prod_name)
-                                                     .AsNoTracking()
-                                                     .ToList();
+                    var filteredProducts = _context.Products
+                                                   .Where(p => p.category == selectedCategory && p.status == "Available")
+                                                   .OrderBy(p => p.prod_name)
+                                                   .AsNoTracking()
+                                                   .ToList();
+                    dataGridView1.DataSource = filteredProducts;
 
-                    // Always populate Cashier_ProductidOr with relevant product IDs
-                    foreach (Product p in productsForCategory)
+                    foreach (Product p in filteredProducts)
                     {
                         Cashier_ProductidOr.Items.Add(p.prod_id);
-                    }
-
-                    // Only update dataGridView1 if the change was *not* programmatic (i.e., user selected category)
-                    // If it was programmatic (from dataGridView1_CellClick), dataGridView1 already has the correct data
-                    // or is being updated by the click event, so re-filtering here would be redundant or cause issues.
-                    if (!isProgrammaticUpdate)
-                    {
-                        dataGridView1.DataSource = productsForCategory; // Update dataGridView1 with filtered results
                     }
                 }
                 catch (Exception ex)
@@ -164,26 +160,17 @@ namespace POS_project
 
                 if (selectedProduct != null)
                 {
-                    isProgrammaticUpdate = true; // Set flag to indicate programmatic update
-
-                    // Set the category. This will trigger Cashier_CategoryOr_SelectedIndexChanged.
-                    // The modified Cashier_CategoryOr_SelectedIndexChanged will now correctly
-                    // populate Cashier_ProductidOr with items for 'selectedProduct.category'.
+                    isProgrammaticUpdate = true;
                     Cashier_CategoryOr.SelectedItem = selectedProduct.category;
-
-                    // Now that Cashier_ProductidOr has been repopulated, we can safely
-                    // set its SelectedItem to the product ID from the clicked row.
                     Cashier_ProductidOr.SelectedItem = selectedProduct.prod_id;
-
-                    // Populate other display fields
+                    isProgrammaticUpdate = false;
                     Cashier_Product_NameOr.Text = selectedProduct.prod_name;
                     Cashier_PriceOr.Text = selectedProduct.prod_price.ToString("F2");
                     Cashier_QuantityOr.Value = 1;
-
-                    isProgrammaticUpdate = false; // Reset the flag after updates are complete
                 }
             }
         }
+      
 
         // --- Add_CashierOr_Click (Corrected Stock Logic and DataTable Population) ---
         private void Add_CashierOr_Click(object sender, EventArgs e)
@@ -267,7 +254,9 @@ namespace POS_project
                     finalPricePerUnitVATInclusive,
                     originalSubtotalVATInclusive,
                     lineDiscountAmount,
-                    finalSubtotalVATInclusive
+                    finalSubtotalVATInclusive,
+                    productInDb.id,
+                    productInDb.category
                 );
             }
 
@@ -434,7 +423,8 @@ namespace POS_project
                     total_price = (decimal)totalDue,
                     amount = (decimal)amountReceived,
                     change = (decimal)change,
-                    order_date = DateTime.Now
+                    order_date = DateTime.Now,
+                    CashierId = _cashierId // Assign the default cashier ID
                 };
                 _context.Sales.Add(newSale);
 
@@ -448,7 +438,8 @@ namespace POS_project
                         OrigPrice = Convert.ToDecimal(row["Original Unit Price"]),
                         TotalPrice = Convert.ToDecimal(row["Final Subtotal"]),
                         customer_id = "DefaultCustomer",
-                        category = "DefaultCategory", // You might want to get the actual category from the product if available in orderListTable
+                        category = row["Category"].ToString(),
+                        ProductId = Convert.ToInt32(row["Product PK ID"]),
                         order_date = DateTime.Now
                     };
                     newSale.SaleItems.Add(saleItem);
@@ -459,7 +450,12 @@ namespace POS_project
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error saving sale record and items: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorMessage = "Error saving sale record and items: " + ex.Message;
+                if (ex.InnerException != null)
+                {
+                    errorMessage += "\nInner Exception: " + ex.InnerException.Message;
+                }
+                MessageBox.Show(errorMessage, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DialogResult result = MessageBox.Show($"Payment successful! Change: {change.ToString("C2")}\nDo you want to print a receipt?", "Payment Complete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -511,7 +507,7 @@ namespace POS_project
 
                     DiscountValue.Text = currentDiscountType == "Cash"
                         ? $"Cash {currentDiscountValue.ToString("C2")}"
-                        : $"Percent {currentDiscountValue.ToString("F2")}%";
+                        : $"Percent {currentDiscountValue.ToString("F2")}%" ;
 
                     MessageBox.Show($"Discount set: {currentDiscountType} - {currentDiscountValue}", "Discount Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -534,9 +530,6 @@ namespace POS_project
             barcodeForm.BarcodeScanned += BarcodeForm_BarcodeScanned;
             // Show the form as a modal dialog, which prevents interaction with the main form until it's closed.
             barcodeForm.ShowDialog(this);
-
-            // No need for DialogResult check here, as the BarcodeForm_BarcodeScanned
-            // method now directly controls the closing of the barcodeForm based on product lookup.
         }
 
         // --- NEW: Event handler for when a barcode is scanned ---
@@ -550,43 +543,17 @@ namespace POS_project
             if (this.InvokeRequired)
             {
                 // If we're not on the UI thread, call this same method again on the UI thread.
-                this.Invoke(new Action(() => BarcodeForm_BarcodeScanned(sender, barcode)));
+                this.Invoke(new Action(() => FindAndDisplayProduct(barcode)));
             }
             else
             {
-                bool productFound = FindAndDisplayProduct(barcode);
-
-                Barcode_Scanner barcodeScanner = sender as Barcode_Scanner;
-                if (barcodeScanner != null)
-                {
-                    if (productFound)
-                    {
-                        MessageBox.Show($"Product with Barcode/ID '{barcode}' found and displayed.",
-                                        "Product Found",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information);
-                        barcodeScanner.DialogResult = DialogResult.OK;
-                        barcodeScanner.Close();
-                    }
-                    else
-                    {
-                        DialogResult rescanChoice = MessageBox.Show($"Product with Barcode/ID '{barcode}' not found in the database. Do you want to try scanning again?",
-                                                                    "Product Not Found",
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Warning);
-                        if (rescanChoice == DialogResult.No)
-                        {
-                            barcodeScanner.DialogResult = DialogResult.Cancel;
-                            barcodeScanner.Close();
-                        }
-                        // If rescanChoice is Yes, the scanner form remains open for another scan.
-                    }
-                }
+                // If we're already on the UI thread, just call the method directly.
+                FindAndDisplayProduct(barcode);
             }
         }
 
         // --- NEW: Method to find a product by its ID and update the UI ---
-        private bool FindAndDisplayProduct(string productId)
+        private void FindAndDisplayProduct(string productId)
         {
             try
             {
@@ -603,9 +570,8 @@ namespace POS_project
                     // from firing during these programmatic updates.
                     isProgrammaticUpdate = true;
 
-                    // 1. Set the category in the ComboBox. This will trigger Cashier_CategoryOr_SelectedIndexChanged.
-                    //    The modified Cashier_CategoryOr_SelectedIndexChanged will now correctly
-                    //    populate Cashier_ProductidOr with items for 'scannedProduct.category'.
+                    // 1. Set the category in the ComboBox. This might trigger an event
+                    //    that repopulates the Product ID ComboBox.
                     Cashier_CategoryOr.SelectedItem = scannedProduct.category;
 
                     // 2. Now that the Product ID list is correctly filtered for the category,
@@ -619,12 +585,14 @@ namespace POS_project
 
                     // Reset the flag after updates are complete.
                     isProgrammaticUpdate = false;
-
-                    return true; // Product found
                 }
                 else
                 {
-                    return false; // Product not found
+                    // If no product is found, inform the user.
+                    MessageBox.Show($"Product with Barcode/ID '{productId}' not found in the database.",
+                                    "Product Not Found",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -635,42 +603,6 @@ namespace POS_project
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                 isProgrammaticUpdate = false; // Ensure flag is reset even if an error occurs.
-                return false; // Indicate failure to find product due to error
-            }
-        }
-
-        // --- NEW: Method to filter dataGridView1 by product name using the search box ---
-        private void Cashier_SearchOr_Click(object sender, EventArgs e)
-        {
-            string searchText = searchBox.Text.Trim(); // Get search text from textBox1
-
-            if (string.IsNullOrEmpty(searchText))
-            {
-                displayAllAvailableProducts(); // If search box is empty, show all products
-                return;
-            }
-
-            try
-            {
-                // Filter products by name (case-insensitive contains) and status "Available"
-                // This assumes your database's collation is case-insensitive for prod_name.
-                var filteredProducts = _context.Products
-                                               .Where(p => p.status == "Available" &&
-                                                           p.prod_name.Contains(searchText))
-                                               .OrderBy(p => p.prod_name)
-                                               .AsNoTracking()
-                                               .ToList();
-
-                dataGridView1.DataSource = filteredProducts; // Update dataGridView1 with filtered results
-
-                if (filteredProducts.Count == 0)
-                {
-                    MessageBox.Show("No products found matching your search criteria.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching products: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
