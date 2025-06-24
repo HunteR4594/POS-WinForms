@@ -1,188 +1,191 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Data; // Required for DataTable
-using System.Windows.Forms; // Ensure this is present for MessageBox, UserControl etc.
+﻿using System.Data;
+using System.Linq;
+using System.Windows.Forms;
+using System;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using POS_project.Migrations; // Required for List<T>
 
 namespace POS_project
 {
     public partial class CashierOrder : UserControl
     {
-        private SqlConnection connect;
-        // DataTable to hold the items in the current order
-        private DataTable orderListTable;
+        private readonly AppDbContext _context; // EF Core DbContext for database interactions
+        private DataTable orderListTable; // DataTable for displaying current order items
 
-        // Fields for Discount Feature
+        // Fields for Discount Feature (these store the *active* discount to be applied to the next item added)
         private string currentDiscountType = string.Empty; // "Cash" or "Percent"
         private double currentDiscountValue = 0.0; // The cash value (per unit) or percentage value
         private bool isDiscountActive = false; // Flag to indicate if a discount is set for the next item
 
-        // Fields for Total Calculations (including discount and VAT)
+        // Fields for Total Calculations (these accumulate totals for the entire order, including discount and VAT)
         private double grossSubtotalBeforeDiscount = 0.0; // Sum of Original Subtotals (before any line discount)
         private double totalLineDiscountAmount = 0.0;     // Sum of Line Discount Amounts
         private double netSalesBeforeVAT = 0.0;           // (grossSubtotalBeforeDiscount - totalLineDiscountAmount)
         private double totalVATAmount = 0.0;              // 12% of netSalesBeforeVAT
         private const double VAT_RATE = 0.12; // 12% VAT rate
 
-        public CashierOrder()
+        // Flag to prevent re-triggering Cashier_CategoryOr_SelectedIndexChanged during programmatic updates
+        private bool isProgrammaticUpdate = false;
+        // MODIFICATION 1: The cashier ID is now 'readonly' and has no default value.
+        // It MUST be initialized in the constructor.
+        private readonly int _cashierId;
+        public CashierOrder(int cashierId)
         {
             InitializeComponent();
 
-            connect = new(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\renren\Documents\newDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True");
+            // Ensure the provided ID is valid (not zero or negative)
+            if (cashierId <= 0)
+            {
+                throw new ArgumentException("A valid cashier ID must be provided.", nameof(cashierId));
+            }
 
-            // Initialize the order list DataTable and set it as DataSource for dataGridView2
-            InitializeOrderListTable();
-
-            displayAllAvailableProducts();
-            displayCategories();
-            UpdateTotals(); // Initialize totals on load
+            _context = new AppDbContext(); // Initialize EF Core DbContext
+            _cashierId = cashierId; // Assign the required cashier ID
+            InitializeOrderListTable(); // Setup the DataTable structure
+            displayAllAvailableProducts(); // Load available products into dataGridView1 using EF Core
+            displayCategories(); // Load categories into ComboBox using EF Core
+            UpdateTotals(); // Initialize all total labels to 0.00
         }
 
-        // --- Modified Method: Initialize Order List Table ---
+        // --- Method: Initialize Order List Table ---
         private void InitializeOrderListTable()
         {
             orderListTable = new DataTable();
+            // Define all the columns required for detailed order tracking
             orderListTable.Columns.Add("Product ID", typeof(string));
             orderListTable.Columns.Add("Product Name", typeof(string));
             orderListTable.Columns.Add("Quantity", typeof(int));
-            orderListTable.Columns.Add("Original Unit Price", typeof(double)); // Stores the price before any item-specific discount
-            orderListTable.Columns.Add("Unit Price After Discount", typeof(double)); // Price per unit after item-specific discount
+            orderListTable.Columns.Add("Original Unit Price", typeof(double)); // Original price from DB (VAT-inclusive)
+            orderListTable.Columns.Add("Unit Price After Discount", typeof(double)); // Price per unit after line discount
             orderListTable.Columns.Add("Original Subtotal", typeof(double)); // (Original Unit Price * Quantity) - VAT Inclusive
             orderListTable.Columns.Add("Line Discount Amount", typeof(double)); // The actual discount amount for this item line
             orderListTable.Columns.Add("Final Subtotal", typeof(double)); // (Original Subtotal - Line Discount Amount) - Still VAT Inclusive
+            orderListTable.Columns.Add("Product PK ID", typeof(int)); // New column for actual product Primary Key ID
+            orderListTable.Columns.Add("Category", typeof(string)); // New column for category name
+            orderListTable.Columns.Add("Cashier Username", typeof(string)); // New column for cashier's username
 
             dataGridView2.DataSource = orderListTable; // Bind the DataTable to dataGridView2
 
             // Configure column visibility and formatting for dataGridView2
-            dataGridView2.Columns["Original Unit Price"].Visible = false; // Hide this, it's for internal calculation
-            // dataGridView2.Columns["Line Discount Amount"].Visible = false; // Keep hidden or show if desired for detail
+            dataGridView2.Columns["Original Unit Price"].Visible = false; // Usually hidden on UI, but needed for calculations
+            dataGridView2.Columns["Line Discount Amount"].Visible = false; // Can be hidden or shown
+            dataGridView2.Columns["Product PK ID"].Visible = false; // Hide the actual Product PK ID
+            dataGridView2.Columns["Category"].Visible = false; // Hide category as it's often not displayed on receipt lines
 
-            // Ensure currency formatting for relevant columns
+            // Ensure currency formatting for relevant columns displayed on the grid
             dataGridView2.Columns["Unit Price After Discount"].DefaultCellStyle.Format = "C2";
             dataGridView2.Columns["Original Subtotal"].DefaultCellStyle.Format = "C2";
-            dataGridView2.Columns["Line Discount Amount"].DefaultCellStyle.Format = "C2"; // Show discount for the line
+            dataGridView2.Columns["Line Discount Amount"].DefaultCellStyle.Format = "C2";
             dataGridView2.Columns["Final Subtotal"].DefaultCellStyle.Format = "C2";
         }
 
+        // --- displayAllAvailableProducts to use EF Core and Product entity ---
         public void displayAllAvailableProducts()
         {
-            ProductData pData = new ProductData();
-            List<ProductData> listdata = pData.allAvailableProducts();
-
-            dataGridView1.DataSource = listdata;
-            dataGridView1.AutoGenerateColumns = true; // Ensure columns are generated
-        }
-
-        public bool checkConnection()
-        {
-            return connect.State == ConnectionState.Closed;
-        }
-
-        public void displayCategories()
-        {
-            if (checkConnection())
+            try
             {
-                try
-                {
-                    connect.Open();
-                    String selectData = "SELECT category FROM categories";
-                    using (SqlCommand command = new SqlCommand(selectData, connect))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            Cashier_CategoryOr.Items.Clear();
-
-                            while (reader.Read())
-                            {
-                                string item = reader.GetString(0);
-                                Cashier_CategoryOr.Items.Add(item);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading categories: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                finally
-                {
-                    if (connect.State == ConnectionState.Open)
-                    {
-                        connect.Close();
-                    }
-                }
+                var products = _context.Products
+                                       .Where(p => p.status == "Available")
+                                       .AsNoTracking()
+                                       .ToList();
+                dataGridView1.DataSource = products;
+                dataGridView1.AutoGenerateColumns = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading available products: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // --- displayCategories() to use EF Core and Category entity and add "All" ---
+        public void displayCategories()
+        {
+            try
+            {
+                var categories = _context.Categories
+                                         .Select(c => c.CategoryName)
+                                         .Distinct()
+                                         .OrderBy(c => c)
+                                         .AsNoTracking()
+                                         .ToList();
+
+                Cashier_CategoryOr.Items.Clear();
+                Cashier_CategoryOr.Items.Add("All");
+                foreach (string category in categories)
+                {
+                    Cashier_CategoryOr.Items.Add(category);
+                }
+                Cashier_CategoryOr.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading categories: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // --- Cashier_CategoryOr_SelectedIndexChanged to filter DataGridView and populate ProductID ComboBox ---
         private void Cashier_CategoryOr_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedCategory = Cashier_CategoryOr.SelectedItem?.ToString();
 
-            if (selectedCategory != null)
+            Cashier_ProductidOr.Items.Clear();
+            ClearProductInputs();
+
+
+            if (selectedCategory == "All")
             {
-                if (checkConnection())
+                displayAllAvailableProducts();
+            }
+            else if (selectedCategory != null)
+            {
+                try
                 {
-                    try
-                    {
-                        connect.Open();
-                        string selectData = "SELECT prod_id, prod_name, prod_price FROM products WHERE category = @category AND status = 'Available'";
+                    var filteredProducts = _context.Products
+                                                   .Where(p => p.category == selectedCategory && p.status == "Available")
+                                                   .OrderBy(p => p.prod_name)
+                                                   .AsNoTracking()
+                                                   .ToList();
+                    dataGridView1.DataSource = filteredProducts;
 
-                        using (SqlCommand command = new SqlCommand(selectData, connect))
-                        {
-                            command.Parameters.AddWithValue("@category", selectedCategory);
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-                                Cashier_ProductIDOr.Items.Clear();
-                                ClearProductInputs();
-
-                                while (reader.Read())
-                                {
-                                    string productId = reader["prod_id"].ToString();
-                                    Cashier_ProductIDOr.Items.Add(productId);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
+                    foreach (Product p in filteredProducts)
                     {
-                        MessageBox.Show("Error loading products for category: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Cashier_ProductidOr.Items.Add(p.prod_id);
                     }
-                    finally
-                    {
-                        if (connect.State == ConnectionState.Open)
-                        {
-                            connect.Close();
-                        }
-                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error filtering products or loading product IDs: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        // --- Event Handler: dataGridView1_CellClick ---
+        // --- dataGridView1_CellClick to correctly update Category and Product ID ---
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                Product selectedProduct = row.DataBoundItem as Product;
 
-                string productId = row.Cells["ProdID"].Value?.ToString();
-                string productName = row.Cells["ProdName"].Value?.ToString();
-                double originalProductPrice = 0.0;
-                if (row.Cells["Price"].Value != null)
+                if (selectedProduct != null)
                 {
-                    double.TryParse(row.Cells["Price"].Value.ToString(), out originalProductPrice);
+                    isProgrammaticUpdate = true;
+                    Cashier_CategoryOr.SelectedItem = selectedProduct.category;
+                    Cashier_ProductidOr.SelectedItem = selectedProduct.prod_id;
+                    isProgrammaticUpdate = false;
+                    Cashier_Product_NameOr.Text = selectedProduct.prod_name;
+                    Cashier_PriceOr.Text = selectedProduct.prod_price.ToString("F2");
+                    Cashier_QuantityOr.Value = 1;
                 }
-
-                Cashier_ProductIDOr.SelectedItem = productId;
-                Cashier_Product_NameOr.Text = productName;
-                Cashier_PriceOr.Text = originalProductPrice.ToString("F2"); // Display original VAT-inclusive price
-
-                Cashier_QuantityOr.Value = 1;
             }
         }
+      
 
-        // --- Modified Event Handler: Add_CashierOr_Click ---
+        // --- Add_CashierOr_Click (Corrected Stock Logic and DataTable Population) ---
         private void Add_CashierOr_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Cashier_Product_NameOr.Text) || Cashier_ProductIDOr.SelectedItem == null)
+            if (string.IsNullOrEmpty(Cashier_Product_NameOr.Text) || Cashier_ProductidOr.SelectedItem == null)
             {
                 MessageBox.Show("Please select a product first.", "Missing Product", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -194,18 +197,30 @@ namespace POS_project
                 return;
             }
 
-            string prodId = Cashier_ProductIDOr.SelectedItem.ToString();
+            string prodId = Cashier_ProductidOr.SelectedItem.ToString();
             string prodName = Cashier_Product_NameOr.Text;
             int quantity = (int)Cashier_QuantityOr.Value;
-            double originalPricePerUnitVATInclusive = Convert.ToDouble(Cashier_PriceOr.Text); // Price from display is VAT-inclusive
+            double originalPricePerUnitVATInclusive = Convert.ToDouble(Cashier_PriceOr.Text);
+
+            Product productInDb = _context.Products.FirstOrDefault(p => p.prod_id == prodId);
+
+            if (productInDb == null)
+            {
+                MessageBox.Show("Product not found in database: " + prodId, "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (productInDb.stock < quantity)
+            {
+                MessageBox.Show($"Not enough stock available for {prodName}. Available: {productInDb.stock}", "Out of Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             double originalSubtotalVATInclusive = originalPricePerUnitVATInclusive * quantity;
-
             double lineDiscountAmount = 0.0;
-            double finalPricePerUnitVATInclusive = originalPricePerUnitVATInclusive; // Price after line discount (still VAT-inclusive)
-            double finalSubtotalVATInclusive = originalSubtotalVATInclusive; // Subtotal after line discount (still VAT-inclusive)
+            double finalPricePerUnitVATInclusive = originalPricePerUnitVATInclusive;
+            double finalSubtotalVATInclusive = originalSubtotalVATInclusive;
 
-            // Apply item-level discount if active
             if (isDiscountActive)
             {
                 if (currentDiscountType == "Cash")
@@ -213,9 +228,6 @@ namespace POS_project
                     lineDiscountAmount = quantity * currentDiscountValue;
                     finalSubtotalVATInclusive = originalSubtotalVATInclusive - lineDiscountAmount;
                     finalPricePerUnitVATInclusive = originalPricePerUnitVATInclusive - currentDiscountValue;
-
-                    if (finalPricePerUnitVATInclusive < 0) finalPricePerUnitVATInclusive = 0;
-                    if (finalSubtotalVATInclusive < 0) finalSubtotalVATInclusive = 0;
                 }
                 else if (currentDiscountType == "Percent")
                 {
@@ -223,66 +235,70 @@ namespace POS_project
                     lineDiscountAmount = originalSubtotalVATInclusive * percentFactor;
                     finalSubtotalVATInclusive = originalSubtotalVATInclusive - lineDiscountAmount;
                     finalPricePerUnitVATInclusive = originalPricePerUnitVATInclusive * (1 - percentFactor);
+                }
 
-                    if (finalPricePerUnitVATInclusive < 0) finalPricePerUnitVATInclusive = 0;
-                    if (finalSubtotalVATInclusive < 0) finalSubtotalVATInclusive = 0;
-                }
-                else
-                {
-                    MessageBox.Show("Error: Unknown discount type applied.", "Discount Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                if (finalPricePerUnitVATInclusive < 0) finalPricePerUnitVATInclusive = 0;
+                if (finalSubtotalVATInclusive < 0) finalSubtotalVATInclusive = 0;
             }
 
-            // Check if product already exists in the order list
-            bool productExists = false;
+            bool productExistsInOrderList = false;
             foreach (DataRow row in orderListTable.Rows)
             {
                 if (row["Product ID"].ToString() == prodId)
                 {
-                    // Update existing row
                     row["Quantity"] = Convert.ToInt32(row["Quantity"]) + quantity;
                     row["Original Subtotal"] = Convert.ToDouble(row["Original Subtotal"]) + originalSubtotalVATInclusive;
                     row["Line Discount Amount"] = Convert.ToDouble(row["Line Discount Amount"]) + lineDiscountAmount;
                     row["Final Subtotal"] = Convert.ToDouble(row["Final Subtotal"]) + finalSubtotalVATInclusive;
-                    // For merged items, "Unit Price After Discount" can be set to the average or the last added unit price.
-                    // For simplicity, we are leaving it as the last added unit price here.
                     row["Unit Price After Discount"] = finalPricePerUnitVATInclusive;
-                    productExists = true;
+                    productExistsInOrderList = true;
                     break;
                 }
             }
 
-            if (!productExists)
+            if (!productExistsInOrderList)
             {
-                // Add new row to the order list DataTable
+                // Fetch the cashier's username using _cashierId
+                string cashierUsername = _context.Users.FirstOrDefault(u => u.id == _cashierId)?.Username ?? "Unknown";
+
                 orderListTable.Rows.Add(
-                    prodId,
-                    prodName,
-                    quantity,
+                    prodId, prodName, quantity,
                     originalPricePerUnitVATInclusive,
                     finalPricePerUnitVATInclusive,
                     originalSubtotalVATInclusive,
                     lineDiscountAmount,
-                    finalSubtotalVATInclusive
+                    finalSubtotalVATInclusive,
+                    productInDb.id,
+                    productInDb.category,
+                    cashierUsername // Add the cashier's username here
                 );
             }
 
-            UpdateTotals(); // Recalculate all totals including VAT
-            ClearProductInputs(); // Clear selection for next item
-            // After adding an item, reset discount fields
+            try
+            {
+                productInDb.stock -= quantity;
+                _context.SaveChanges();
+                displayAllAvailableProducts();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Database error updating stock during Add: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            UpdateTotals();
+            ClearProductInputs();
             currentDiscountType = string.Empty;
             currentDiscountValue = 0.0;
             isDiscountActive = false;
-            DiscountValue.Text = "Discount"; // Reset discount label on UI
+            DiscountValue.Text = "Discount";
         }
 
-        // --- Modified Method: UpdateTotals (formerly UpdateTotalPrice) ---
-        // This method calculates and updates Partial Price, Total Discount, Total VAT, and Final Grand Total
+        // --- UpdateTotals (consolidated logic for all summary calculations) ---
         private void UpdateTotals()
         {
-            grossSubtotalBeforeDiscount = 0; // Reset before recalculating
-            totalLineDiscountAmount = 0;     // Reset before recalculating
-            double currentFinalSubtotalAfterLineDiscount = 0; // Sum of "Final Subtotal" column from orderListTable
+            grossSubtotalBeforeDiscount = 0;
+            totalLineDiscountAmount = 0;
+            double currentFinalSubtotalAfterLineDiscount = 0;
 
             foreach (DataRow row in orderListTable.Rows)
             {
@@ -291,46 +307,58 @@ namespace POS_project
                 currentFinalSubtotalAfterLineDiscount += Convert.ToDouble(row["Final Subtotal"]);
             }
 
-            // Calculate Net Sales Before VAT (this is the base for VAT calculation)
-            // If currentFinalSubtotalAfterLineDiscount is already VAT-inclusive, then netSalesBeforeVAT is
-            // the value without VAT.
             netSalesBeforeVAT = currentFinalSubtotalAfterLineDiscount / (1 + VAT_RATE);
+            totalVATAmount = currentFinalSubtotalAfterLineDiscount - netSalesBeforeVAT;
+            double finalGrandTotal = currentFinalSubtotalAfterLineDiscount;
 
-            // Calculate Total VAT Amount
-            totalVATAmount = currentFinalSubtotalAfterLineDiscount - netSalesBeforeVAT; // (netSalesBeforeVAT * VAT_RATE);
-
-            // The Cashier_Total_PriceOr will display the final grand total (including VAT, after discount)
-            double finalGrandTotal = currentFinalSubtotalAfterLineDiscount; // This is already the final total.
-
-            // Update UI labels
-            label12.Text = grossSubtotalBeforeDiscount.ToString("C2");  // Partial Price (before any discounts)
-            label7.Text = totalLineDiscountAmount.ToString("C2");     // Total Discount Applied
-            vatValue.Text = totalVATAmount.ToString("C2");            // Total VAT Amount
-            Cashier_Total_PriceOr.Text = finalGrandTotal.ToString("C2"); // Final Grand Total
+            label12.Text = grossSubtotalBeforeDiscount.ToString("C2");
+            label7.Text = totalLineDiscountAmount.ToString("C2");
+            vatValue.Text = totalVATAmount.ToString("C2");
+            Cashier_Total_PriceOr.Text = finalGrandTotal.ToString("C2");
         }
 
         // --- Method: Clear Product Inputs ---
         private void ClearProductInputs()
         {
-            Cashier_ProductIDOr.SelectedIndex = -1; // Deselect
+            Cashier_ProductidOr.SelectedIndex = -1;
             Cashier_Product_NameOr.Text = "";
-            Cashier_PriceOr.Text = "0.00"; // Reset price display
-            Cashier_QuantityOr.Value = 1; // Reset quantity
+            Cashier_PriceOr.Text = "0.00";
+            Cashier_QuantityOr.Value = 1;
         }
 
         private void Cashier_QuantityOr_ValueChanged(object sender, EventArgs e)
         {
-            // This event handler remains empty as per previous discussions.
         }
 
-        // --- Existing button handlers ---
+        // --- Remove_CashierOr_Click to return stock using EF Core ---
         private void Remove_CashierOr_Click(object sender, EventArgs e)
         {
             if (dataGridView2.SelectedRows.Count > 0)
             {
-                int rowIndex = dataGridView2.SelectedRows[0].Index;
-                orderListTable.Rows.RemoveAt(rowIndex);
-                UpdateTotals(); // Update all totals after removal
+                DataRowView drv = dataGridView2.SelectedRows[0].DataBoundItem as DataRowView;
+                if (drv == null) return;
+                DataRow rowToRemove = drv.Row;
+
+                string prodId = rowToRemove["Product ID"].ToString();
+                int quantityToReturn = Convert.ToInt32(rowToRemove["Quantity"]);
+
+                try
+                {
+                    Product productToUpdate = _context.Products.FirstOrDefault(p => p.prod_id == prodId);
+                    if (productToUpdate != null)
+                    {
+                        productToUpdate.stock += quantityToReturn;
+                        _context.SaveChanges();
+                        displayAllAvailableProducts();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Database error returning stock on item removal: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                orderListTable.Rows.Remove(rowToRemove);
+                UpdateTotals();
             }
             else
             {
@@ -338,14 +366,42 @@ namespace POS_project
             }
         }
 
+        // --- Clear_CashierOr_Click to return all stock on clear using EF Core ---
         private void Clear_CashierOr_Click(object sender, EventArgs e)
         {
+            foreach (DataRow row in orderListTable.Rows.Cast<DataRow>().ToList())
+            {
+                string prodId = row["Product ID"].ToString();
+                int quantityToReturn = Convert.ToInt32(row["Quantity"]);
+
+                try
+                {
+                    Product productToUpdate = _context.Products.FirstOrDefault(p => p.prod_id == prodId);
+                    if (productToUpdate != null)
+                    {
+                        productToUpdate.stock += quantityToReturn;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error returning stock for {prodId} on clear: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            try
+            {
+                _context.SaveChanges();
+                displayAllAvailableProducts();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving stock changes during clear operation: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             orderListTable.Clear();
-            UpdateTotals(); // Reset all totals (which will become 0)
+            UpdateTotals();
             ClearProductInputs();
-            Cashier_AmountOr.Clear(); // Clear amount input
-            Cashier_ChangeOr.Text = "0.00"; // Reset change display
-            // Also reset discount and VAT variables when order is cleared
+            Cashier_AmountOr.Clear();
+            Cashier_ChangeOr.Text = "0.00";
             currentDiscountType = string.Empty;
             currentDiscountValue = 0.0;
             isDiscountActive = false;
@@ -353,145 +409,99 @@ namespace POS_project
             totalLineDiscountAmount = 0.0;
             netSalesBeforeVAT = 0.0;
             totalVATAmount = 0.0;
-            DiscountValue.Text = "Discount"; // Reset discount label on UI
-            MessageBox.Show("Order list cleared.", "Cleared", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DiscountValue.Text = "Discount";
+            MessageBox.Show("Order list cleared and stock returned.", "Cleared", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // --- Modified Event Handler: Cashier_Pay_OrdersOr_Click ---
+        // --- Cashier_Pay_OrdersOr_Click (Corrected Sale property names) ---
         private void Cashier_Pay_OrdersOr_Click(object sender, EventArgs e)
         {
-            if (orderListTable.Rows.Count == 0)
-            {
-                MessageBox.Show("No items in the order to pay for.", "Empty Order", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(Cashier_AmountOr.Text))
-            {
-                MessageBox.Show("Please enter the amount received.", "Missing Amount", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!double.TryParse(Cashier_AmountOr.Text, out double amountReceived))
-            {
-                MessageBox.Show("Invalid amount entered. Please enter a numeric value.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            double totalDue = 0;
-            // The Cashier_Total_PriceOr now displays the final grand total (incl. VAT, after discount)
-            if (!double.TryParse(Cashier_Total_PriceOr.Text.Replace("₱", "").Replace("$", "").Trim(), out totalDue))
-            {
-                MessageBox.Show("Error parsing total price. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
+            if (orderListTable.Rows.Count == 0) return;
+            if (string.IsNullOrEmpty(Cashier_AmountOr.Text)) return;
+            if (!double.TryParse(Cashier_AmountOr.Text, out double amountReceived)) return;
+            if (!double.TryParse(Cashier_Total_PriceOr.Text.Replace("₱", "").Replace("$", "").Trim(), out double totalDue)) return;
             if (amountReceived < totalDue)
             {
                 MessageBox.Show($"Insufficient amount. Total due: {totalDue.ToString("C2")}", "Payment Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // --- Start Stock Deduction Logic ---
+            double change = amountReceived - totalDue;
+            Cashier_ChangeOr.Text = change.ToString("C2");
+
             try
             {
-                if (connect.State == ConnectionState.Closed)
+                Sale newSale = new Sale
                 {
-                    connect.Open();
-                }
-                else if (connect.State == ConnectionState.Broken)
-                {
-                    connect.Close();
-                    connect.Open();
-                }
-
-                string updateQuery = "UPDATE products SET stock = stock - @quantity WHERE prod_id = @productId";
+                    customer_id = "DefaultCustomer",
+                    total_price = (decimal)totalDue,
+                    amount = (decimal)amountReceived,
+                    change = (decimal)change,
+                    order_date = DateTime.Now,
+                    CashierId = _cashierId // Assign the default cashier ID
+                };
+                _context.Sales.Add(newSale);
 
                 foreach (DataRow row in orderListTable.Rows)
                 {
-                    string productId = row["Product ID"].ToString();
-                    int orderedQuantity = Convert.ToInt32(row["Quantity"]);
-
-                    using (SqlCommand command = new SqlCommand(updateQuery, connect))
+                    SaleItem saleItem = new SaleItem()
                     {
-                        command.Parameters.AddWithValue("@quantity", orderedQuantity);
-                        command.Parameters.AddWithValue("@productId", productId);
-                        command.ExecuteNonQuery();
-                    }
+                        ProdId = row["Product ID"].ToString(),
+                        ProdName = row["Product Name"].ToString(),
+                        Quantity = Convert.ToInt32(row["Quantity"]),
+                        OrigPrice = Convert.ToDecimal(row["Original Unit Price"]),
+                        TotalPrice = Convert.ToDecimal(row["Final Subtotal"]),
+                        customer_id = "DefaultCustomer",
+                        category = row["Category"].ToString(),
+                        ProductId = Convert.ToInt32(row["Product PK ID"]),
+                        order_date = DateTime.Now,
+                        Username = row["Cashier Username"].ToString()
+                    };
+                    newSale.SaleItems.Add(saleItem);
                 }
 
-                MessageBox.Show("Stock updated successfully!", "Stock Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _context.SaveChanges();
+                MessageBox.Show("Sale and Sale Items recorded successfully!", "Sale Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error updating stock: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            finally
-            {
-                if (connect.State == ConnectionState.Open)
+                string errorMessage = "Error saving sale record and items: " + ex.Message;
+                if (ex.InnerException != null)
                 {
-                    connect.Close();
+                    errorMessage += "\nInner Exception: " + ex.InnerException.Message;
                 }
+                MessageBox.Show(errorMessage, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            // --- End Stock Deduction Logic ---
 
-            double change = amountReceived - totalDue;
-            Cashier_ChangeOr.Text = change.ToString("C2");
-            MessageBox.Show($"Payment successful! Change: {change.ToString("C2")}", "Payment Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            displayAllAvailableProducts(); // Refresh available products grid
-
-            DialogResult result = MessageBox.Show("Payment successful! Do you want to print a receipt?", "Print Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
+            DialogResult result = MessageBox.Show($"Payment successful! Change: {change.ToString("C2")}\nDo you want to print a receipt?", "Payment Complete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
                 Cashier_ReceiptOr_Click(sender, e);
             }
-
-            Clear_CashierOr_Click(sender, e); // Clear all order details, totals, and inputs
+            Clear_CashierOr_Click(sender, e);
         }
 
-        // --- Modified Event Handler: Cashier_ReceiptOr_Click ---
+        // --- Cashier_ReceiptOr_Click (Removed summaryLabelPadding) ---
         private void Cashier_ReceiptOr_Click(object sender, EventArgs e)
         {
-            if (orderListTable.Rows.Count == 0)
-            {
-                MessageBox.Show("No items in the order to generate a receipt for.", "Empty Order", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            if (orderListTable.Rows.Count == 0) return;
 
             string receiptContent = "--- Receipt ---\n";
-            // Updated column headers for receipt to show more detail
-            receiptContent += "ProdID\tName\tQty\tOrig Price\tFinal Price\n"; //"Line Discount\n";
-            receiptContent += "-------------------------------------------------------------------------------\n";  // Adjusted separator length
+            receiptContent += "ProdID\tName\tQty\tOrig Price\tFinal Price\n";
+            receiptContent += "-------------------------------------------------------------------------------\n";
 
             foreach (DataRow row in orderListTable.Rows)
             {
-                receiptContent += $"{row["Product ID"]}\t" +
-                                  $"{row["Product Name"]}\t" +
-                                  $"{row["Quantity"]}\t" +
-                                  $"{Convert.ToDouble(row["Original Unit Price"]).ToString("F2")}\t" +
-                                  $"{Convert.ToDouble(row["Unit Price After Discount"]).ToString("F2")}\n"; //+
-                                  //$"{Convert.ToDouble(row["Line Discount Amount"]).ToString("F2")}\n";
+                receiptContent += $"{row["Product ID"]}\t{row["Product Name"]}\t{row["Quantity"]}\t{Convert.ToDouble(row["Original Unit Price"]):F2}\t{Convert.ToDouble(row["Unit Price After Discount"]):F2}\n";
             }
 
             receiptContent += "-------------------------------------------------------------------------------\n";
             receiptContent += $"Partial Total (Gross Sales before Discount): {grossSubtotalBeforeDiscount.ToString("C2")}\n";
             receiptContent += $"Total Line Discount Applied: {totalLineDiscountAmount.ToString("C2")}\n";
-            receiptContent += $"Net Sales Before VAT: {netSalesBeforeVAT.ToString("C2")}\n"; // Explicitly showing Net Sales before VAT
-            receiptContent += $"Total VAT (12%): {totalVATAmount.ToString("C2")}\n"; // Explicitly showing Total VAT
-            receiptContent += $"Final Grand Total: {Cashier_Total_PriceOr.Text}\n"; // This is the total the customer pays
-
-            double amountPaid = 0;
-            if (double.TryParse(Cashier_AmountOr.Text, out amountPaid))
-            {
-                receiptContent += $"Amount Paid: {amountPaid.ToString("C2")}\n";
-            }
-            else
-            {
-                receiptContent += "Amount Paid: Not entered\n";
-            }
+            receiptContent += $"Net Sales Before VAT: {netSalesBeforeVAT.ToString("C2")}\n";
+            receiptContent += $"Total VAT (12%): {totalVATAmount.ToString("C2")}\n";
+            receiptContent += $"Final Grand Total: {Cashier_Total_PriceOr.Text}\n";
+            receiptContent += $"Amount Paid: {Convert.ToDouble(Cashier_AmountOr.Text).ToString("C2")}\n";
             receiptContent += $"Change: {Cashier_ChangeOr.Text}\n";
             receiptContent += "-------------------------------------------------------------------------------\n";
             receiptContent += "Thank you for your purchase!\n";
@@ -499,26 +509,20 @@ namespace POS_project
             MessageBox.Show(receiptContent, "Receipt", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // --- Event Handler: Discount_CashierOr_Click ---
+        // --- Discount_CashierOr_Click (Removed re-calculation loop) ---
         private void Discount_CashierOr_Click(object sender, EventArgs e)
         {
             using (DiscountForm discountForm = new DiscountForm())
             {
-                DialogResult result = discountForm.ShowDialog();
-                if (result == DialogResult.OK)
+                if (discountForm.ShowDialog() == DialogResult.OK)
                 {
                     currentDiscountType = discountForm.SelectedDiscountType;
                     currentDiscountValue = discountForm.DiscountValue;
-                    isDiscountActive = true; // Set flag that a discount is ready to be applied to the next item
+                    isDiscountActive = true;
 
-                    if (currentDiscountType == "Cash")
-                    {
-                        DiscountValue.Text = $"Cash {currentDiscountValue.ToString("C2")}";
-                    }
-                    else if (currentDiscountType == "Percent")
-                    {
-                        DiscountValue.Text = $"Percent {currentDiscountValue.ToString("F2")}%";
-                    }
+                    DiscountValue.Text = currentDiscountType == "Cash"
+                        ? $"Cash {currentDiscountValue.ToString("C2")}"
+                        : $"Percent {currentDiscountValue.ToString("F2")}%" ;
 
                     MessageBox.Show($"Discount set: {currentDiscountType} - {currentDiscountValue}", "Discount Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -528,8 +532,92 @@ namespace POS_project
                     currentDiscountValue = 0.0;
                     isDiscountActive = false;
                     DiscountValue.Text = "Discount";
-                    MessageBox.Show("Discount application cancelled.", "Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+            }
+        }
+
+        // --- MODIFIED: Cashier_ScanOr_Click to handle the barcode scanner event ---
+        private void Cashier_ScanOr_Click(object sender, EventArgs e)
+        {
+            Barcode_Scanner barcodeForm = new Barcode_Scanner();
+            // Subscribe to the event that is fired when a barcode is successfully scanned.
+            // When the event occurs, the 'BarcodeForm_BarcodeScanned' method will be called.
+            barcodeForm.BarcodeScanned += BarcodeForm_BarcodeScanned;
+            // Show the form as a modal dialog, which prevents interaction with the main form until it's closed.
+            barcodeForm.ShowDialog(this);
+        }
+
+        // --- NEW: Event handler for when a barcode is scanned ---
+        private void BarcodeForm_BarcodeScanned(object sender, string barcode)
+        {
+            // This method is called when the BarcodeScanned event is triggered from the scanner form.
+            // The 'barcode' parameter holds the scanned string.
+
+            // We need to ensure this logic runs on the UI thread, as events can sometimes
+            // be raised from other threads. 'Invoke' ensures thread safety for UI updates.
+            if (this.InvokeRequired)
+            {
+                // If we're not on the UI thread, call this same method again on the UI thread.
+                this.Invoke(new Action(() => FindAndDisplayProduct(barcode)));
+            }
+            else
+            {
+                // If we're already on the UI thread, just call the method directly.
+                FindAndDisplayProduct(barcode);
+            }
+        }
+
+        // --- NEW: Method to find a product by its ID and update the UI ---
+        private void FindAndDisplayProduct(string productId)
+        {
+            try
+            {
+                // Search the database for a product whose prod_id matches the scanned barcode.
+                // AsNoTracking() improves performance for read-only queries.
+                Product scannedProduct = _context.Products
+                                                 .AsNoTracking()
+                                                 .FirstOrDefault(p => p.prod_id == productId);
+
+                if (scannedProduct != null)
+                {
+                    // If a product is found, populate the UI controls with its data.
+                    // A flag is used to prevent event handlers (like SelectedIndexChanged)
+                    // from firing during these programmatic updates.
+                    isProgrammaticUpdate = true;
+
+                    // 1. Set the category in the ComboBox. This might trigger an event
+                    //    that repopulates the Product ID ComboBox.
+                    Cashier_CategoryOr.SelectedItem = scannedProduct.category;
+
+                    // 2. Now that the Product ID list is correctly filtered for the category,
+                    //    select the specific product ID.
+                    Cashier_ProductidOr.SelectedItem = scannedProduct.prod_id;
+
+                    // 3. Update the remaining display fields.
+                    Cashier_Product_NameOr.Text = scannedProduct.prod_name;
+                    Cashier_PriceOr.Text = scannedProduct.prod_price.ToString("F2");
+                    Cashier_QuantityOr.Value = 1; // Set default quantity to 1
+
+                    // Reset the flag after updates are complete.
+                    isProgrammaticUpdate = false;
+                }
+                else
+                {
+                    // If no product is found, inform the user.
+                    MessageBox.Show($"Product with Barcode/ID '{productId}' not found in the database.",
+                                    "Product Not Found",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any potential database errors during the search.
+                MessageBox.Show("Error retrieving product from database: " + ex.Message,
+                                "Database Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                isProgrammaticUpdate = false; // Ensure flag is reset even if an error occurs.
             }
         }
     }

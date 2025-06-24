@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace POS_project
+﻿namespace POS_project
 {
     public partial class DiscountForm : Form
     {
         // Public properties to get the selected discount type and value after the form closes
-        public string SelectedDiscountType { get; private set; } // Will be "Cash" or "Percent"
-        public double DiscountValue { get; private set; }
+        public string SelectedDiscountType { get; set; } // Will be "Cash" or "Percent"
+        public double DiscountValue { get; set; }
+
+        // Add the following property to resolve the error
+        public double AmountPaid { get; set; } // Represents the amount paid by the customer
+        public double Change { get; set; }
+
 
         public DiscountForm()
         {

@@ -116,6 +116,7 @@
             button5.TextAlign = ContentAlignment.BottomCenter;
             button5.TextImageRelation = TextImageRelation.ImageAboveText;
             button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // button4
             // 
@@ -185,7 +186,6 @@
             // 
             // pictureBox6
             // 
-            pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
             pictureBox6.Location = new Point(30, 496);
             pictureBox6.Margin = new Padding(3, 2, 3, 2);
             pictureBox6.Name = "pictureBox6";

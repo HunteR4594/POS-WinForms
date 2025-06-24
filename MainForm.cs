@@ -5,8 +5,11 @@
         public MainForm()
         {
             InitializeComponent();
-            MessageBox.Show("MainForm Loaded");
-
+            // IMPORTANT: Replace 'pnlContentArea' with the actual name of your main content panel
+            panel3.Controls.Clear(); // Clear any existing control in the main content panel
+            POS_project.CA_Dashboard myControl = new POS_project.CA_Dashboard();
+            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
+            panel3.Controls.Add(myControl);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -43,7 +46,7 @@
         private void button5_Click(object sender, EventArgs e)
         {
             panel3.Controls.Clear(); // Clear any existing control in the main content panel
-            POS_project.Dashboard myControl = new POS_project.Dashboard();
+            POS_project.Reports myControl = new POS_project.Reports();
             myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
             panel3.Controls.Add(myControl);
         }
@@ -62,6 +65,49 @@
         }
 
         private void addProducts5_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            // IMPORTANT: Replace 'pnlContentArea' with the actual name of your main content panel
+            panel3.Controls.Clear(); // Clear any existing control in the main content panel
+            POS_project.AddminAddEmp myControl = new POS_project.AddminAddEmp();
+            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
+            panel3.Controls.Add(myControl);
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            // IMPORTANT: Replace 'pnlContentArea' with the actual name of your main content panel
+            panel3.Controls.Clear(); // Clear any existing control in the main content panel
+            POS_project.CA_Dashboard myControl = new POS_project.CA_Dashboard();
+            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
+            panel3.Controls.Add(myControl);
+
+        }
+
+        private void dashboard1_Load(object sender, EventArgs e)
+        {
+            // Add your logic for the Dashboard load event here.
+            //MessageBox.Show("Dashboard loaded!");
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
         {
 
         }

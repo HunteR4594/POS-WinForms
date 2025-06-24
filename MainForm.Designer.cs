@@ -31,13 +31,17 @@ namespace POS_project
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            LiveChartsCore.SkiaSharpView.Axis axis1 = new LiveChartsCore.SkiaSharpView.Axis();
+            LiveChartsCore.Drawing.Padding padding1 = new LiveChartsCore.Drawing.Padding();
+            LiveChartsCore.Drawing.Padding padding2 = new LiveChartsCore.Drawing.Padding();
+            LiveChartsCore.SkiaSharpView.Axis axis2 = new LiveChartsCore.SkiaSharpView.Axis();
+            LiveChartsCore.Drawing.Padding padding3 = new LiveChartsCore.Drawing.Padding();
+            LiveChartsCore.Drawing.Padding padding4 = new LiveChartsCore.Drawing.Padding();
             panel1 = new Panel();
             btnCategory = new Button();
             panel4 = new Panel();
-            label1 = new Label();
             btnReports = new Button();
             btnProduct = new Button();
-            btnCustomer = new Button();
             btnUsers = new Button();
             btnDashboard = new Button();
             pictureBox6 = new PictureBox();
@@ -46,10 +50,13 @@ namespace POS_project
             label8 = new Label();
             label2 = new Label();
             panel3 = new Panel();
+            cA_Dashboard1 = new CA_Dashboard();
+            pictureBox1 = new PictureBox();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -60,7 +67,6 @@ namespace POS_project
             panel1.Controls.Add(panel4);
             panel1.Controls.Add(btnReports);
             panel1.Controls.Add(btnProduct);
-            panel1.Controls.Add(btnCustomer);
             panel1.Controls.Add(btnUsers);
             panel1.Controls.Add(btnDashboard);
             panel1.Controls.Add(pictureBox6);
@@ -78,11 +84,12 @@ namespace POS_project
             btnCategory.FlatAppearance.BorderSize = 0;
             btnCategory.FlatStyle = FlatStyle.Flat;
             btnCategory.ForeColor = Color.Teal;
+            btnCategory.Image = (Image)resources.GetObject("btnCategory.Image");
             btnCategory.ImageAlign = ContentAlignment.TopCenter;
-            btnCategory.Location = new Point(-1, 236);
+            btnCategory.Location = new Point(1, 236);
             btnCategory.Margin = new Padding(3, 2, 3, 2);
             btnCategory.Name = "btnCategory";
-            btnCategory.Size = new Size(101, 50);
+            btnCategory.Size = new Size(101, 69);
             btnCategory.TabIndex = 18;
             btnCategory.Text = "Category";
             btnCategory.TextAlign = ContentAlignment.BottomCenter;
@@ -92,7 +99,7 @@ namespace POS_project
             // panel4
             // 
             panel4.BackColor = Color.Teal;
-            panel4.Controls.Add(label1);
+            panel4.Controls.Add(pictureBox1);
             panel4.Dock = DockStyle.Top;
             panel4.Location = new Point(0, 0);
             panel4.Margin = new Padding(3, 2, 3, 2);
@@ -100,28 +107,18 @@ namespace POS_project
             panel4.Size = new Size(102, 78);
             panel4.TabIndex = 17;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(8, 24);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 20);
-            label1.TabIndex = 0;
-            label1.Text = "Clothing";
-            // 
             // btnReports
             // 
             btnReports.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btnReports.FlatAppearance.BorderSize = 0;
             btnReports.FlatStyle = FlatStyle.Flat;
             btnReports.ForeColor = Color.Teal;
+            //btnReports.Image = POS_project._._6; 
             btnReports.ImageAlign = ContentAlignment.TopCenter;
-            btnReports.Location = new Point(-1, 417);
+            btnReports.Location = new Point(1, 390);
             btnReports.Margin = new Padding(3, 2, 3, 2);
             btnReports.Name = "btnReports";
-            btnReports.Size = new Size(99, 50);
+            btnReports.Size = new Size(99, 69);
             btnReports.TabIndex = 16;
             btnReports.Text = "Report";
             btnReports.TextAlign = ContentAlignment.BottomCenter;
@@ -134,33 +131,17 @@ namespace POS_project
             btnProduct.FlatAppearance.BorderSize = 0;
             btnProduct.FlatStyle = FlatStyle.Flat;
             btnProduct.ForeColor = Color.Teal;
+            //btnProduct.Image = POS_project._.ptodu;
             btnProduct.ImageAlign = ContentAlignment.TopCenter;
-            btnProduct.Location = new Point(-3, 293);
+            btnProduct.Location = new Point(1, 320);
             btnProduct.Margin = new Padding(3, 2, 3, 2);
             btnProduct.Name = "btnProduct";
-            btnProduct.Size = new Size(101, 50);
+            btnProduct.Size = new Size(101, 66);
             btnProduct.TabIndex = 15;
             btnProduct.Text = "Product";
             btnProduct.TextAlign = ContentAlignment.BottomCenter;
             btnProduct.UseVisualStyleBackColor = true;
             btnProduct.Click += button3_Click;
-            // 
-            // btnCustomer
-            // 
-            btnCustomer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btnCustomer.FlatAppearance.BorderSize = 0;
-            btnCustomer.FlatStyle = FlatStyle.Flat;
-            btnCustomer.ForeColor = Color.Teal;
-            btnCustomer.ImageAlign = ContentAlignment.TopCenter;
-            btnCustomer.Location = new Point(-3, 349);
-            btnCustomer.Margin = new Padding(3, 2, 3, 2);
-            btnCustomer.Name = "btnCustomer";
-            btnCustomer.Size = new Size(99, 50);
-            btnCustomer.TabIndex = 14;
-            btnCustomer.Text = "Customer";
-            btnCustomer.TextAlign = ContentAlignment.BottomCenter;
-            btnCustomer.UseVisualStyleBackColor = true;
-            btnCustomer.Click += button4_Click;
             // 
             // btnUsers
             // 
@@ -168,11 +149,12 @@ namespace POS_project
             btnUsers.FlatAppearance.BorderSize = 0;
             btnUsers.FlatStyle = FlatStyle.Flat;
             btnUsers.ForeColor = Color.Teal;
+            //btnUsers.Image = POS_project._.emp;
             btnUsers.ImageAlign = ContentAlignment.TopCenter;
-            btnUsers.Location = new Point(-1, 167);
+            btnUsers.Location = new Point(1, 166);
             btnUsers.Margin = new Padding(3, 2, 3, 2);
             btnUsers.Name = "btnUsers";
-            btnUsers.Size = new Size(105, 50);
+            btnUsers.Size = new Size(102, 75);
             btnUsers.TabIndex = 13;
             btnUsers.Text = "Users";
             btnUsers.TextAlign = ContentAlignment.BottomCenter;
@@ -181,14 +163,16 @@ namespace POS_project
             // 
             // btnDashboard
             // 
+            btnDashboard.BackgroundImage = (Image)resources.GetObject("btnDashboard.BackgroundImage");
+            btnDashboard.BackgroundImageLayout = ImageLayout.Center;
             btnDashboard.FlatAppearance.BorderSize = 0;
             btnDashboard.FlatStyle = FlatStyle.Flat;
             btnDashboard.ForeColor = Color.Teal;
-            btnDashboard.ImageAlign = ContentAlignment.TopCenter;
-            btnDashboard.Location = new Point(-1, 100);
+            btnDashboard.ImageAlign = ContentAlignment.TopRight;
+            btnDashboard.Location = new Point(-1, 73);
             btnDashboard.Margin = new Padding(3, 2, 3, 2);
             btnDashboard.Name = "btnDashboard";
-            btnDashboard.Size = new Size(105, 52);
+            btnDashboard.Size = new Size(105, 80);
             btnDashboard.TabIndex = 12;
             btnDashboard.Text = "Dashboard";
             btnDashboard.TextAlign = ContentAlignment.BottomCenter;
@@ -209,6 +193,7 @@ namespace POS_project
             // 
             // panel2
             // 
+            panel2.BackColor = Color.Teal;
             panel2.Controls.Add(label3);
             panel2.Controls.Add(label8);
             panel2.Dock = DockStyle.Top;
@@ -221,8 +206,10 @@ namespace POS_project
             // label3
             // 
             label3.AutoSize = true;
+            label3.BackColor = Color.Teal;
             label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(10, 7);
+            label3.ForeColor = SystemColors.ButtonHighlight;
+            label3.Location = new Point(12, 7);
             label3.Name = "label3";
             label3.Size = new Size(177, 15);
             label3.TabIndex = 1;
@@ -231,6 +218,7 @@ namespace POS_project
             // label8
             // 
             label8.AutoSize = true;
+            label8.ForeColor = SystemColors.ButtonHighlight;
             label8.Location = new Point(1016, 7);
             label8.Name = "label8";
             label8.Size = new Size(14, 15);
@@ -249,17 +237,145 @@ namespace POS_project
             // 
             // panel3
             // 
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(106, 28);
-            panel3.Margin = new Padding(3, 2, 3, 2);
+            panel3.Location = new Point(107, 28);
             panel3.Name = "panel3";
             panel3.Size = new Size(937, 561);
             panel3.TabIndex = 7;
+            // 
+            // cA_Dashboard1
+            // 
+            cA_Dashboard1.Location = new Point(0, 0);
+            cA_Dashboard1.Margin = new Padding(3, 2, 3, 2);
+            cA_Dashboard1.Name = "cA_Dashboard1";
+            cA_Dashboard1.Size = new Size(1043, 561);
+            cA_Dashboard1.TabIndex = 0;
+            cA_Dashboard1.tOrderChartSeries = null;
+            cA_Dashboard1.tSalesChartSeries = null;
+            axis1.AnimationsSpeed = null;
+            axis1.CrosshairLabelsBackground = null;
+            axis1.CrosshairLabelsPaint = null;
+            axis1.CrosshairPadding = null;
+            axis1.CrosshairPaint = null;
+            axis1.CrosshairSnapEnabled = false;
+            axis1.CustomSeparators = null;
+            axis1.DrawTicksPath = false;
+            axis1.EasingFunction = null;
+            axis1.ForceStepToMin = false;
+            axis1.InLineNamePlacement = false;
+            axis1.IsInverted = false;
+            axis1.IsVisible = false;
+            axis1.Labels = null;
+            axis1.LabelsAlignment = null;
+            axis1.LabelsPaint = null;
+            axis1.LabelsRotation = 0D;
+            axis1.MaxLimit = null;
+            axis1.MinLimit = null;
+            axis1.MinStep = 0D;
+            axis1.MinZoomDelta = null;
+            axis1.Name = null;
+            padding1.Bottom = 5F;
+            padding1.Left = 5F;
+            padding1.Right = 5F;
+            padding1.Top = 5F;
+            axis1.NamePadding = padding1;
+            axis1.NamePaint = null;
+            axis1.NameTextSize = 20D;
+            padding2.Bottom = 0F;
+            padding2.Left = 0F;
+            padding2.Right = 0F;
+            padding2.Top = 0F;
+            axis1.Padding = padding2;
+            axis1.Position = LiveChartsCore.Measure.AxisPosition.Start;
+            axis1.SeparatorsAtCenter = true;
+            axis1.SeparatorsBrush = null;
+            axis1.SeparatorsPaint = null;
+            axis1.SharedWith = null;
+            axis1.ShowSeparatorLines = true;
+            axis1.SubseparatorsCount = 3;
+            axis1.SubseparatorsPaint = null;
+            axis1.SubticksPaint = null;
+            axis1.Tag = null;
+            axis1.TextBrush = null;
+            axis1.TextSize = 16D;
+            axis1.TicksAtCenter = true;
+            axis1.TicksPaint = null;
+            axis1.UnitWidth = 1D;
+            axis1.ZeroPaint = null;
+            cA_Dashboard1.tSalesChartXAxes = new LiveChartsCore.SkiaSharpView.Axis[]
+    {
+    axis1
+    };
+            axis2.AnimationsSpeed = null;
+            axis2.CrosshairLabelsBackground = null;
+            axis2.CrosshairLabelsPaint = null;
+            axis2.CrosshairPadding = null;
+            axis2.CrosshairPaint = null;
+            axis2.CrosshairSnapEnabled = false;
+            axis2.CustomSeparators = null;
+            axis2.DrawTicksPath = false;
+            axis2.EasingFunction = null;
+            axis2.ForceStepToMin = false;
+            axis2.InLineNamePlacement = false;
+            axis2.IsInverted = false;
+            axis2.IsVisible = false;
+            axis2.Labels = null;
+            axis2.LabelsAlignment = null;
+            axis2.LabelsPaint = null;
+            axis2.LabelsRotation = 0D;
+            axis2.MaxLimit = null;
+            axis2.MinLimit = null;
+            axis2.MinStep = 0D;
+            axis2.MinZoomDelta = null;
+            axis2.Name = null;
+            padding3.Bottom = 5F;
+            padding3.Left = 5F;
+            padding3.Right = 5F;
+            padding3.Top = 5F;
+            axis2.NamePadding = padding3;
+            axis2.NamePaint = null;
+            axis2.NameTextSize = 20D;
+            padding4.Bottom = 0F;
+            padding4.Left = 0F;
+            padding4.Right = 0F;
+            padding4.Top = 0F;
+            axis2.Padding = padding4;
+            axis2.Position = LiveChartsCore.Measure.AxisPosition.Start;
+            axis2.SeparatorsAtCenter = true;
+            axis2.SeparatorsBrush = null;
+            axis2.SeparatorsPaint = null;
+            axis2.SharedWith = null;
+            axis2.ShowSeparatorLines = true;
+            axis2.SubseparatorsCount = 3;
+            axis2.SubseparatorsPaint = null;
+            axis2.SubticksPaint = null;
+            axis2.Tag = null;
+            axis2.TextBrush = null;
+            axis2.TextSize = 16D;
+            axis2.TicksAtCenter = true;
+            axis2.TicksPaint = null;
+            axis2.UnitWidth = 1D;
+            axis2.ZeroPaint = null;
+            cA_Dashboard1.tSalesChartYAxes = new LiveChartsCore.SkiaSharpView.Axis[]
+    {
+    axis2
+    };
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(-1, -12);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(107, 100);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackgroundImageLayout = ImageLayout.None;
             ClientSize = new Size(1043, 589);
             Controls.Add(panel3);
             Controls.Add(panel1);
@@ -273,10 +389,10 @@ namespace POS_project
             Load += MainForm_Load;
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
-            panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -285,13 +401,11 @@ namespace POS_project
 
         private Panel panel1;
         private PictureBox pictureBox6;
-        private Label label1;
         private Panel panel2;
         private Label label8;
         private Label label2;
         private Panel panel3;
         private Button btnProduct;
-        private Button btnCustomer;
         private Button btnUsers;
         private Button btnDashboard;
         private Button btnReports;
@@ -308,33 +422,10 @@ namespace POS_project
             MessageBox.Show("Customer button clicked!");
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // Add your logic for button2 click event here.
-            MessageBox.Show("Add Users button clicked!");
-
-            // IMPORTANT: Replace 'pnlContentArea' with the actual name of your main content panel
-            panel3.Controls.Clear(); // Clear any existing control in the main content panel
-            POS_project.AddminAddEmp myControl = new POS_project.AddminAddEmp();
-            myControl.Dock = DockStyle.Fill; // Optional: Fill the panel
-            panel3.Controls.Add(myControl);
-
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // Add your logic for button1 click event here.
-            MessageBox.Show("Dashboard button clicked!");
-        }
-
-        private void dashboard1_Load(object sender, EventArgs e)
-        {
-            // Add your logic for the Dashboard load event here.
-            //MessageBox.Show("Dashboard loaded!");
-        }
         private Label label3;
         private CashierOrder cashierOrder1;
         private Button btnCategory;
+        private CA_Dashboard cA_Dashboard1;
+        private PictureBox pictureBox1;
     }
 }
