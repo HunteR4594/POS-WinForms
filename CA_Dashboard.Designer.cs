@@ -36,14 +36,8 @@ namespace POS_project
         private void InitializeComponent()
         {
             mainPanel = new Panel();
-            panel1 = new Panel();
-            cartesianChart2 = new CartesianChart();
-            refundChartLbl = new Label();
-            mSalesChartPnl = new Panel();
-            cartesianChart1 = new CartesianChart();
-            mSaleChartLbl = new Label();
             tSalesChartPanel = new Panel();
-            label1 = new Label();
+            cartesianChart_comboBox = new ComboBox();
             tSalesChart = new CartesianChart();
             mSalesPanel = new Panel();
             mSaleIcon = new PictureBox();
@@ -62,11 +56,9 @@ namespace POS_project
             tOrderCount = new Label();
             tOrderLbl = new Label();
             tOrdChartPnl = new Panel();
+            pieChart_ComboBox = new ComboBox();
             tOrderChartPie = new PieChart();
-            tOrderChartLbl = new Label();
             mainPanel.SuspendLayout();
-            panel1.SuspendLayout();
-            mSalesChartPnl.SuspendLayout();
             tSalesChartPanel.SuspendLayout();
             mSalesPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mSaleIcon).BeginInit();
@@ -81,9 +73,8 @@ namespace POS_project
             // 
             // mainPanel
             // 
+            mainPanel.AutoScroll = true;
             mainPanel.BackColor = Color.White;
-            mainPanel.Controls.Add(panel1);
-            mainPanel.Controls.Add(mSalesChartPnl);
             mainPanel.Controls.Add(tSalesChartPanel);
             mainPanel.Controls.Add(mSalesPanel);
             mainPanel.Controls.Add(refundPanel);
@@ -96,100 +87,33 @@ namespace POS_project
             mainPanel.Size = new Size(963, 556);
             mainPanel.TabIndex = 0;
             // 
-            // panel1
-            // 
-            panel1.BackColor = Color.Teal;
-            panel1.Controls.Add(cartesianChart2);
-            panel1.Controls.Add(refundChartLbl);
-            panel1.ForeColor = Color.White;
-            panel1.Location = new Point(572, 354);
-            panel1.Margin = new Padding(3, 2, 3, 2);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(341, 167);
-            panel1.TabIndex = 9;
-            // 
-            // cartesianChart2
-            // 
-            cartesianChart2.BackColor = Color.PaleTurquoise;
-            cartesianChart2.Location = new Point(16, 34);
-            cartesianChart2.Margin = new Padding(3, 2, 3, 2);
-            cartesianChart2.MatchAxesScreenDataRatio = false;
-            cartesianChart2.Name = "cartesianChart2";
-            cartesianChart2.Size = new Size(310, 122);
-            cartesianChart2.TabIndex = 1;
-            // 
-            // refundChartLbl
-            // 
-            refundChartLbl.AutoSize = true;
-            refundChartLbl.Font = new Font("Bahnschrift SemiLight", 12F);
-            refundChartLbl.Location = new Point(27, 7);
-            refundChartLbl.Name = "refundChartLbl";
-            refundChartLbl.Size = new Size(70, 19);
-            refundChartLbl.TabIndex = 0;
-            refundChartLbl.Text = "REFUND";
-            // 
-            // mSalesChartPnl
-            // 
-            mSalesChartPnl.BackColor = Color.Teal;
-            mSalesChartPnl.Controls.Add(cartesianChart1);
-            mSalesChartPnl.Controls.Add(mSaleChartLbl);
-            mSalesChartPnl.Location = new Point(26, 354);
-            mSalesChartPnl.Margin = new Padding(3, 2, 3, 2);
-            mSalesChartPnl.Name = "mSalesChartPnl";
-            mSalesChartPnl.Size = new Size(525, 167);
-            mSalesChartPnl.TabIndex = 8;
-            // 
-            // cartesianChart1
-            // 
-            cartesianChart1.BackColor = Color.PaleTurquoise;
-            cartesianChart1.Location = new Point(12, 34);
-            cartesianChart1.Margin = new Padding(3, 2, 3, 2);
-            cartesianChart1.MatchAxesScreenDataRatio = false;
-            cartesianChart1.Name = "cartesianChart1";
-            cartesianChart1.Size = new Size(502, 122);
-            cartesianChart1.TabIndex = 1;
-            // 
-            // mSaleChartLbl
-            // 
-            mSaleChartLbl.AutoSize = true;
-            mSaleChartLbl.Font = new Font("Bahnschrift SemiLight", 12F);
-            mSaleChartLbl.ForeColor = Color.White;
-            mSaleChartLbl.Location = new Point(12, 8);
-            mSaleChartLbl.Name = "mSaleChartLbl";
-            mSaleChartLbl.Size = new Size(58, 19);
-            mSaleChartLbl.TabIndex = 0;
-            mSaleChartLbl.Text = "SALES";
-            // 
             // tSalesChartPanel
             // 
             tSalesChartPanel.BackColor = Color.Teal;
-            tSalesChartPanel.Controls.Add(label1);
+            tSalesChartPanel.Controls.Add(cartesianChart_comboBox);
             tSalesChartPanel.Controls.Add(tSalesChart);
-            tSalesChartPanel.Location = new Point(267, 139);
+            tSalesChartPanel.Location = new Point(397, 139);
             tSalesChartPanel.Margin = new Padding(3, 2, 3, 2);
             tSalesChartPanel.Name = "tSalesChartPanel";
-            tSalesChartPanel.Size = new Size(645, 192);
+            tSalesChartPanel.Size = new Size(515, 402);
             tSalesChartPanel.TabIndex = 7;
             // 
-            // label1
+            // cartesianChart_comboBox
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Bahnschrift SemiLight", 12F);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(18, 5);
-            label1.Name = "label1";
-            label1.Size = new Size(58, 19);
-            label1.TabIndex = 5;
-            label1.Text = "SALES";
+            cartesianChart_comboBox.FormattingEnabled = true;
+            cartesianChart_comboBox.Location = new Point(18, 13);
+            cartesianChart_comboBox.Name = "cartesianChart_comboBox";
+            cartesianChart_comboBox.Size = new Size(324, 23);
+            cartesianChart_comboBox.TabIndex = 2;
             // 
             // tSalesChart
             // 
             tSalesChart.BackColor = Color.PaleTurquoise;
-            tSalesChart.Location = new Point(18, 26);
+            tSalesChart.Location = new Point(18, 50);
             tSalesChart.Margin = new Padding(2);
             tSalesChart.MatchAxesScreenDataRatio = false;
             tSalesChart.Name = "tSalesChart";
-            tSalesChart.Size = new Size(607, 156);
+            tSalesChart.Size = new Size(482, 332);
             tSalesChart.TabIndex = 4;
             // 
             // mSalesPanel
@@ -376,39 +300,35 @@ namespace POS_project
             // 
             tOrdChartPnl.BackColor = Color.Teal;
             tOrdChartPnl.BorderStyle = BorderStyle.FixedSingle;
+            tOrdChartPnl.Controls.Add(pieChart_ComboBox);
             tOrdChartPnl.Controls.Add(tOrderChartPie);
-            tOrdChartPnl.Controls.Add(tOrderChartLbl);
             tOrdChartPnl.Location = new Point(26, 139);
             tOrdChartPnl.Margin = new Padding(3, 2, 3, 2);
             tOrdChartPnl.Name = "tOrdChartPnl";
-            tOrdChartPnl.Size = new Size(210, 192);
+            tOrdChartPnl.Size = new Size(354, 402);
             tOrdChartPnl.TabIndex = 6;
+            // 
+            // pieChart_ComboBox
+            // 
+            pieChart_ComboBox.FormattingEnabled = true;
+            pieChart_ComboBox.Location = new Point(16, 12);
+            pieChart_ComboBox.Name = "pieChart_ComboBox";
+            pieChart_ComboBox.Size = new Size(249, 23);
+            pieChart_ComboBox.TabIndex = 1;
             // 
             // tOrderChartPie
             // 
             tOrderChartPie.BackColor = Color.White;
             tOrderChartPie.InitialRotation = 0D;
             tOrderChartPie.IsClockwise = true;
-            tOrderChartPie.Location = new Point(16, 27);
+            tOrderChartPie.Location = new Point(16, 49);
             tOrderChartPie.Margin = new Padding(3, 2, 3, 2);
             tOrderChartPie.MaxAngle = 360D;
             tOrderChartPie.MaxValue = double.NaN;
             tOrderChartPie.MinValue = 0D;
             tOrderChartPie.Name = "tOrderChartPie";
-            tOrderChartPie.Size = new Size(171, 142);
+            tOrderChartPie.Size = new Size(320, 332);
             tOrderChartPie.TabIndex = 0;
-            // 
-            // tOrderChartLbl
-            // 
-            tOrderChartLbl.AutoSize = true;
-            tOrderChartLbl.BackColor = Color.Teal;
-            tOrderChartLbl.Font = new Font("Bahnschrift SemiLight", 12F);
-            tOrderChartLbl.ForeColor = Color.White;
-            tOrderChartLbl.Location = new Point(11, 4);
-            tOrderChartLbl.Name = "tOrderChartLbl";
-            tOrderChartLbl.Size = new Size(144, 19);
-            tOrderChartLbl.TabIndex = 5;
-            tOrderChartLbl.Text = "INVENTORY CHART";
             // 
             // CA_Dashboard
             // 
@@ -417,14 +337,9 @@ namespace POS_project
             Controls.Add(mainPanel);
             Margin = new Padding(3, 2, 3, 2);
             Name = "CA_Dashboard";
-            Size = new Size(964, 556);
+            Size = new Size(964, 720);
             mainPanel.ResumeLayout(false);
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            mSalesChartPnl.ResumeLayout(false);
-            mSalesChartPnl.PerformLayout();
             tSalesChartPanel.ResumeLayout(false);
-            tSalesChartPanel.PerformLayout();
             mSalesPanel.ResumeLayout(false);
             mSalesPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)mSaleIcon).EndInit();
@@ -438,7 +353,6 @@ namespace POS_project
             tOrderPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)tOrderIcon).EndInit();
             tOrdChartPnl.ResumeLayout(false);
-            tOrdChartPnl.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -457,21 +371,15 @@ namespace POS_project
         private PictureBox tOrderIcon;
         private PictureBox tSaleIcon;
         private PictureBox refundIcon;
-        private Label tOrderChartLbl;
         private Panel tSalesChartPanel;
         private Panel tOrdChartPnl;
         private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart tSalesChart;
-        private Label label1;
         private LiveChartsCore.SkiaSharpView.WinForms.PieChart tOrderChartPie;
-        private Panel panel1;
-        private Panel mSalesChartPnl;
-        private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart1;
-        private Label mSaleChartLbl;
-        private Label refundChartLbl;
-        private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart2;
         private Panel mSalesPanel;
         private PictureBox mSaleIcon;
         private Label mSalesCount;
         private Label mSalesLbl;
+        private ComboBox cartesianChart_comboBox;
+        private ComboBox pieChart_ComboBox;
     }
 }

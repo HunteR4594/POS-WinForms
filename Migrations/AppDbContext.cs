@@ -16,7 +16,7 @@ namespace POS_project.Migrations
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\renren\Documents\newDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True");
+            optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=tryDB;Integrated Security=True;Trust Server Certificate=True");
         }
 
         // Configure relationships and precision for decimal types
@@ -65,6 +65,24 @@ namespace POS_project.Migrations
             modelBuilder.Entity<Customer>()
                 .Property(c => c.change)
                 .HasColumnType("decimal(18,2)");
+
+            // Configure Product-Category relationship
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId);
+
+            // Configure SaleItem-Product relationship
+            modelBuilder.Entity<SaleItem>()
+                .HasOne(si => si.Product)
+                .WithMany(p => p.SaleItems)
+                .HasForeignKey(si => si.ProductId);
+
+            // Configure Sale-User (Cashier) relationship
+            modelBuilder.Entity<Sale>()
+                .HasOne(s => s.Cashier)
+                .WithMany(u => u.Sales)
+                .HasForeignKey(s => s.CashierId);
         }
     }
 
@@ -80,6 +98,8 @@ namespace POS_project.Migrations
         public required string Status { get; set; }
         public DateTime Date { get; set; }
         public bool IsDeleted { get; set; }
+
+        public ICollection<Sale> Sales { get; set; } = new List<Sale>(); // New: Navigation property for Sales made by this user
     }
 
     public class Product
@@ -87,32 +107,43 @@ namespace POS_project.Migrations
         public int id { get; set; }
         public required string prod_id { get; set; }
         public required string prod_name { get; set; }
+        public int CategoryId { get; set; } // New: Foreign key to Category
         public required string category { get; set; }
+
+        public Category Category { get; set; } = null!; // New: Navigation property to Category
+
         public required decimal prod_price { get; set; }
         public required int stock { get; set; }
         public required string image_path { get; set; }
         public required string status { get; set; }
         public required DateTime date_insert { get; set; }
-        public string? barcode { get; set; } // Added this property
+        public string? barcode { get; set; }
 
+        public ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>(); // New: Navigation property for SaleItems containing this product
     }
 
     public class Category
     {
         public int id { get; set; }
         public required string CategoryName { get; set; }
+
+        public ICollection<Product> Products { get; set; } = new List<Product>(); // New: Navigation property for Products in this category
     }
 
     public class Sale // Maps to CustomerOrderEntry
     {
         public int id { get; set; }
-        public required string customer_id { get; set; } // Added based on CustomerOrderEntry
-        public decimal total_price { get; set; } // Renamed from TotalAmount, maps to total_price in CustomerOrderEntry
-        public decimal amount { get; set; } // Added based on CustomerOrderEntry
-        public decimal change { get; set; } // Added based on CustomerOrderEntry
-        public DateTime order_date { get; set; } // Renamed from SaleDate, maps to order_date in CustomerOrderEntry
+        public required string customer_id { get; set; }
 
-        // Navigation property for SaleItems related to this Sale
+        public int CashierId { get; set; } // New: Foreign key to User (Cashier)
+        public User Cashier { get; set; } = null!; // New: Navigation property to User (Cashier)
+
+        public decimal total_price { get; set; }
+        public decimal amount { get; set; }
+        public decimal change { get; set; }
+        public DateTime order_date { get; set; }
+
+        // Navigation property for SaleItems related to this Sale (already exists)
         public ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
     }
 
@@ -121,7 +152,11 @@ namespace POS_project.Migrations
         public int id { get; set; } // Renamed from Id, maps to id in orders
         public int SaleId { get; set; } // Foreign key to the Sale table
 
-        public required string ProdId { get; set; } // Maps to prod_id in orders
+        public required string ProdId { get; set; }
+
+        public int ProductId { get; set; } // New: Foreign key to Product
+        public Product Product { get; set; } = null!; // New: Navigation property to Product
+
         public required string ProdName { get; set; } // Maps to prod_name in orders
         public required string customer_id { get; set; } // Added based on orders
         public required string category { get; set; } // Added based on orders
@@ -130,8 +165,11 @@ namespace POS_project.Migrations
         public decimal TotalPrice { get; set; } // Maps to total_price in orders
         public DateTime order_date { get; set; } // Added based on orders
 
-        // Navigation property back to the Sale
-        public Sale Sale { get; set; } // Required for EF Core relationship
+        // Navigation property back to the Sale (already exists)
+        public Sale Sale { get; set; } = null!; // Ensure it's not nullable for required relationship
+
+        //public int UserId { get; set; } // Foreign key to User (Cashier)
+        public required string Username { get; set; }
     }
 
     // Customer entity (already added in previous turn)

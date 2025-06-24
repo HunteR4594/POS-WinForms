@@ -44,7 +44,7 @@ namespace POS_project
                         }
                         else if (user.Role == "Cashier")
                         {
-                            CashierForm sForm = new CashierForm();
+                            CashierForm sForm = new CashierForm(user.id, user.Username);
                             sForm.Show();
                             this.Hide();
                         }
@@ -93,5 +93,6 @@ namespace POS_project
             // Toggle password visibility
             passwordlogin.PasswordChar = showpassword.Checked ? '\0' : '*';
         }
+
     }
 }

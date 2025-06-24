@@ -27,12 +27,21 @@ namespace POS_project
 
         // Flag to prevent re-triggering Cashier_CategoryOr_SelectedIndexChanged during programmatic updates
         private bool isProgrammaticUpdate = false;
-        private int _cashierId = 1; // Assuming a default cashier ID for testing; update with actual cashier ID from login
-
-        public CashierOrder()
+        // MODIFICATION 1: The cashier ID is now 'readonly' and has no default value.
+        // It MUST be initialized in the constructor.
+        private readonly int _cashierId;
+        public CashierOrder(int cashierId)
         {
             InitializeComponent();
+
+            // Ensure the provided ID is valid (not zero or negative)
+            if (cashierId <= 0)
+            {
+                throw new ArgumentException("A valid cashier ID must be provided.", nameof(cashierId));
+            }
+
             _context = new AppDbContext(); // Initialize EF Core DbContext
+            _cashierId = cashierId; // Assign the required cashier ID
             InitializeOrderListTable(); // Setup the DataTable structure
             displayAllAvailableProducts(); // Load available products into dataGridView1 using EF Core
             displayCategories(); // Load categories into ComboBox using EF Core
@@ -54,6 +63,7 @@ namespace POS_project
             orderListTable.Columns.Add("Final Subtotal", typeof(double)); // (Original Subtotal - Line Discount Amount) - Still VAT Inclusive
             orderListTable.Columns.Add("Product PK ID", typeof(int)); // New column for actual product Primary Key ID
             orderListTable.Columns.Add("Category", typeof(string)); // New column for category name
+            orderListTable.Columns.Add("Cashier Username", typeof(string)); // New column for cashier's username
 
             dataGridView2.DataSource = orderListTable; // Bind the DataTable to dataGridView2
 
@@ -248,6 +258,9 @@ namespace POS_project
 
             if (!productExistsInOrderList)
             {
+                // Fetch the cashier's username using _cashierId
+                string cashierUsername = _context.Users.FirstOrDefault(u => u.id == _cashierId)?.Username ?? "Unknown";
+
                 orderListTable.Rows.Add(
                     prodId, prodName, quantity,
                     originalPricePerUnitVATInclusive,
@@ -256,7 +269,8 @@ namespace POS_project
                     lineDiscountAmount,
                     finalSubtotalVATInclusive,
                     productInDb.id,
-                    productInDb.category
+                    productInDb.category,
+                    cashierUsername // Add the cashier's username here
                 );
             }
 
@@ -440,7 +454,8 @@ namespace POS_project
                         customer_id = "DefaultCustomer",
                         category = row["Category"].ToString(),
                         ProductId = Convert.ToInt32(row["Product PK ID"]),
-                        order_date = DateTime.Now
+                        order_date = DateTime.Now,
+                        Username = row["Cashier Username"].ToString()
                     };
                     newSale.SaleItems.Add(saleItem);
                 }

@@ -33,7 +33,7 @@ namespace POS_project
         private void InitializeReportFilters()
         {
             // Set default values for date pickers to cover all records
-            startTime_picker.Value = DateTimePicker.MinimumDateTime; // Or a very old date
+            startTime_picker.Value = DateTime.Now; // Or a very old date
             endTime_picker.Value = DateTime.Now.AddDays(1); // Set to tomorrow to include today's full data
 
             // Set default for presetDateTime_comboBox to show "All"
@@ -140,7 +140,7 @@ namespace POS_project
                                    ItemTotalPrice = si.TotalPrice,
                                    ItemDiscount = si.OrigPrice * si.Quantity - si.TotalPrice,
                                    ProductCategory = si.category, // Directly from SaleItem for now, can be si.Product.category or si.Product.Category.CategoryName if relationship is set up.
-                                   CashierName = si.Sale.customer_id, // This needs to be linked to User.Username. Assuming Sale.customer_id is the Username.
+                                   CashierName = si.Sale.Cashier.Username, // This needs to be linked to User.Username. Assuming Sale.customer_id is the Username.
                                    TotalSalesGross = si.Sale.total_price,
                                    AmountPaid = si.Sale.amount,
                                    ChangeGiven = si.Sale.change
