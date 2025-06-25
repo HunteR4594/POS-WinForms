@@ -13,10 +13,7 @@
     <Compile Update="AdminAddCategories.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Barcode.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Barcode_Scanner.cs">
+    <Compile Update="BarcodeScannerForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="CashierForm.cs">

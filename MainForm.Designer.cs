@@ -40,6 +40,7 @@ namespace POS_project
             panel1 = new Panel();
             btnCategory = new Button();
             panel4 = new Panel();
+            pictureBox1 = new PictureBox();
             btnReports = new Button();
             btnProduct = new Button();
             btnUsers = new Button();
@@ -51,12 +52,11 @@ namespace POS_project
             label2 = new Label();
             panel3 = new Panel();
             cA_Dashboard1 = new CA_Dashboard();
-            pictureBox1 = new PictureBox();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -107,13 +107,23 @@ namespace POS_project
             panel4.Size = new Size(102, 78);
             panel4.TabIndex = 17;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(-1, -12);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(107, 100);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
+            // 
             // btnReports
             // 
             btnReports.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btnReports.FlatAppearance.BorderSize = 0;
             btnReports.FlatStyle = FlatStyle.Flat;
             btnReports.ForeColor = Color.Teal;
-            //btnReports.Image = POS_project._._6; 
             btnReports.ImageAlign = ContentAlignment.TopCenter;
             btnReports.Location = new Point(1, 390);
             btnReports.Margin = new Padding(3, 2, 3, 2);
@@ -131,7 +141,6 @@ namespace POS_project
             btnProduct.FlatAppearance.BorderSize = 0;
             btnProduct.FlatStyle = FlatStyle.Flat;
             btnProduct.ForeColor = Color.Teal;
-            //btnProduct.Image = POS_project._.ptodu;
             btnProduct.ImageAlign = ContentAlignment.TopCenter;
             btnProduct.Location = new Point(1, 320);
             btnProduct.Margin = new Padding(3, 2, 3, 2);
@@ -145,16 +154,15 @@ namespace POS_project
             // 
             // btnUsers
             // 
-            btnUsers.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            btnUsers.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btnUsers.FlatAppearance.BorderSize = 0;
             btnUsers.FlatStyle = FlatStyle.Flat;
             btnUsers.ForeColor = Color.Teal;
-            //btnUsers.Image = POS_project._.emp;
             btnUsers.ImageAlign = ContentAlignment.TopCenter;
             btnUsers.Location = new Point(1, 166);
             btnUsers.Margin = new Padding(3, 2, 3, 2);
             btnUsers.Name = "btnUsers";
-            btnUsers.Size = new Size(102, 75);
+            btnUsers.Size = new Size(102, 66);
             btnUsers.TabIndex = 13;
             btnUsers.Text = "Users";
             btnUsers.TextAlign = ContentAlignment.BottomCenter;
@@ -163,16 +171,17 @@ namespace POS_project
             // 
             // btnDashboard
             // 
+            btnDashboard.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btnDashboard.BackgroundImage = (Image)resources.GetObject("btnDashboard.BackgroundImage");
             btnDashboard.BackgroundImageLayout = ImageLayout.Center;
             btnDashboard.FlatAppearance.BorderSize = 0;
             btnDashboard.FlatStyle = FlatStyle.Flat;
             btnDashboard.ForeColor = Color.Teal;
             btnDashboard.ImageAlign = ContentAlignment.TopRight;
-            btnDashboard.Location = new Point(-1, 73);
+            btnDashboard.Location = new Point(-1, 82);
             btnDashboard.Margin = new Padding(3, 2, 3, 2);
             btnDashboard.Name = "btnDashboard";
-            btnDashboard.Size = new Size(105, 80);
+            btnDashboard.Size = new Size(105, 71);
             btnDashboard.TabIndex = 12;
             btnDashboard.Text = "Dashboard";
             btnDashboard.TextAlign = ContentAlignment.BottomCenter;
@@ -217,6 +226,7 @@ namespace POS_project
             // 
             // label8
             // 
+            label8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             label8.AutoSize = true;
             label8.ForeColor = SystemColors.ButtonHighlight;
             label8.Location = new Point(1016, 7);
@@ -237,6 +247,7 @@ namespace POS_project
             // 
             // panel3
             // 
+            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel3.Location = new Point(107, 28);
             panel3.Name = "panel3";
             panel3.Size = new Size(937, 561);
@@ -360,17 +371,6 @@ namespace POS_project
     axis2
     };
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(-1, -12);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(107, 100);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -381,7 +381,6 @@ namespace POS_project
             Controls.Add(panel1);
             Controls.Add(panel2);
             Controls.Add(label2);
-            FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(3, 2, 3, 2);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -389,10 +388,10 @@ namespace POS_project
             Load += MainForm_Load;
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

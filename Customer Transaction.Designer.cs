@@ -30,7 +30,6 @@
         {
             panel1 = new Panel();
             label2 = new Label();
-            comboBox1 = new ComboBox();
             dataGridView1 = new DataGridView();
             panel2 = new Panel();
             label1 = new Label();
@@ -43,12 +42,11 @@
             // 
             panel1.BackColor = Color.Teal;
             panel1.Controls.Add(label2);
-            panel1.Controls.Add(comboBox1);
             panel1.Controls.Add(dataGridView1);
             panel1.Controls.Add(panel2);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(698, 526);
+            panel1.Size = new Size(937, 561);
             panel1.TabIndex = 0;
             // 
             // label2
@@ -61,21 +59,12 @@
             label2.TabIndex = 3;
             label2.Text = "Choose a Cashier:";
             // 
-            // comboBox1
-            // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(64, 92);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(165, 23);
-            comboBox1.TabIndex = 2;
-            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-            // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(64, 130);
+            dataGridView1.Location = new Point(64, 85);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(577, 358);
+            dataGridView1.Size = new Size(810, 422);
             dataGridView1.TabIndex = 1;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
@@ -86,7 +75,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(698, 45);
+            panel2.Size = new Size(937, 45);
             panel2.TabIndex = 0;
             panel2.Paint += panel2_Paint;
             // 
@@ -106,7 +95,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(panel1);
             Name = "Customer_Transaction";
-            Size = new Size(698, 526);
+            Size = new Size(937, 561);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
@@ -121,7 +110,6 @@
         private Panel panel2;
         private Label label1;
         private DataGridView dataGridView1;
-        private ComboBox comboBox1;
         private Label label2;
     }
 }

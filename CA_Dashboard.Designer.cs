@@ -36,6 +36,7 @@ namespace POS_project
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CA_Dashboard));
             kpiPanel1 = new Panel();
+            pictureBox1 = new PictureBox();
             tOrdersLbl = new Label();
             label10 = new Label();
             kpiPanel2 = new Panel();
@@ -55,28 +56,42 @@ namespace POS_project
             salesChartComboBox = new ComboBox();
             tSalesChartTitleLbl = new Label();
             cartesianChart3 = new CartesianChart();
-            pictureBox1 = new PictureBox();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel2 = new TableLayoutPanel();
             kpiPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             kpiPanel2.SuspendLayout();
             kpiPanel3.SuspendLayout();
             kpiPanel4.SuspendLayout();
             pieChartPanel.SuspendLayout();
             salesChartPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            tableLayoutPanel1.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
             SuspendLayout();
             // 
             // kpiPanel1
             // 
+            kpiPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             kpiPanel1.BackColor = Color.Teal;
             kpiPanel1.BorderStyle = BorderStyle.FixedSingle;
             kpiPanel1.Controls.Add(pictureBox1);
             kpiPanel1.Controls.Add(tOrdersLbl);
             kpiPanel1.Controls.Add(label10);
-            kpiPanel1.Location = new Point(17, 16);
+            kpiPanel1.Location = new Point(3, 2);
             kpiPanel1.Margin = new Padding(3, 2, 3, 2);
             kpiPanel1.Name = "kpiPanel1";
-            kpiPanel1.Size = new Size(212, 115);
+            kpiPanel1.Size = new Size(223, 121);
             kpiPanel1.TabIndex = 0;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(14, 41);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(64, 50);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 3;
+            pictureBox1.TabStop = false;
             // 
             // tOrdersLbl
             // 
@@ -104,14 +119,15 @@ namespace POS_project
             // 
             // kpiPanel2
             // 
+            kpiPanel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             kpiPanel2.BackColor = Color.Teal;
             kpiPanel2.BorderStyle = BorderStyle.FixedSingle;
             kpiPanel2.Controls.Add(tSalesLbl);
             kpiPanel2.Controls.Add(label6);
-            kpiPanel2.Location = new Point(248, 16);
+            kpiPanel2.Location = new Point(232, 2);
             kpiPanel2.Margin = new Padding(3, 2, 3, 2);
             kpiPanel2.Name = "kpiPanel2";
-            kpiPanel2.Size = new Size(212, 115);
+            kpiPanel2.Size = new Size(223, 121);
             kpiPanel2.TabIndex = 1;
             // 
             // tSalesLbl
@@ -141,14 +157,15 @@ namespace POS_project
             // 
             // kpiPanel3
             // 
+            kpiPanel3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             kpiPanel3.BackColor = Color.Teal;
             kpiPanel3.BorderStyle = BorderStyle.FixedSingle;
             kpiPanel3.Controls.Add(mSalesLbl);
             kpiPanel3.Controls.Add(label8);
-            kpiPanel3.Location = new Point(478, 16);
+            kpiPanel3.Location = new Point(461, 2);
             kpiPanel3.Margin = new Padding(3, 2, 3, 2);
             kpiPanel3.Name = "kpiPanel3";
-            kpiPanel3.Size = new Size(212, 115);
+            kpiPanel3.Size = new Size(223, 121);
             kpiPanel3.TabIndex = 3;
             // 
             // mSalesLbl
@@ -177,14 +194,15 @@ namespace POS_project
             // 
             // kpiPanel4
             // 
+            kpiPanel4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             kpiPanel4.BackColor = Color.Teal;
             kpiPanel4.BorderStyle = BorderStyle.FixedSingle;
             kpiPanel4.Controls.Add(totalDiscLbl);
             kpiPanel4.Controls.Add(label3);
-            kpiPanel4.Location = new Point(712, 16);
+            kpiPanel4.Location = new Point(690, 2);
             kpiPanel4.Margin = new Padding(3, 2, 3, 2);
             kpiPanel4.Name = "kpiPanel4";
-            kpiPanel4.Size = new Size(212, 115);
+            kpiPanel4.Size = new Size(224, 121);
             kpiPanel4.TabIndex = 4;
             // 
             // totalDiscLbl
@@ -212,14 +230,15 @@ namespace POS_project
             // 
             // pieChartPanel
             // 
+            pieChartPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pieChartPanel.BorderStyle = BorderStyle.FixedSingle;
             pieChartPanel.Controls.Add(pieChartComboBox);
             pieChartPanel.Controls.Add(label2);
             pieChartPanel.Controls.Add(pieChart1);
-            pieChartPanel.Location = new Point(17, 154);
+            pieChartPanel.Location = new Point(3, 2);
             pieChartPanel.Margin = new Padding(3, 2, 3, 2);
             pieChartPanel.Name = "pieChartPanel";
-            pieChartPanel.Size = new Size(456, 390);
+            pieChartPanel.Size = new Size(449, 334);
             pieChartPanel.TabIndex = 5;
             // 
             // pieChartComboBox
@@ -246,6 +265,7 @@ namespace POS_project
             // 
             // pieChart1
             // 
+            pieChart1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pieChart1.InitialRotation = 0D;
             pieChart1.IsClockwise = true;
             pieChart1.Location = new Point(11, 64);
@@ -254,20 +274,21 @@ namespace POS_project
             pieChart1.MaxValue = null;
             pieChart1.MinValue = 0D;
             pieChart1.Name = "pieChart1";
-            pieChart1.Size = new Size(437, 308);
+            pieChart1.Size = new Size(424, 252);
             pieChart1.TabIndex = 8;
             pieChart1.Total = null;
             // 
             // salesChartPanel
             // 
+            salesChartPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             salesChartPanel.BorderStyle = BorderStyle.FixedSingle;
             salesChartPanel.Controls.Add(salesChartComboBox);
             salesChartPanel.Controls.Add(tSalesChartTitleLbl);
             salesChartPanel.Controls.Add(cartesianChart3);
-            salesChartPanel.Location = new Point(492, 154);
+            salesChartPanel.Location = new Point(458, 2);
             salesChartPanel.Margin = new Padding(3, 2, 3, 2);
             salesChartPanel.Name = "salesChartPanel";
-            salesChartPanel.Size = new Size(428, 390);
+            salesChartPanel.Size = new Size(450, 334);
             salesChartPanel.TabIndex = 6;
             // 
             // salesChartComboBox
@@ -294,38 +315,60 @@ namespace POS_project
             // 
             // cartesianChart3
             // 
+            cartesianChart3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             cartesianChart3.Location = new Point(11, 64);
             cartesianChart3.Margin = new Padding(3, 2, 3, 2);
             cartesianChart3.Name = "cartesianChart3";
-            cartesianChart3.Size = new Size(399, 308);
+            cartesianChart3.Size = new Size(421, 252);
             cartesianChart3.TabIndex = 9;
             // 
-            // pictureBox1
+            // tableLayoutPanel1
             // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(14, 41);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(64, 50);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 3;
-            pictureBox1.TabStop = false;
+            tableLayoutPanel1.ColumnCount = 4;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel1.Controls.Add(kpiPanel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(kpiPanel2, 1, 0);
+            tableLayoutPanel1.Controls.Add(kpiPanel3, 2, 0);
+            tableLayoutPanel1.Controls.Add(kpiPanel4, 3, 0);
+            tableLayoutPanel1.Dock = DockStyle.Top;
+            tableLayoutPanel1.Location = new Point(10, 10);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(917, 125);
+            tableLayoutPanel1.TabIndex = 7;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.Controls.Add(salesChartPanel, 1, 0);
+            tableLayoutPanel2.Controls.Add(pieChartPanel, 0, 0);
+            tableLayoutPanel2.Location = new Point(10, 153);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new Size(911, 338);
+            tableLayoutPanel2.TabIndex = 8;
             // 
             // CA_Dashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(salesChartPanel);
-            Controls.Add(pieChartPanel);
-            Controls.Add(kpiPanel4);
-            Controls.Add(kpiPanel3);
-            Controls.Add(kpiPanel2);
-            Controls.Add(kpiPanel1);
+            Controls.Add(tableLayoutPanel2);
+            Controls.Add(tableLayoutPanel1);
             Margin = new Padding(3, 2, 3, 2);
             Name = "CA_Dashboard";
+            Padding = new Padding(10);
             Size = new Size(937, 561);
             Load += CA_Dashboard_Load;
             kpiPanel1.ResumeLayout(false);
             kpiPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             kpiPanel2.ResumeLayout(false);
             kpiPanel2.PerformLayout();
             kpiPanel3.ResumeLayout(false);
@@ -336,7 +379,8 @@ namespace POS_project
             pieChartPanel.PerformLayout();
             salesChartPanel.ResumeLayout(false);
             salesChartPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -363,5 +407,7 @@ namespace POS_project
         private System.Windows.Forms.ComboBox salesChartComboBox;
         private Label tOrdersLbl;
         private PictureBox pictureBox1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel2;
     }
 }

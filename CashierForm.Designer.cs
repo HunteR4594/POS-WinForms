@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CashierForm));
             label1 = new Label();
             panel4 = new Panel();
             label3 = new Label();
@@ -36,7 +35,6 @@
             label8 = new Label();
             button5 = new Button();
             button4 = new Button();
-            button1 = new Button();
             panel1 = new Panel();
             button3 = new Button();
             pictureBox6 = new PictureBox();
@@ -66,14 +64,14 @@
             panel4.Location = new Point(0, 0);
             panel4.Margin = new Padding(3, 2, 3, 2);
             panel4.Name = "panel4";
-            panel4.Size = new Size(102, 78);
+            panel4.Size = new Size(88, 78);
             panel4.TabIndex = 17;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(10, 7);
+            label3.Location = new Point(11, 18);
             label3.Name = "label3";
             label3.Size = new Size(168, 15);
             label3.TabIndex = 1;
@@ -87,7 +85,7 @@
             panel2.Location = new Point(0, 0);
             panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1043, 28);
+            panel2.Size = new Size(1043, 52);
             panel2.TabIndex = 7;
             // 
             // label8
@@ -107,15 +105,15 @@
             button5.FlatStyle = FlatStyle.Flat;
             button5.ForeColor = Color.Teal;
             button5.ImageAlign = ContentAlignment.TopCenter;
-            button5.Location = new Point(0, 168);
+            button5.Location = new Point(0, 132);
             button5.Margin = new Padding(3, 2, 3, 2);
             button5.Name = "button5";
-            button5.Size = new Size(102, 51);
+            button5.Size = new Size(88, 27);
             button5.TabIndex = 16;
             button5.Text = "Inventory";
             button5.TextAlign = ContentAlignment.BottomCenter;
             button5.TextImageRelation = TextImageRelation.ImageAboveText;
-            button5.UseVisualStyleBackColor = true;
+            button5.UseVisualStyleBackColor = false;
             button5.Click += button5_Click;
             // 
             // button4
@@ -124,30 +122,16 @@
             button4.FlatStyle = FlatStyle.Flat;
             button4.ForeColor = Color.Teal;
             button4.ImageAlign = ContentAlignment.TopCenter;
-            button4.Location = new Point(-2, 242);
+            button4.Location = new Point(0, 211);
             button4.Margin = new Padding(3, 2, 3, 2);
             button4.Name = "button4";
-            button4.Size = new Size(105, 52);
+            button4.Size = new Size(90, 52);
             button4.TabIndex = 14;
             button4.Text = "Customer Transaction";
             button4.TextAlign = ContentAlignment.BottomCenter;
             button4.TextImageRelation = TextImageRelation.ImageAboveText;
             button4.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.ForeColor = Color.Teal;
-            button1.ImageAlign = ContentAlignment.TopCenter;
-            button1.Location = new Point(-2, 100);
-            button1.Margin = new Padding(3, 2, 3, 2);
-            button1.Name = "button1";
-            button1.Size = new Size(105, 52);
-            button1.TabIndex = 12;
-            button1.Text = "Dashboard";
-            button1.TextAlign = ContentAlignment.BottomCenter;
-            button1.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // panel1
             // 
@@ -157,13 +141,12 @@
             panel1.Controls.Add(button5);
             panel1.Controls.Add(button3);
             panel1.Controls.Add(button4);
-            panel1.Controls.Add(button1);
             panel1.Controls.Add(pictureBox6);
             panel1.Dock = DockStyle.Left;
-            panel1.Location = new Point(0, 28);
+            panel1.Location = new Point(0, 52);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(106, 561);
+            panel1.Size = new Size(92, 537);
             panel1.TabIndex = 8;
             // 
             // button3
@@ -173,10 +156,10 @@
             button3.FlatStyle = FlatStyle.Flat;
             button3.ForeColor = Color.Teal;
             button3.ImageAlign = ContentAlignment.TopCenter;
-            button3.Location = new Point(1, 320);
+            button3.Location = new Point(0, 299);
             button3.Margin = new Padding(3, 2, 3, 2);
             button3.Name = "button3";
-            button3.Size = new Size(100, 51);
+            button3.Size = new Size(86, 27);
             button3.TabIndex = 15;
             button3.Text = "Order";
             button3.TextAlign = ContentAlignment.BottomCenter;
@@ -198,10 +181,10 @@
             // panel3
             // 
             panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(106, 28);
+            panel3.Location = new Point(92, 52);
             panel3.Margin = new Padding(3, 2, 3, 2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(937, 561);
+            panel3.Size = new Size(951, 537);
             panel3.TabIndex = 9;
             // 
             // CashierForm
@@ -235,7 +218,6 @@
         private Label label8;
         private Button button5;
         private Button button4;
-        private Button button1;
         private Panel panel1;
         private PictureBox pictureBox6;
         private Button button3;
