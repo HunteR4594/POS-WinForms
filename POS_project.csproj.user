@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="AddminAddEmp.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="AddProducts.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="AdminAddCategories.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Barcode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Barcode_Scanner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="CashierForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="CashierOrder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CA_Dashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CA_Inventory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Customer Transaction.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Dashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ExportPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NewDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="PrintConfirmationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="DASHBOARD_G.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="DiscountForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Register.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Reports.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
