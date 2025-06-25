@@ -413,6 +413,28 @@ namespace POS_project
             MessageBox.Show("Order list cleared and stock returned.", "Cleared", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        // --- NEW METHOD: ResetOrderFormUI - Clears the UI for a new order without returning stock ---
+
+        private void ResetOrderFormUI()
+        {
+            orderListTable.Clear(); // Clear the displayed order items
+            UpdateTotals(); // Reset totals display to 0.00
+            ClearProductInputs(); // Clear product selection inputs
+            Cashier_AmountOr.Clear(); // Clear the amount paid input
+            Cashier_ChangeOr.Text = "0.00"; // Reset change display
+            currentDiscountType = string.Empty; // Reset discount type
+            currentDiscountValue = 0.0; // Reset discount value
+            isDiscountActive = false; // Deactivate discount flag
+            grossSubtotalBeforeDiscount = 0.0; // Reset accumulated totals
+            totalLineDiscountAmount = 0.0;
+            netSalesBeforeVAT = 0.0;
+            totalVATAmount = 0.0;
+            DiscountValue.Text = "Discount"; // Reset discount label
+
+            MessageBox.Show("Order form has been reset for a new transaction.", "Transaction Successful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
         // --- Cashier_Pay_OrdersOr_Click (Corrected Sale property names) ---
         private void Cashier_Pay_OrdersOr_Click(object sender, EventArgs e)
         {
@@ -478,38 +500,37 @@ namespace POS_project
             {
                 Cashier_ReceiptOr_Click(sender, e);
             }
-            Clear_CashierOr_Click(sender, e);
+            ResetOrderFormUI();
         }
 
         // --- Cashier_ReceiptOr_Click (Removed summaryLabelPadding) ---
         private void Cashier_ReceiptOr_Click(object sender, EventArgs e)
         {
-            if (orderListTable.Rows.Count == 0) return;
-
-            string receiptContent = "--- Receipt ---\n";
-            receiptContent += "ProdID\tName\tQty\tOrig Price\tFinal Price\n";
-            receiptContent += "-------------------------------------------------------------------------------\n";
-
-            foreach (DataRow row in orderListTable.Rows)
+            if (orderListTable.Rows.Count == 0)
             {
-                receiptContent += $"{row["Product ID"]}\t{row["Product Name"]}\t{row["Quantity"]}\t{Convert.ToDouble(row["Original Unit Price"]):F2}\t{Convert.ToDouble(row["Unit Price After Discount"]):F2}\n";
+                MessageBox.Show("There are no items in the order to create a receipt.", "Empty Order", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            receiptContent += "-------------------------------------------------------------------------------\n";
-            receiptContent += $"Partial Total (Gross Sales before Discount): {grossSubtotalBeforeDiscount.ToString("C2")}\n";
-            receiptContent += $"Total Line Discount Applied: {totalLineDiscountAmount.ToString("C2")}\n";
-            receiptContent += $"Net Sales Before VAT: {netSalesBeforeVAT.ToString("C2")}\n";
-            receiptContent += $"Total VAT (12%): {totalVATAmount.ToString("C2")}\n";
-            receiptContent += $"Final Grand Total: {Cashier_Total_PriceOr.Text}\n";
-            receiptContent += $"Amount Paid: {Convert.ToDouble(Cashier_AmountOr.Text).ToString("C2")}\n";
-            receiptContent += $"Change: {Cashier_ChangeOr.Text}\n";
-            receiptContent += "-------------------------------------------------------------------------------\n";
-            receiptContent += "Thank you for your purchase!\n";
+            // MODIFICATION 3: Added a null check for the cashier's user data.
+            // Retrieve cashier's username; handle case where user may not be found.
+            var cashierUser = _context.Users.Find(_cashierId);
+            string cashierUsername = cashierUser?.Username ?? "Unknown"; // Use "Unknown" if not found
 
-            MessageBox.Show(receiptContent, "Receipt", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Create an instance of the receipt generator and print
+            var receipt = new PrintableReceipt(
+                orderListTable,
+                grossSubtotalBeforeDiscount,
+                totalLineDiscountAmount,
+                totalVATAmount,
+                netSalesBeforeVAT + totalVATAmount, // This is the final total
+                cashierUsername
+            );
+
+            receipt.Print();
         }
 
-        // --- Discount_CashierOr_Click (Removed re-calculation loop) ---
+        // --- Discount_CashierOr_Click (Opens DiscountForm) ---
         private void Discount_CashierOr_Click(object sender, EventArgs e)
         {
             using (DiscountForm discountForm = new DiscountForm())
