@@ -389,3 +389,4 @@ namespace POS_project
         private void barcodeResultLabel_TextChanged(object sender, EventArgs e) { }
     }
 }
+
