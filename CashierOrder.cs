@@ -27,6 +27,7 @@ namespace POS_project
 
         // Flag to prevent re-triggering Cashier_CategoryOr_SelectedIndexChanged during programmatic updates
         private bool isProgrammaticUpdate = false;
+        private DataRow rowBeingEdited = null; // New field to track the row being edited
         // MODIFICATION 1: The cashier ID is now 'readonly' and has no default value.
         // It MUST be initialized in the constructor.
         private readonly int _cashierId;
@@ -46,6 +47,8 @@ namespace POS_project
             displayAllAvailableProducts(); // Load available products into dataGridView1 using EF Core
             displayCategories(); // Load categories into ComboBox using EF Core
             UpdateTotals(); // Initialize all total labels to 0.00
+
+            this.dataGridView2.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellClick);
         }
 
         // --- Method: Initialize Order List Table ---
@@ -163,6 +166,8 @@ namespace POS_project
         // --- dataGridView1_CellClick to correctly update Category and Product ID ---
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            this.rowBeingEdited = null; // When user selects a new product, exit editing mode.
+
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
@@ -180,11 +185,38 @@ namespace POS_project
                 }
             }
         }
-      
+
 
         // --- Add_CashierOr_Click (Corrected Stock Logic and DataTable Population) ---
         private void Add_CashierOr_Click(object sender, EventArgs e)
         {
+            // --- Editing Logic ---
+            if (this.rowBeingEdited != null)
+            {
+                int newQuantity = (int)Cashier_QuantityOr.Value;
+
+                if (newQuantity <= 0)
+                {
+                    orderListTable.Rows.Remove(this.rowBeingEdited);
+                }
+                else
+                {
+                    double originalUnitPrice = Convert.ToDouble(this.rowBeingEdited["Original Unit Price"]);
+                    double unitPriceAfterDiscount = Convert.ToDouble(this.rowBeingEdited["Unit Price After Discount"]);
+
+                    this.rowBeingEdited["Quantity"] = newQuantity;
+                    this.rowBeingEdited["Original Subtotal"] = newQuantity * originalUnitPrice;
+                    this.rowBeingEdited["Final Subtotal"] = newQuantity * unitPriceAfterDiscount;
+                    this.rowBeingEdited["Line Discount Amount"] = Convert.ToDouble(this.rowBeingEdited["Original Subtotal"]) - Convert.ToDouble(this.rowBeingEdited["Final Subtotal"]);
+                }
+
+                UpdateTotals();
+                ClearProductInputs();
+                this.rowBeingEdited = null; // Exit editing mode
+                return; // Skip the 'add new item' logic
+            }
+            // --- End of Editing Logic ---
+
             if (string.IsNullOrEmpty(Cashier_Product_NameOr.Text) || Cashier_ProductidOr.SelectedItem == null)
             {
                 MessageBox.Show("Please select a product first.", "Missing Product", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -369,48 +401,11 @@ namespace POS_project
         // --- Clear_CashierOr_Click to return all stock on clear using EF Core ---
         private void Clear_CashierOr_Click(object sender, EventArgs e)
         {
-            foreach (DataRow row in orderListTable.Rows.Cast<DataRow>().ToList())
-            {
-                string prodId = row["Product ID"].ToString();
-                int quantityToReturn = Convert.ToInt32(row["Quantity"]);
-
-                try
-                {
-                    Product productToUpdate = _context.Products.FirstOrDefault(p => p.prod_id == prodId);
-                    if (productToUpdate != null)
-                    {
-                        productToUpdate.stock += quantityToReturn;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error returning stock for {prodId} on clear: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            try
-            {
-                _context.SaveChanges();
-                displayAllAvailableProducts();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saving stock changes during clear operation: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            orderListTable.Clear();
-            UpdateTotals();
+            orderListTable.Rows.Clear();
             ClearProductInputs();
-            Cashier_AmountOr.Clear();
-            Cashier_ChangeOr.Text = "0.00";
-            currentDiscountType = string.Empty;
-            currentDiscountValue = 0.0;
-            isDiscountActive = false;
-            grossSubtotalBeforeDiscount = 0.0;
-            totalLineDiscountAmount = 0.0;
-            netSalesBeforeVAT = 0.0;
-            totalVATAmount = 0.0;
-            DiscountValue.Text = "Discount";
-            MessageBox.Show("Order list cleared and stock returned.", "Cleared", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            UpdateTotals();
+            ResetOrderFormUI();
+            this.rowBeingEdited = null; // Also reset editing mode here
         }
 
         // --- NEW METHOD: ResetOrderFormUI - Clears the UI for a new order without returning stock ---
@@ -533,26 +528,14 @@ namespace POS_project
         // --- Discount_CashierOr_Click (Opens DiscountForm) ---
         private void Discount_CashierOr_Click(object sender, EventArgs e)
         {
-            using (DiscountForm discountForm = new DiscountForm())
+            using (var discountForm = new DiscountForm())
             {
                 if (discountForm.ShowDialog() == DialogResult.OK)
                 {
+                    isDiscountActive = true;
                     currentDiscountType = discountForm.SelectedDiscountType;
                     currentDiscountValue = discountForm.DiscountValue;
-                    isDiscountActive = true;
-
-                    DiscountValue.Text = currentDiscountType == "Cash"
-                        ? $"Cash {currentDiscountValue.ToString("C2")}"
-                        : $"Percent {currentDiscountValue.ToString("F2")}%" ;
-
-                    MessageBox.Show($"Discount set: {currentDiscountType} - {currentDiscountValue}", "Discount Applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    currentDiscountType = string.Empty;
-                    currentDiscountValue = 0.0;
-                    isDiscountActive = false;
-                    DiscountValue.Text = "Discount";
+                    MessageBox.Show($"Discount set: {currentDiscountValue}{(currentDiscountType == "Percent" ? "%" : " cash")} per item. Will be applied to the next product added.", "Discount Active", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -560,31 +543,70 @@ namespace POS_project
         // --- MODIFIED: Cashier_ScanOr_Click to handle the barcode scanner event ---
         private void Cashier_ScanOr_Click(object sender, EventArgs e)
         {
-            Barcode_Scanner barcodeForm = new Barcode_Scanner();
-            // Subscribe to the event that is fired when a barcode is successfully scanned.
-            // When the event occurs, the 'BarcodeForm_BarcodeScanned' method will be called.
+            var barcodeForm = new BarcodeScannerForm();
             barcodeForm.BarcodeScanned += BarcodeForm_BarcodeScanned;
-            // Show the form as a modal dialog, which prevents interaction with the main form until it's closed.
-            barcodeForm.ShowDialog(this);
+            barcodeForm.ShowDialog();
         }
 
         // --- NEW: Event handler for when a barcode is scanned ---
         private void BarcodeForm_BarcodeScanned(object sender, string barcode)
         {
-            // This method is called when the BarcodeScanned event is triggered from the scanner form.
-            // The 'barcode' parameter holds the scanned string.
+            var product = new ProductData().GetProductByBarcode(barcode);
 
-            // We need to ensure this logic runs on the UI thread, as events can sometimes
-            // be raised from other threads. 'Invoke' ensures thread safety for UI updates.
-            if (this.InvokeRequired)
+            if (product != null)
             {
-                // If we're not on the UI thread, call this same method again on the UI thread.
-                this.Invoke(new Action(() => FindAndDisplayProduct(barcode)));
+                // Logic to add the product to the grid, adapted from Add_CashierOr_Click
+                int quantity = 1; // Default to adding one item
+
+                if (product.stock < quantity)
+                {
+                    MessageBox.Show($"Not enough stock available for {product.prod_name}. Available: {product.stock}", "Out of Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                double originalPricePerUnitVATInclusive = Convert.ToDouble(product.prod_price);
+                double originalSubtotalVATInclusive = originalPricePerUnitVATInclusive * quantity;
+                double lineDiscountAmount = 0.0;
+                double finalPricePerUnitVATInclusive = originalPricePerUnitVATInclusive;
+                double finalSubtotalVATInclusive = originalSubtotalVATInclusive;
+
+                // (Discount logic can be applied here if needed)
+
+                bool productExistsInOrderList = false;
+                foreach (DataRow row in orderListTable.Rows)
+                {
+                    if (row["Product ID"].ToString() == product.prod_id)
+                    {
+                        row["Quantity"] = Convert.ToInt32(row["Quantity"]) + quantity;
+                        row["Original Subtotal"] = Convert.ToDouble(row["Original Subtotal"]) + originalSubtotalVATInclusive;
+                        row["Final Subtotal"] = Convert.ToDouble(row["Final Subtotal"]) + finalSubtotalVATInclusive;
+                        productExistsInOrderList = true;
+                        break;
+                    }
+                }
+
+                if (!productExistsInOrderList)
+                {
+                    DataRow newRow = orderListTable.NewRow();
+                    newRow["Product ID"] = product.prod_id;
+                    newRow["Product Name"] = product.prod_name;
+                    newRow["Quantity"] = quantity;
+                    newRow["Original Unit Price"] = originalPricePerUnitVATInclusive;
+                    newRow["Unit Price After Discount"] = finalPricePerUnitVATInclusive;
+                    newRow["Original Subtotal"] = originalSubtotalVATInclusive;
+                    newRow["Line Discount Amount"] = lineDiscountAmount;
+                    newRow["Final Subtotal"] = finalSubtotalVATInclusive;
+                    newRow["Product PK ID"] = product.id;
+                    newRow["Category"] = product.category;
+                    orderListTable.Rows.Add(newRow);
+                }
+
+                UpdateTotals();
+                ClearProductInputs();
             }
             else
             {
-                // If we're already on the UI thread, just call the method directly.
-                FindAndDisplayProduct(barcode);
+                MessageBox.Show($"Product with Barcode '{barcode}' not found.", "Product Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -640,6 +662,48 @@ namespace POS_project
                                 MessageBoxIcon.Error);
                 isProgrammaticUpdate = false; // Ensure flag is reset even if an error occurs.
             }
+        }
+
+        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.RowIndex < orderListTable.Rows.Count)
+            {
+                this.rowBeingEdited = orderListTable.Rows[e.RowIndex];
+
+                string prodId = this.rowBeingEdited["Product ID"].ToString();
+                string prodName = this.rowBeingEdited["Product Name"].ToString();
+                int quantity = Convert.ToInt32(this.rowBeingEdited["Quantity"]);
+                double originalUnitPrice = Convert.ToDouble(this.rowBeingEdited["Original Unit Price"]);
+                string category = this.rowBeingEdited["Category"].ToString();
+
+                isProgrammaticUpdate = true;
+
+                if (Cashier_CategoryOr.Items.Contains(category))
+                {
+                    Cashier_CategoryOr.SelectedItem = category;
+                }
+
+                if (Cashier_ProductidOr.Items.Contains(prodId))
+                {
+                    Cashier_ProductidOr.SelectedItem = prodId;
+                }
+
+                Cashier_Product_NameOr.Text = prodName;
+                Cashier_PriceOr.Text = originalUnitPrice.ToString("F2");
+                Cashier_QuantityOr.Value = quantity;
+
+                isProgrammaticUpdate = false;
+            }
+        }
+
+        private void Cashier_ChangeOr_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Cashier_Total_PriceOr_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
