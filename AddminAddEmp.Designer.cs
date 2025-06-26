@@ -29,227 +29,351 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             status_user = new ComboBox();
             panel1 = new Panel();
-            Clear_user = new Button();
-            Remove_user = new Button();
-            Update_user = new Button();
-            Add_user = new Button();
-            label4 = new Label();
-            label3 = new Label();
-            Role_user = new ComboBox();
-            label2 = new Label();
-            add_password = new TextBox();
-            label1 = new Label();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            panel3 = new Panel();
             add_username = new TextBox();
+            label1 = new Label();
+            label3 = new Label();
+            add_password = new TextBox();
+            Role_user = new ComboBox();
+            label4 = new Label();
+            label2 = new Label();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            Add_user = new Button();
+            Clear_user = new Button();
+            Update_user = new Button();
+            Remove_user = new Button();
             panel2 = new Panel();
-            dataGridView = new DataGridView();
+            tableLayoutPanel4 = new TableLayoutPanel();
             label5 = new Label();
+            dataGridView = new DataGridView();
+            tableLayoutPanel1 = new TableLayoutPanel();
             panel1.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            panel3.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
             panel2.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // status_user
             // 
+            status_user.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             status_user.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             status_user.FormattingEnabled = true;
             status_user.Items.AddRange(new object[] { "Active ", "Inactive", "Pending" });
-            status_user.Location = new Point(35, 360);
+            status_user.Location = new Point(37, 319);
             status_user.Name = "status_user";
-            status_user.Size = new Size(256, 33);
+            status_user.Size = new Size(232, 33);
             status_user.TabIndex = 6;
             // 
             // panel1
             // 
             panel1.BackColor = Color.White;
-            panel1.Controls.Add(Clear_user);
-            panel1.Controls.Add(Remove_user);
-            panel1.Controls.Add(Update_user);
-            panel1.Controls.Add(Add_user);
-            panel1.Controls.Add(label4);
-            panel1.Controls.Add(status_user);
-            panel1.Controls.Add(label3);
-            panel1.Controls.Add(Role_user);
-            panel1.Controls.Add(label2);
-            panel1.Controls.Add(add_password);
-            panel1.Controls.Add(label1);
-            panel1.Controls.Add(add_username);
-            panel1.Location = new Point(30, 24);
+            panel1.Controls.Add(tableLayoutPanel2);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(342, 700);
+            panel1.Size = new Size(315, 742);
             panel1.TabIndex = 2;
             // 
-            // Clear_user
+            // tableLayoutPanel2
             // 
-            Clear_user.BackColor = Color.Teal;
-            Clear_user.FlatStyle = FlatStyle.Flat;
-            Clear_user.ForeColor = Color.White;
-            Clear_user.Location = new Point(173, 510);
-            Clear_user.Name = "Clear_user";
-            Clear_user.Size = new Size(116, 41);
-            Clear_user.TabIndex = 11;
-            Clear_user.Text = "Clear";
-            Clear_user.UseVisualStyleBackColor = false;
-            Clear_user.Click += Clear_user_Click;
+            tableLayoutPanel2.ColumnCount = 1;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.Controls.Add(panel3, 0, 0);
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 1);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(0, 0);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 2;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.Size = new Size(315, 742);
+            tableLayoutPanel2.TabIndex = 2;
             // 
-            // Remove_user
+            // panel3
             // 
-            Remove_user.BackColor = Color.Teal;
-            Remove_user.FlatStyle = FlatStyle.Flat;
-            Remove_user.ForeColor = Color.White;
-            Remove_user.Location = new Point(38, 510);
-            Remove_user.Name = "Remove_user";
-            Remove_user.Size = new Size(116, 41);
-            Remove_user.TabIndex = 10;
-            Remove_user.Text = "Remove";
-            Remove_user.UseVisualStyleBackColor = false;
-            Remove_user.Click += Remove_user_Click;
+            panel3.Controls.Add(add_username);
+            panel3.Controls.Add(status_user);
+            panel3.Controls.Add(label1);
+            panel3.Controls.Add(label3);
+            panel3.Controls.Add(add_password);
+            panel3.Controls.Add(Role_user);
+            panel3.Controls.Add(label4);
+            panel3.Controls.Add(label2);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(3, 3);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(309, 365);
+            panel3.TabIndex = 12;
             // 
-            // Update_user
+            // add_username
             // 
-            Update_user.BackColor = Color.Teal;
-            Update_user.FlatStyle = FlatStyle.Flat;
-            Update_user.ForeColor = Color.White;
-            Update_user.Location = new Point(173, 438);
-            Update_user.Name = "Update_user";
-            Update_user.Size = new Size(116, 41);
-            Update_user.TabIndex = 9;
-            Update_user.Text = "Update";
-            Update_user.UseVisualStyleBackColor = false;
-            Update_user.Click += Update_user_Click;
-            // 
-            // Add_user
-            // 
-            Add_user.BackColor = Color.Teal;
-            Add_user.FlatStyle = FlatStyle.Flat;
-            Add_user.ForeColor = Color.White;
-            Add_user.Location = new Point(38, 438);
-            Add_user.Name = "Add_user";
-            Add_user.Size = new Size(116, 41);
-            Add_user.TabIndex = 8;
-            Add_user.Text = "Add";
-            Add_user.UseVisualStyleBackColor = false;
-            Add_user.Click += Add_user_Click;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(35, 332);
-            label4.Name = "label4";
-            label4.Size = new Size(49, 20);
-            label4.TabIndex = 7;
-            label4.Text = "Status";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(33, 239);
-            label3.Name = "label3";
-            label3.Size = new Size(39, 20);
-            label3.TabIndex = 5;
-            label3.Text = "Role";
-            // 
-            // Role_user
-            // 
-            Role_user.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Role_user.FormattingEnabled = true;
-            Role_user.Items.AddRange(new object[] { "Admin", "Cashier" });
-            Role_user.Location = new Point(33, 267);
-            Role_user.Name = "Role_user";
-            Role_user.Size = new Size(256, 33);
-            Role_user.TabIndex = 4;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(33, 150);
-            label2.Name = "label2";
-            label2.Size = new Size(70, 20);
-            label2.TabIndex = 3;
-            label2.Text = "Password";
-            // 
-            // add_password
-            // 
-            add_password.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            add_password.Location = new Point(35, 177);
-            add_password.Name = "add_password";
-            add_password.Size = new Size(254, 31);
-            add_password.TabIndex = 2;
+            add_username.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            add_username.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            add_username.Location = new Point(37, 49);
+            add_username.Name = "add_username";
+            add_username.Size = new Size(230, 31);
+            add_username.TabIndex = 0;
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(33, 63);
+            label1.Location = new Point(35, 22);
             label1.Name = "label1";
             label1.Size = new Size(75, 20);
             label1.TabIndex = 1;
             label1.Text = "Username";
             // 
-            // add_username
+            // label3
             // 
-            add_username.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            add_username.Location = new Point(35, 90);
-            add_username.Name = "add_username";
-            add_username.Size = new Size(254, 31);
-            add_username.TabIndex = 0;
+            label3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label3.AutoSize = true;
+            label3.Location = new Point(35, 198);
+            label3.Name = "label3";
+            label3.Size = new Size(39, 20);
+            label3.TabIndex = 5;
+            label3.Text = "Role";
+            // 
+            // add_password
+            // 
+            add_password.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            add_password.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            add_password.Location = new Point(37, 136);
+            add_password.Name = "add_password";
+            add_password.Size = new Size(230, 31);
+            add_password.TabIndex = 2;
+            // 
+            // Role_user
+            // 
+            Role_user.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Role_user.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Role_user.FormattingEnabled = true;
+            Role_user.Items.AddRange(new object[] { "Admin", "Cashier" });
+            Role_user.Location = new Point(35, 226);
+            Role_user.Name = "Role_user";
+            Role_user.Size = new Size(232, 33);
+            Role_user.TabIndex = 4;
+            // 
+            // label4
+            // 
+            label4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label4.AutoSize = true;
+            label4.Location = new Point(37, 291);
+            label4.Name = "label4";
+            label4.Size = new Size(49, 20);
+            label4.TabIndex = 7;
+            label4.Text = "Status";
+            // 
+            // label2
+            // 
+            label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label2.AutoSize = true;
+            label2.Location = new Point(35, 109);
+            label2.Name = "label2";
+            label2.Size = new Size(70, 20);
+            label2.TabIndex = 3;
+            label2.Text = "Password";
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 2;
+            tableLayoutPanel2.SetColumnSpan(tableLayoutPanel3, 10);
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.Controls.Add(Add_user, 0, 0);
+            tableLayoutPanel3.Controls.Add(Clear_user, 1, 1);
+            tableLayoutPanel3.Controls.Add(Update_user, 1, 0);
+            tableLayoutPanel3.Controls.Add(Remove_user, 0, 1);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(3, 374);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.Padding = new Padding(10);
+            tableLayoutPanel3.RowCount = 3;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 14.2465754F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 14.2465754F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 71.50685F));
+            tableLayoutPanel3.Size = new Size(309, 365);
+            tableLayoutPanel3.TabIndex = 13;
+            // 
+            // Add_user
+            // 
+            Add_user.BackColor = Color.FromArgb(0, 192, 0);
+            Add_user.Dock = DockStyle.Top;
+            Add_user.FlatStyle = FlatStyle.Flat;
+            Add_user.ForeColor = Color.White;
+            Add_user.Location = new Point(13, 13);
+            Add_user.Name = "Add_user";
+            Add_user.Size = new Size(138, 41);
+            Add_user.TabIndex = 8;
+            Add_user.Text = "Add";
+            Add_user.UseVisualStyleBackColor = false;
+            Add_user.Click += Add_user_Click;
+            // 
+            // Clear_user
+            // 
+            Clear_user.BackColor = Color.Teal;
+            Clear_user.Dock = DockStyle.Top;
+            Clear_user.FlatStyle = FlatStyle.Flat;
+            Clear_user.ForeColor = Color.White;
+            Clear_user.Location = new Point(157, 62);
+            Clear_user.Name = "Clear_user";
+            Clear_user.Size = new Size(139, 41);
+            Clear_user.TabIndex = 11;
+            Clear_user.Text = "Clear";
+            Clear_user.UseVisualStyleBackColor = false;
+            Clear_user.Click += Clear_user_Click;
+            // 
+            // Update_user
+            // 
+            Update_user.BackColor = Color.Navy;
+            Update_user.Dock = DockStyle.Top;
+            Update_user.FlatStyle = FlatStyle.Flat;
+            Update_user.ForeColor = Color.White;
+            Update_user.Location = new Point(157, 13);
+            Update_user.Name = "Update_user";
+            Update_user.Size = new Size(139, 41);
+            Update_user.TabIndex = 9;
+            Update_user.Text = "Update";
+            Update_user.UseVisualStyleBackColor = false;
+            Update_user.Click += Update_user_Click;
+            // 
+            // Remove_user
+            // 
+            Remove_user.BackColor = Color.Red;
+            Remove_user.Dock = DockStyle.Top;
+            Remove_user.FlatStyle = FlatStyle.Flat;
+            Remove_user.ForeColor = Color.White;
+            Remove_user.Location = new Point(13, 62);
+            Remove_user.Name = "Remove_user";
+            Remove_user.Size = new Size(138, 41);
+            Remove_user.TabIndex = 10;
+            Remove_user.Text = "Remove";
+            Remove_user.UseVisualStyleBackColor = false;
+            Remove_user.Click += Remove_user_Click;
             // 
             // panel2
             // 
             panel2.BackColor = Color.White;
-            panel2.Controls.Add(dataGridView);
-            panel2.Controls.Add(label5);
-            panel2.Location = new Point(387, 24);
+            panel2.Controls.Add(tableLayoutPanel4);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(324, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(655, 700);
+            panel2.Size = new Size(745, 742);
             panel2.TabIndex = 3;
+            // 
+            // tableLayoutPanel4
+            // 
+            tableLayoutPanel4.ColumnCount = 1;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel4.Controls.Add(label5, 0, 0);
+            tableLayoutPanel4.Controls.Add(dataGridView, 0, 1);
+            tableLayoutPanel4.Dock = DockStyle.Fill;
+            tableLayoutPanel4.Location = new Point(0, 0);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.Padding = new Padding(20);
+            tableLayoutPanel4.RowCount = 2;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 90F));
+            tableLayoutPanel4.Size = new Size(745, 742);
+            tableLayoutPanel4.TabIndex = 2;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Dock = DockStyle.Fill;
+            label5.Font = new Font("Tahoma", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(23, 20);
+            label5.Name = "label5";
+            label5.Size = new Size(699, 70);
+            label5.TabIndex = 0;
+            label5.Text = "All User's Data";
+            label5.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // dataGridView
             // 
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToDeleteRows = false;
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView.BackgroundColor = SystemColors.ButtonFace;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = Color.Teal;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.Font = new Font("Tahoma", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             dataGridViewCellStyle1.ForeColor = Color.White;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView.Location = new Point(27, 60);
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridView.Dock = DockStyle.Fill;
+            dataGridView.Location = new Point(23, 93);
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView.RowHeadersVisible = false;
             dataGridView.RowHeadersWidth = 51;
-            dataGridView.Size = new Size(601, 615);
+            dataGridView.Size = new Size(699, 626);
             dataGridView.TabIndex = 1;
             dataGridView.CellClick += users_data_CellClick;
             // 
-            // label5
+            // tableLayoutPanel1
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(23, 19);
-            label5.Name = "label5";
-            label5.Size = new Size(105, 20);
-            label5.TabIndex = 0;
-            label5.Text = "All User's Data";
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
+            tableLayoutPanel1.Controls.Add(panel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(panel2, 1, 0);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(1072, 748);
+            tableLayoutPanel1.TabIndex = 2;
             // 
             // AddminAddEmp
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLight;
-            Controls.Add(panel1);
-            Controls.Add(panel2);
+            Controls.Add(tableLayoutPanel1);
             Name = "AddminAddEmp";
             Size = new Size(1072, 748);
+            Load += AddminAddEmp_Load;
             panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            tableLayoutPanel3.ResumeLayout(false);
             panel2.ResumeLayout(false);
-            panel2.PerformLayout();
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView).EndInit();
+            tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -271,5 +395,10 @@
         private Panel panel2;
         private DataGridView dataGridView;
         private Label label5;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel2;
+        private Panel panel3;
+        private TableLayoutPanel tableLayoutPanel3;
+        private TableLayoutPanel tableLayoutPanel4;
     }
 }

@@ -6,10 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AForge" Version="2.2.5" />
+    <PackageReference Include="AForge.Imaging" Version="2.2.5" />
     <PackageReference Include="AForge.Video" Version="2.2.5" />
     <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
     <PackageReference Include="Aspose.PDF" Version="24.5.0" />
@@ -29,6 +31,9 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageReference Include="PDF" Version="1.0.0" />
     <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.13" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.17.1">
+      <ExcludeAssets>native;runtime</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +53,12 @@
 
   <ItemGroup>
     <Folder Include="Product_Directory\" />
+    <Folder Include="Resources\picture\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="runtimes/ios/**" />
+    <None Remove="runtimes/ios/**" />
   </ItemGroup>
 
 </Project>

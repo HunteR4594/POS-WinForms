@@ -29,92 +29,168 @@ namespace POS_project
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             label1 = new Label();
             ProductGridView = new DataGridView();
             invMainPanel = new Panel();
             label2 = new Label();
             textBox1 = new TextBox();
             button1 = new Button();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            tableLayoutPanel3 = new TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)ProductGridView).BeginInit();
             invMainPanel.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(358, 238);
+            label1.Location = new Point(409, 317);
             label1.Name = "label1";
-            label1.Size = new Size(0, 15);
+            label1.Size = new Size(0, 20);
             label1.TabIndex = 1;
             // 
             // ProductGridView
             // 
             ProductGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ProductGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            ProductGridView.BackgroundColor = SystemColors.ControlLightLight;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.Teal;
+            dataGridViewCellStyle1.Font = new Font("Tahoma", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            ProductGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             ProductGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            ProductGridView.Location = new Point(22, 14);
-            ProductGridView.Margin = new Padding(3, 2, 3, 2);
+            ProductGridView.Location = new Point(25, 19);
             ProductGridView.Name = "ProductGridView";
+            ProductGridView.RowHeadersVisible = false;
             ProductGridView.RowHeadersWidth = 51;
-            ProductGridView.Size = new Size(848, 425);
+            ProductGridView.Size = new Size(979, 582);
             ProductGridView.TabIndex = 3;
             // 
             // invMainPanel
             // 
-            invMainPanel.BackColor = Color.White;
+            invMainPanel.BackColor = Color.Azure;
             invMainPanel.Controls.Add(ProductGridView);
             invMainPanel.Controls.Add(label1);
-            invMainPanel.Location = new Point(25, 78);
-            invMainPanel.Margin = new Padding(3, 2, 3, 2);
+            invMainPanel.Dock = DockStyle.Fill;
+            invMainPanel.Location = new Point(23, 93);
             invMainPanel.Name = "invMainPanel";
-            invMainPanel.Size = new Size(889, 457);
+            invMainPanel.Size = new Size(1026, 624);
             invMainPanel.TabIndex = 0;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(25, 24);
+            label2.Dock = DockStyle.Fill;
+            label2.Font = new Font("Tahoma", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(8, 5);
             label2.Name = "label2";
-            label2.Size = new Size(144, 20);
+            label2.Size = new Size(271, 54);
             label2.TabIndex = 4;
             label2.Text = "Inventory Products";
+            label2.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // textBox1
             // 
-            textBox1.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBox1.Location = new Point(628, 35);
+            textBox1.Dock = DockStyle.Bottom;
+            textBox1.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            textBox1.Location = new Point(387, 12);
+            textBox1.Margin = new Padding(3, 4, 3, 4);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(191, 27);
+            textBox1.Size = new Size(199, 32);
             textBox1.TabIndex = 5;
             // 
             // button1
             // 
             button1.BackColor = Color.Teal;
+            button1.Dock = DockStyle.Bottom;
+            button1.FlatStyle = FlatStyle.Flat;
             button1.ForeColor = Color.White;
-            button1.Location = new Point(835, 35);
+            button1.Location = new Point(885, 18);
+            button1.Margin = new Padding(3, 4, 3, 4);
             button1.Name = "button1";
-            button1.Size = new Size(75, 28);
+            button1.Padding = new Padding(5);
+            button1.Size = new Size(133, 37);
             button1.TabIndex = 6;
             button1.Text = "Search";
             button1.UseVisualStyleBackColor = false;
             // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.BackColor = Color.PowderBlue;
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 0, 0);
+            tableLayoutPanel1.Controls.Add(invMainPanel, 0, 1);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.Padding = new Padding(20);
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 90F));
+            tableLayoutPanel1.Size = new Size(1072, 740);
+            tableLayoutPanel1.TabIndex = 7;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 3;
+            tableLayoutPanel1.SetColumnSpan(tableLayoutPanel2, 5);
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 27.27273F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 59.0909081F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 13.636364F));
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 1, 0);
+            tableLayoutPanel2.Controls.Add(label2, 0, 0);
+            tableLayoutPanel2.Controls.Add(button1, 2, 0);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(23, 23);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.Padding = new Padding(5);
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new Size(1026, 64);
+            tableLayoutPanel2.TabIndex = 0;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 2;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
+            tableLayoutPanel3.Controls.Add(textBox1, 1, 0);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(285, 8);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.Padding = new Padding(5, 5, 5, 0);
+            tableLayoutPanel3.RowCount = 1;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Size = new Size(594, 48);
+            tableLayoutPanel3.TabIndex = 4;
+            // 
             // CA_Inventory
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.WhiteSmoke;
-            Controls.Add(button1);
-            Controls.Add(textBox1);
-            Controls.Add(label2);
-            Controls.Add(invMainPanel);
-            Margin = new Padding(3, 2, 3, 2);
+            Controls.Add(tableLayoutPanel1);
             Name = "CA_Inventory";
-            Size = new Size(938, 555);
+            Size = new Size(1072, 740);
             ((System.ComponentModel.ISupportInitialize)ProductGridView).EndInit();
             invMainPanel.ResumeLayout(false);
             invMainPanel.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            tableLayoutPanel3.ResumeLayout(false);
+            tableLayoutPanel3.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -125,5 +201,8 @@ namespace POS_project
         private Label label2;
         private TextBox textBox1;
         private Button button1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel tableLayoutPanel3;
     }
 }

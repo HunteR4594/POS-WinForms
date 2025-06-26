@@ -78,3 +78,5 @@
 --    order_date DATETIME NOT NULL
 --);
 
+USE tryDB;
+SELECT * FROM customers;

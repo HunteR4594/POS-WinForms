@@ -1,5 +1,5 @@
-﻿using System.Data;
-using POS_project.Migrations;
+﻿using POS_project.Migrations;
+using System.Data;
 
 namespace POS_project
 {
@@ -174,6 +174,11 @@ namespace POS_project
                     }
                 }
             }
+        }
+
+        private void AddminAddEmp_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

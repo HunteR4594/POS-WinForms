@@ -407,5 +407,15 @@ namespace POS_project
                 MessageBox.Show("Error loading categories: " + ex.Message);
             }
         }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
