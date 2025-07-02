@@ -16,17 +16,7 @@ namespace POS_project
         }
         public void displayAllUsersData()
         {
-            var users = _context.Users.Where(u => !u.IsDeleted).ToList();
-            dataGridView.AutoGenerateColumns = false;
-            dataGridView.Columns.Clear();
-
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "id" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Username", DataPropertyName = "Username" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Role", DataPropertyName = "Role" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Status", DataPropertyName = "Status" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Date Created", DataPropertyName = "Date" });
-            
-            dataGridView.DataSource = users;
+            dataGridView.DataSource = _context.Users.Where(u => !u.IsDeleted).ToList();
         }
 
         private void Add_user_Click(object sender, EventArgs e)

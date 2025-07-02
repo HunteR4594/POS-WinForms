@@ -1,4 +1,5 @@
-﻿namespace POS_project
+﻿
+namespace POS_project
 {
     partial class CA_Inventory
     {
@@ -33,7 +34,7 @@
             ProductGridView = new DataGridView();
             invMainPanel = new Panel();
             label2 = new Label();
-            txtSearch = new TextBox();
+            textBox1 = new TextBox();
             button1 = new Button();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel2 = new TableLayoutPanel();
@@ -67,7 +68,6 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             ProductGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             ProductGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            ProductGridView.Dock = DockStyle.Fill;
             ProductGridView.Location = new Point(25, 19);
             ProductGridView.Name = "ProductGridView";
             ProductGridView.RowHeadersVisible = false;
@@ -98,16 +98,15 @@
             label2.Text = "Inventory Products";
             label2.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // txtSearch
+            // textBox1
             // 
-            txtSearch.Dock = DockStyle.Bottom;
-            txtSearch.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtSearch.Location = new Point(387, 12);
-            txtSearch.Margin = new Padding(3, 4, 3, 4);
-            txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(199, 32);
-            txtSearch.TabIndex = 5;
-            txtSearch.TextChanged += txtSearch_TextChanged;
+            textBox1.Dock = DockStyle.Bottom;
+            textBox1.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            textBox1.Location = new Point(387, 12);
+            textBox1.Margin = new Padding(3, 4, 3, 4);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(199, 32);
+            textBox1.TabIndex = 5;
             // 
             // button1
             // 
@@ -165,7 +164,7 @@
             tableLayoutPanel3.ColumnCount = 2;
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35F));
-            tableLayoutPanel3.Controls.Add(txtSearch, 1, 0);
+            tableLayoutPanel3.Controls.Add(textBox1, 1, 0);
             tableLayoutPanel3.Dock = DockStyle.Fill;
             tableLayoutPanel3.Location = new Point(285, 8);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -200,7 +199,7 @@
         private DataGridView ProductGridView;
         private Panel invMainPanel;
         private Label label2;
-        private TextBox txtSearch;
+        private TextBox textBox1;
         private Button button1;
         private TableLayoutPanel tableLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel2;

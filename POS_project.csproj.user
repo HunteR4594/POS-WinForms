@@ -13,13 +13,7 @@
     <Compile Update="AdminAddCategories.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Barcode.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="BarcodeScannerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Barcode_Scanner.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="CashierForm.cs">
@@ -37,19 +31,10 @@
     <Compile Update="Customer Transaction.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Dashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="ExportPreviewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="NewDashboard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="PrintConfirmationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="DASHBOARD_G.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="DiscountForm.cs">

@@ -84,20 +84,14 @@ namespace POS_project
         }
 
         // --- displayAllAvailableProducts to use EF Core and Product entity ---
-        public void displayAllAvailableProducts(string searchTerm = null)
+        public void displayAllAvailableProducts()
         {
             try
             {
-                var query = _context.Products
+                var products = _context.Products
                                        .Where(p => p.status == "Available")
-                                       .AsNoTracking();
-
-                if (!string.IsNullOrEmpty(searchTerm))
-                {
-                    query = query.Where(p => p.prod_name.Contains(searchTerm) || p.prod_id.Contains(searchTerm));
-                }
-                                       
-                var products = query.ToList();
+                                       .AsNoTracking()
+                                       .ToList();
                 dataGridView1.DataSource = products;
                 dataGridView1.AutoGenerateColumns = true;
             }
@@ -334,24 +328,25 @@ namespace POS_project
         // --- UpdateTotals (consolidated logic for all summary calculations) ---
         private void UpdateTotals()
         {
-            // Recalculate all totals from the orderListTable
-            grossSubtotalBeforeDiscount = orderListTable.AsEnumerable().Sum(row => row.Field<double>("Original Subtotal"));
-            totalLineDiscountAmount = orderListTable.AsEnumerable().Sum(row => row.Field<double>("Line Discount Amount"));
+            grossSubtotalBeforeDiscount = 0;
+            totalLineDiscountAmount = 0;
+            double currentFinalSubtotalAfterLineDiscount = 0;
 
-            // This is the subtotal after line-item discounts have been applied
-            netSalesBeforeVAT = grossSubtotalBeforeDiscount - totalLineDiscountAmount;
+            foreach (DataRow row in orderListTable.Rows)
+            {
+                grossSubtotalBeforeDiscount += Convert.ToDouble(row["Original Subtotal"]);
+                totalLineDiscountAmount += Convert.ToDouble(row["Line Discount Amount"]);
+                currentFinalSubtotalAfterLineDiscount += Convert.ToDouble(row["Final Subtotal"]);
+            }
 
-            // Calculate VAT based on the net sales
-            totalVATAmount = netSalesBeforeVAT * VAT_RATE;
+            netSalesBeforeVAT = currentFinalSubtotalAfterLineDiscount / (1 + VAT_RATE);
+            totalVATAmount = currentFinalSubtotalAfterLineDiscount - netSalesBeforeVAT;
+            double finalGrandTotal = currentFinalSubtotalAfterLineDiscount;
 
-            // Display all calculated values in their respective labels
-            Cashier_Total_PriceOr.Text = netSalesBeforeVAT.ToString("C2"); // The final payable amount for the customer
-            vatValue.Text = totalVATAmount.ToString("C2"); // Display the calculated VAT
+            label12.Text = grossSubtotalBeforeDiscount.ToString("C2");
             label7.Text = totalLineDiscountAmount.ToString("C2");
-
-            // No overall discount logic yet, so these would be 0 for now
-            // totalOverallDiscountAmount = 0; 
-            // label_OverallDiscount.Text = totalOverallDiscountAmount.ToString("C2");
+            vatValue.Text = totalVATAmount.ToString("C2");
+            Cashier_Total_PriceOr.Text = finalGrandTotal.ToString("C2");
         }
 
         // --- Method: Clear Product Inputs ---
@@ -480,18 +475,6 @@ namespace POS_project
                         Username = row["Cashier Username"].ToString()
                     };
                     newSale.SaleItems.Add(saleItem);
-
-                    // --- Stock Deduction and Status Update ---
-                    var productToUpdate = _context.Products.Find(saleItem.ProductId);
-                    if (productToUpdate != null)
-                    {
-                        productToUpdate.stock -= saleItem.Quantity;
-                        if (productToUpdate.stock <= 0)
-                        {
-                            productToUpdate.stock = 0; // Ensure stock doesn't go negative
-                            productToUpdate.status = "Unavailable";
-                        }
-                    }
                 }
 
                 _context.SaveChanges();
@@ -568,62 +551,15 @@ namespace POS_project
         // --- NEW: Event handler for when a barcode is scanned ---
         private void BarcodeForm_BarcodeScanned(object sender, string barcode)
         {
-            var product = new ProductData().GetProductByBarcode(barcode);
-
-            if (product != null)
+            // This method is called when a barcode is successfully scanned
+            // The 'barcode' parameter contains the scanned value
+            if (!string.IsNullOrEmpty(barcode))
             {
-                // Logic to add the product to the grid, adapted from Add_CashierOr_Click
-                int quantity = 1; // Default to adding one item
+                // Set the scanned barcode to the Product ID ComboBox
+                Cashier_ProductidOr.Text = barcode;
 
-                if (product.stock < quantity)
-                {
-                    MessageBox.Show($"Not enough stock available for {product.prod_name}. Available: {product.stock}", "Out of Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                double originalPricePerUnitVATInclusive = Convert.ToDouble(product.prod_price);
-                double originalSubtotalVATInclusive = originalPricePerUnitVATInclusive * quantity;
-                double lineDiscountAmount = 0.0;
-                double finalPricePerUnitVATInclusive = originalPricePerUnitVATInclusive;
-                double finalSubtotalVATInclusive = originalSubtotalVATInclusive;
-
-                // (Discount logic can be applied here if needed)
-
-                bool productExistsInOrderList = false;
-                foreach (DataRow row in orderListTable.Rows)
-                {
-                    if (row["Product ID"].ToString() == product.prod_id)
-                    {
-                        row["Quantity"] = Convert.ToInt32(row["Quantity"]) + quantity;
-                        row["Original Subtotal"] = Convert.ToDouble(row["Original Subtotal"]) + originalSubtotalVATInclusive;
-                        row["Final Subtotal"] = Convert.ToDouble(row["Final Subtotal"]) + finalSubtotalVATInclusive;
-                        productExistsInOrderList = true;
-                        break;
-                    }
-                }
-
-                if (!productExistsInOrderList)
-                {
-                    DataRow newRow = orderListTable.NewRow();
-                    newRow["Product ID"] = product.prod_id;
-                    newRow["Product Name"] = product.prod_name;
-                    newRow["Quantity"] = quantity;
-                    newRow["Original Unit Price"] = originalPricePerUnitVATInclusive;
-                    newRow["Unit Price After Discount"] = finalPricePerUnitVATInclusive;
-                    newRow["Original Subtotal"] = originalSubtotalVATInclusive;
-                    newRow["Line Discount Amount"] = lineDiscountAmount;
-                    newRow["Final Subtotal"] = finalSubtotalVATInclusive;
-                    newRow["Product PK ID"] = product.id;
-                    newRow["Category"] = product.category;
-                    orderListTable.Rows.Add(newRow);
-                }
-
-                UpdateTotals();
-                ClearProductInputs();
-            }
-            else
-            {
-                MessageBox.Show($"Product with Barcode '{barcode}' not found.", "Product Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Optionally, automatically find and display the product details
+                FindAndDisplayProduct(barcode);
             }
         }
 
@@ -721,12 +657,6 @@ namespace POS_project
         private void Cashier_Total_PriceOr_Click(object sender, EventArgs e)
         {
 
-        }
-
-        // --- Add a new event handler for the search box ---
-        private void searchBox_TextChanged(object sender, EventArgs e)
-        {
-            displayAllAvailableProducts(searchBox.Text);
         }
     }
 }

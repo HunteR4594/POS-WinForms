@@ -50,6 +50,7 @@
             startTime_picker = new DateTimePicker();
             button4 = new Button();
             button7 = new Button();
+            button1 = new Button();
             button6 = new Button();
             button3 = new Button();
             button2 = new Button();
@@ -98,6 +99,7 @@
             tableLayoutPanel3.Controls.Add(panel2, 0, 0);
             tableLayoutPanel3.Controls.Add(button4, 3, 0);
             tableLayoutPanel3.Controls.Add(button7, 4, 1);
+            tableLayoutPanel3.Controls.Add(button1, 4, 0);
             tableLayoutPanel3.Controls.Add(button6, 3, 1);
             tableLayoutPanel3.Controls.Add(button3, 3, 2);
             tableLayoutPanel3.Controls.Add(button2, 4, 2);
@@ -315,6 +317,20 @@
             button7.Text = "EXPORT EXCEL";
             button7.UseVisualStyleBackColor = false;
             // 
+            // button1
+            // 
+            button1.BackColor = Color.Teal;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Tahoma", 9F);
+            button1.ForeColor = SystemColors.Control;
+            button1.Location = new Point(945, 24);
+            button1.Margin = new Padding(3, 4, 3, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(98, 51);
+            button1.TabIndex = 9;
+            button1.Text = "EXPORT CSV";
+            button1.UseVisualStyleBackColor = false;
+            // 
             // button6
             // 
             button6.BackColor = Color.FromArgb(0, 0, 192);
@@ -468,6 +484,7 @@
         private DateTimePicker startTime_picker;
         private Button button3;
         private Button button2;
+        private Button button1;
         private ComboBox presetDateTime_comboBox;
         private Button button4;
         private ComboBox cashier_Username;

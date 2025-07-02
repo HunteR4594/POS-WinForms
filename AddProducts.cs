@@ -49,27 +49,31 @@ namespace POS_project
         {
             try
             {
-                var products = _context.Products.ToList();
-                dataGridViewproducts.AutoGenerateColumns = false;
-                dataGridViewproducts.Columns.Clear();
+                dataGridViewproducts.DataSource = _context.Products
+                    .Select(p => new
+                    {
+                        p.id,
+                        p.prod_id,
+                        p.prod_name,
+                        prod_price = p.prod_price.ToString("F2"),
+                        p.category,
+                        p.stock,
+                        p.status,
+                        FormattedDate = p.date_insert.ToString("yyyy-MM-dd"),
+                        p.barcode
+                    })
+                    .ToList();
 
-                // Manually add columns
-                dataGridViewproducts.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ProdCode", DataPropertyName = "prod_id" });
-                dataGridViewproducts.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ProdName", DataPropertyName = "prod_name" });
-                dataGridViewproducts.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ProdPrice", DataPropertyName = "prod_price", DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" } });
-                dataGridViewproducts.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Category", DataPropertyName = "category" });
-                dataGridViewproducts.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Stock", DataPropertyName = "stock" });
-                dataGridViewproducts.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Status", DataPropertyName = "status" });
-
-                // Add barcode button column
-                DataGridViewButtonColumn viewBarcodeColumn = new DataGridViewButtonColumn();
-                viewBarcodeColumn.Name = "Barcode";
-                viewBarcodeColumn.HeaderText = "Barcode";
-                viewBarcodeColumn.Text = "View";
-                viewBarcodeColumn.UseColumnTextForButtonValue = true;
-                dataGridViewproducts.Columns.Add(viewBarcodeColumn);
-
-                dataGridViewproducts.DataSource = products;
+                if (dataGridViewproducts.Columns["ViewBarcode"] == null)
+                {
+                    DataGridViewButtonColumn viewBarcodeColumn = new DataGridViewButtonColumn();
+                    viewBarcodeColumn.Name = "ViewBarcode";
+                    viewBarcodeColumn.HeaderText = "View Barcode";
+                    viewBarcodeColumn.Text = "View";
+                    viewBarcodeColumn.UseColumnTextForButtonValue = true;
+                    viewBarcodeColumn.Width = 100;
+                    dataGridViewproducts.Columns.Add(viewBarcodeColumn);
+                }
             }
             catch (Exception ex)
             {
@@ -171,16 +175,16 @@ namespace POS_project
 
         private void dataGridViewproducts_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex != -1)
             {
-                Product selectedProduct = (Product)dataGridViewproducts.Rows[e.RowIndex].DataBoundItem;
-                if (selectedProduct == null) return;
-
-                if (e.ColumnIndex == dataGridViewproducts.Columns["Barcode"]?.Index)
+                if (e.ColumnIndex == dataGridViewproducts.Columns["ViewBarcode"]?.Index)
                 {
-                    if (!string.IsNullOrEmpty(selectedProduct.barcode) && File.Exists(selectedProduct.barcode))
+                    string? productId = dataGridViewproducts.Rows[e.RowIndex].Cells["prod_id"].Value?.ToString();
+                    string? barcodePath = dataGridViewproducts.Rows[e.RowIndex].Cells["barcode"].Value?.ToString();
+
+                    if (!string.IsNullOrEmpty(barcodePath) && File.Exists(barcodePath))
                     {
-                        ShowBarcodeForm(selectedProduct.prod_id, selectedProduct.barcode);
+                        ShowBarcodeForm(productId, barcodePath);
                     }
                     else
                     {
@@ -189,19 +193,22 @@ namespace POS_project
                     return;
                 }
 
-                getid = selectedProduct.id;
-                add_product_id.Text = selectedProduct.prod_id;
-                Product_Name.Text = selectedProduct.prod_name;
-                Add_Category.Text = selectedProduct.category;
-                add_Product_Price.Text = selectedProduct.prod_price.ToString("F2");
-                Add_Product_stock.Text = selectedProduct.stock.ToString();
-                Add_Product_Status.Text = selectedProduct.status;
+                DataGridViewRow row = dataGridViewproducts.Rows[e.RowIndex];
 
-                if (!string.IsNullOrEmpty(selectedProduct.barcode) && File.Exists(selectedProduct.barcode))
+                getid = Convert.ToInt32(row.Cells["id"].Value);
+                add_product_id.Text = row.Cells["prod_id"].Value?.ToString();
+                Product_Name.Text = row.Cells["prod_name"].Value?.ToString();
+                Add_Category.Text = row.Cells["category"].Value?.ToString();
+                add_Product_Price.Text = row.Cells["prod_price"].Value?.ToString(); // Corrected name
+                Add_Product_stock.Text = row.Cells["stock"].Value?.ToString(); // Corrected name
+                Add_Product_Status.Text = row.Cells["status"].Value?.ToString();
+
+                string? barcodePathFromDb = row.Cells["barcode"].Value?.ToString();
+                if (!string.IsNullOrEmpty(barcodePathFromDb) && File.Exists(barcodePathFromDb))
                 {
                     try
                     {
-                        using (FileStream fs = new FileStream(selectedProduct.barcode, FileMode.Open, FileAccess.Read))
+                        using (FileStream fs = new FileStream(barcodePathFromDb, FileMode.Open, FileAccess.Read))
                         {
                             barcodePreview.Image = Image.FromStream(fs);
                         }

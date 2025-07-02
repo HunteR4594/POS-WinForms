@@ -67,6 +67,8 @@ namespace POS_project
             dataGridView1 = new DataGridView();
             panel2 = new Panel();
             tableLayoutPanel11 = new TableLayoutPanel();
+            Cashier_ReceiptOr = new Button();
+            Cashier_Pay_OrdersOr = new Button();
             tableLayoutPanel12 = new TableLayoutPanel();
             label8 = new Label();
             label12 = new Label();
@@ -86,7 +88,6 @@ namespace POS_project
             tableLayoutPanel15 = new TableLayoutPanel();
             vatLabel = new Label();
             vatValue = new Label();
-            Cashier_Pay_OrdersOr = new Button();
             appDbContextBindingSource = new BindingSource(components);
             tableLayoutPanel1 = new TableLayoutPanel();
             panel1.SuspendLayout();
@@ -120,10 +121,9 @@ namespace POS_project
             panel1.Controls.Add(tableLayoutPanel2);
             panel1.Dock = DockStyle.Fill;
             panel1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            panel1.Location = new Point(3, 2);
-            panel1.Margin = new Padding(3, 2, 3, 2);
+            panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(603, 557);
+            panel1.Size = new Size(690, 742);
             panel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -140,9 +140,8 @@ namespace POS_project
             tableLayoutPanel2.Controls.Add(dataGridView1, 0, 1);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(0, 0);
-            tableLayoutPanel2.Margin = new Padding(3, 2, 3, 2);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.Padding = new Padding(9, 8, 9, 8);
+            tableLayoutPanel2.Padding = new Padding(10);
             tableLayoutPanel2.RowCount = 7;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 5.81395245F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 52.32558F));
@@ -151,7 +150,7 @@ namespace POS_project
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 8.372093F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 8.372093F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 8.372093F));
-            tableLayoutPanel2.Size = new Size(603, 557);
+            tableLayoutPanel2.Size = new Size(690, 742);
             tableLayoutPanel2.TabIndex = 20;
             // 
             // tableLayoutPanel7
@@ -165,13 +164,13 @@ namespace POS_project
             tableLayoutPanel7.Controls.Add(Remove_CashierOr, 1, 0);
             tableLayoutPanel7.Controls.Add(Clear_CashierOr, 2, 0);
             tableLayoutPanel7.Dock = DockStyle.Fill;
-            tableLayoutPanel7.Location = new Point(13, 504);
-            tableLayoutPanel7.Margin = new Padding(4, 2, 4, 2);
+            tableLayoutPanel7.Location = new Point(15, 671);
+            tableLayoutPanel7.Margin = new Padding(5, 3, 5, 3);
             tableLayoutPanel7.Name = "tableLayoutPanel7";
-            tableLayoutPanel7.Padding = new Padding(4);
+            tableLayoutPanel7.Padding = new Padding(5);
             tableLayoutPanel7.RowCount = 1;
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel7.Size = new Size(577, 43);
+            tableLayoutPanel7.Size = new Size(660, 58);
             tableLayoutPanel7.TabIndex = 21;
             // 
             // Add_CashierOr
@@ -180,10 +179,9 @@ namespace POS_project
             Add_CashierOr.Dock = DockStyle.Fill;
             Add_CashierOr.FlatStyle = FlatStyle.Flat;
             Add_CashierOr.ForeColor = Color.White;
-            Add_CashierOr.Location = new Point(7, 6);
-            Add_CashierOr.Margin = new Padding(3, 2, 3, 2);
+            Add_CashierOr.Location = new Point(8, 8);
             Add_CashierOr.Name = "Add_CashierOr";
-            Add_CashierOr.Size = new Size(183, 31);
+            Add_CashierOr.Size = new Size(210, 42);
             Add_CashierOr.TabIndex = 12;
             Add_CashierOr.Text = "Add";
             Add_CashierOr.UseVisualStyleBackColor = false;
@@ -195,10 +193,9 @@ namespace POS_project
             Remove_CashierOr.Dock = DockStyle.Fill;
             Remove_CashierOr.FlatStyle = FlatStyle.Flat;
             Remove_CashierOr.ForeColor = Color.White;
-            Remove_CashierOr.Location = new Point(196, 6);
-            Remove_CashierOr.Margin = new Padding(3, 2, 3, 2);
+            Remove_CashierOr.Location = new Point(224, 8);
             Remove_CashierOr.Name = "Remove_CashierOr";
-            Remove_CashierOr.Size = new Size(183, 31);
+            Remove_CashierOr.Size = new Size(210, 42);
             Remove_CashierOr.TabIndex = 13;
             Remove_CashierOr.Text = "Remove";
             Remove_CashierOr.UseVisualStyleBackColor = false;
@@ -210,10 +207,9 @@ namespace POS_project
             Clear_CashierOr.Dock = DockStyle.Fill;
             Clear_CashierOr.FlatStyle = FlatStyle.Flat;
             Clear_CashierOr.ForeColor = Color.White;
-            Clear_CashierOr.Location = new Point(385, 6);
-            Clear_CashierOr.Margin = new Padding(3, 2, 3, 2);
+            Clear_CashierOr.Location = new Point(440, 8);
             Clear_CashierOr.Name = "Clear_CashierOr";
-            Clear_CashierOr.Size = new Size(185, 31);
+            Clear_CashierOr.Size = new Size(212, 42);
             Clear_CashierOr.TabIndex = 14;
             Clear_CashierOr.Text = "Clear";
             Clear_CashierOr.UseVisualStyleBackColor = false;
@@ -231,13 +227,12 @@ namespace POS_project
             tableLayoutPanel6.Controls.Add(DiscountValue, 3, 0);
             tableLayoutPanel6.Controls.Add(label5, 0, 0);
             tableLayoutPanel6.Dock = DockStyle.Fill;
-            tableLayoutPanel6.Location = new Point(12, 459);
-            tableLayoutPanel6.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel6.Location = new Point(13, 611);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
-            tableLayoutPanel6.Padding = new Padding(4);
+            tableLayoutPanel6.Padding = new Padding(5);
             tableLayoutPanel6.RowCount = 1;
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel6.Size = new Size(579, 41);
+            tableLayoutPanel6.Size = new Size(664, 54);
             tableLayoutPanel6.TabIndex = 21;
             // 
             // tableLayoutPanel10
@@ -247,25 +242,23 @@ namespace POS_project
             tableLayoutPanel10.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel10.Controls.Add(Discount_CashierOr, 0, 0);
             tableLayoutPanel10.Dock = DockStyle.Right;
-            tableLayoutPanel10.Location = new Point(308, 6);
-            tableLayoutPanel10.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel10.Location = new Point(355, 8);
             tableLayoutPanel10.Name = "tableLayoutPanel10";
             tableLayoutPanel10.RowCount = 1;
             tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel10.Size = new Size(119, 29);
+            tableLayoutPanel10.Size = new Size(136, 38);
             tableLayoutPanel10.TabIndex = 25;
             // 
             // Discount_CashierOr
             // 
             Discount_CashierOr.BackColor = Color.Navy;
-            Discount_CashierOr.Dock = DockStyle.Bottom;
+            Discount_CashierOr.Dock = DockStyle.Fill;
             Discount_CashierOr.FlatStyle = FlatStyle.Flat;
             Discount_CashierOr.ForeColor = Color.White;
-            Discount_CashierOr.Location = new Point(3, 2);
-            Discount_CashierOr.Margin = new Padding(3, 2, 3, 2);
+            Discount_CashierOr.Location = new Point(3, 3);
             Discount_CashierOr.Name = "Discount_CashierOr";
-            Discount_CashierOr.Size = new Size(113, 25);
+            Discount_CashierOr.Size = new Size(130, 32);
             Discount_CashierOr.TabIndex = 15;
             Discount_CashierOr.Text = "Discount";
             Discount_CashierOr.UseVisualStyleBackColor = false;
@@ -276,9 +269,9 @@ namespace POS_project
             Cashier_PriceOr.AutoSize = true;
             Cashier_PriceOr.Dock = DockStyle.Fill;
             Cashier_PriceOr.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            Cashier_PriceOr.Location = new Point(149, 4);
+            Cashier_PriceOr.Location = new Point(171, 5);
             Cashier_PriceOr.Name = "Cashier_PriceOr";
-            Cashier_PriceOr.Size = new Size(136, 33);
+            Cashier_PriceOr.Size = new Size(157, 44);
             Cashier_PriceOr.TabIndex = 11;
             Cashier_PriceOr.Text = "Price\r\n";
             Cashier_PriceOr.TextAlign = ContentAlignment.MiddleLeft;
@@ -289,9 +282,9 @@ namespace POS_project
             DiscountValue.Dock = DockStyle.Fill;
             DiscountValue.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             DiscountValue.ImageAlign = ContentAlignment.MiddleLeft;
-            DiscountValue.Location = new Point(433, 4);
+            DiscountValue.Location = new Point(497, 5);
             DiscountValue.Name = "DiscountValue";
-            DiscountValue.Size = new Size(139, 33);
+            DiscountValue.Size = new Size(159, 44);
             DiscountValue.TabIndex = 16;
             DiscountValue.Text = "Discount";
             DiscountValue.TextAlign = ContentAlignment.MiddleLeft;
@@ -301,9 +294,9 @@ namespace POS_project
             label5.AutoSize = true;
             label5.Dock = DockStyle.Fill;
             label5.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            label5.Location = new Point(7, 4);
+            label5.Location = new Point(8, 5);
             label5.Name = "label5";
-            label5.Size = new Size(136, 33);
+            label5.Size = new Size(157, 44);
             label5.TabIndex = 5;
             label5.Text = "Price (₱):";
             label5.TextAlign = ContentAlignment.MiddleRight;
@@ -320,13 +313,12 @@ namespace POS_project
             tableLayoutPanel5.Controls.Add(label4, 2, 0);
             tableLayoutPanel5.Controls.Add(Cashier_QuantityOr, 3, 0);
             tableLayoutPanel5.Dock = DockStyle.Fill;
-            tableLayoutPanel5.Location = new Point(12, 414);
-            tableLayoutPanel5.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel5.Location = new Point(13, 551);
             tableLayoutPanel5.Name = "tableLayoutPanel5";
-            tableLayoutPanel5.Padding = new Padding(4);
+            tableLayoutPanel5.Padding = new Padding(5);
             tableLayoutPanel5.RowCount = 1;
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel5.Size = new Size(579, 41);
+            tableLayoutPanel5.Size = new Size(664, 54);
             tableLayoutPanel5.TabIndex = 21;
             // 
             // label6
@@ -334,9 +326,9 @@ namespace POS_project
             label6.AutoSize = true;
             label6.Dock = DockStyle.Fill;
             label6.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            label6.Location = new Point(7, 4);
+            label6.Location = new Point(8, 5);
             label6.Name = "label6";
-            label6.Size = new Size(136, 33);
+            label6.Size = new Size(157, 44);
             label6.TabIndex = 6;
             label6.Text = "Product Name:";
             label6.TextAlign = ContentAlignment.MiddleRight;
@@ -346,9 +338,9 @@ namespace POS_project
             Cashier_Product_NameOr.AutoSize = true;
             Cashier_Product_NameOr.Dock = DockStyle.Fill;
             Cashier_Product_NameOr.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            Cashier_Product_NameOr.Location = new Point(149, 4);
+            Cashier_Product_NameOr.Location = new Point(171, 5);
             Cashier_Product_NameOr.Name = "Cashier_Product_NameOr";
-            Cashier_Product_NameOr.Size = new Size(136, 33);
+            Cashier_Product_NameOr.Size = new Size(157, 44);
             Cashier_Product_NameOr.TabIndex = 10;
             Cashier_Product_NameOr.Text = "Product";
             Cashier_Product_NameOr.TextAlign = ContentAlignment.MiddleLeft;
@@ -358,9 +350,9 @@ namespace POS_project
             label4.AutoSize = true;
             label4.Dock = DockStyle.Fill;
             label4.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            label4.Location = new Point(291, 4);
+            label4.Location = new Point(334, 5);
             label4.Name = "label4";
-            label4.Size = new Size(136, 33);
+            label4.Size = new Size(157, 44);
             label4.TabIndex = 4;
             label4.Text = "Quantity:";
             label4.TextAlign = ContentAlignment.MiddleRight;
@@ -369,10 +361,9 @@ namespace POS_project
             // 
             Cashier_QuantityOr.Dock = DockStyle.Left;
             Cashier_QuantityOr.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Cashier_QuantityOr.Location = new Point(433, 6);
-            Cashier_QuantityOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_QuantityOr.Location = new Point(497, 8);
             Cashier_QuantityOr.Name = "Cashier_QuantityOr";
-            Cashier_QuantityOr.Size = new Size(131, 29);
+            Cashier_QuantityOr.Size = new Size(150, 34);
             Cashier_QuantityOr.TabIndex = 9;
             Cashier_QuantityOr.ValueChanged += Cashier_QuantityOr_ValueChanged;
             // 
@@ -388,13 +379,12 @@ namespace POS_project
             tableLayoutPanel4.Controls.Add(label3, 2, 0);
             tableLayoutPanel4.Controls.Add(Cashier_ProductidOr, 3, 0);
             tableLayoutPanel4.Dock = DockStyle.Fill;
-            tableLayoutPanel4.Location = new Point(12, 369);
-            tableLayoutPanel4.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel4.Location = new Point(13, 491);
             tableLayoutPanel4.Name = "tableLayoutPanel4";
-            tableLayoutPanel4.Padding = new Padding(4);
+            tableLayoutPanel4.Padding = new Padding(5);
             tableLayoutPanel4.RowCount = 1;
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel4.Size = new Size(579, 41);
+            tableLayoutPanel4.Size = new Size(664, 54);
             tableLayoutPanel4.TabIndex = 21;
             // 
             // label2
@@ -402,9 +392,9 @@ namespace POS_project
             label2.AutoSize = true;
             label2.Dock = DockStyle.Fill;
             label2.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            label2.Location = new Point(7, 4);
+            label2.Location = new Point(8, 5);
             label2.Name = "label2";
-            label2.Size = new Size(136, 33);
+            label2.Size = new Size(157, 44);
             label2.TabIndex = 2;
             label2.Text = "Category:";
             label2.TextAlign = ContentAlignment.MiddleRight;
@@ -414,10 +404,9 @@ namespace POS_project
             Cashier_CategoryOr.Dock = DockStyle.Left;
             Cashier_CategoryOr.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Cashier_CategoryOr.FormattingEnabled = true;
-            Cashier_CategoryOr.Location = new Point(149, 6);
-            Cashier_CategoryOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_CategoryOr.Location = new Point(171, 8);
             Cashier_CategoryOr.Name = "Cashier_CategoryOr";
-            Cashier_CategoryOr.Size = new Size(136, 29);
+            Cashier_CategoryOr.Size = new Size(157, 36);
             Cashier_CategoryOr.TabIndex = 7;
             Cashier_CategoryOr.SelectedIndexChanged += Cashier_CategoryOr_SelectedIndexChanged;
             // 
@@ -426,9 +415,9 @@ namespace POS_project
             label3.AutoSize = true;
             label3.Dock = DockStyle.Fill;
             label3.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
-            label3.Location = new Point(291, 4);
+            label3.Location = new Point(334, 5);
             label3.Name = "label3";
-            label3.Size = new Size(136, 33);
+            label3.Size = new Size(157, 44);
             label3.TabIndex = 3;
             label3.Text = "Product id:";
             label3.TextAlign = ContentAlignment.MiddleRight;
@@ -437,10 +426,9 @@ namespace POS_project
             // 
             Cashier_ProductidOr.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Cashier_ProductidOr.FormattingEnabled = true;
-            Cashier_ProductidOr.Location = new Point(433, 6);
-            Cashier_ProductidOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_ProductidOr.Location = new Point(497, 8);
             Cashier_ProductidOr.Name = "Cashier_ProductidOr";
-            Cashier_ProductidOr.Size = new Size(139, 29);
+            Cashier_ProductidOr.Size = new Size(159, 36);
             Cashier_ProductidOr.TabIndex = 8;
             // 
             // tableLayoutPanel3
@@ -453,13 +441,12 @@ namespace POS_project
             tableLayoutPanel3.Controls.Add(tableLayoutPanel8, 1, 0);
             tableLayoutPanel3.Controls.Add(searchBox, 0, 0);
             tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(12, 324);
-            tableLayoutPanel3.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel3.Location = new Point(13, 431);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.Padding = new Padding(4);
+            tableLayoutPanel3.Padding = new Padding(5);
             tableLayoutPanel3.RowCount = 1;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Size = new Size(579, 41);
+            tableLayoutPanel3.Size = new Size(664, 54);
             tableLayoutPanel3.TabIndex = 21;
             // 
             // tableLayoutPanel9
@@ -469,25 +456,23 @@ namespace POS_project
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel9.Controls.Add(Cashier_ScanOr, 0, 0);
             tableLayoutPanel9.Dock = DockStyle.Left;
-            tableLayoutPanel9.Location = new Point(434, 6);
-            tableLayoutPanel9.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel9.Location = new Point(498, 8);
             tableLayoutPanel9.Name = "tableLayoutPanel9";
             tableLayoutPanel9.RowCount = 1;
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel9.Size = new Size(112, 29);
+            tableLayoutPanel9.Size = new Size(128, 38);
             tableLayoutPanel9.TabIndex = 25;
             // 
             // Cashier_ScanOr
             // 
             Cashier_ScanOr.BackColor = Color.Navy;
-            Cashier_ScanOr.Dock = DockStyle.Bottom;
+            Cashier_ScanOr.Dock = DockStyle.Fill;
             Cashier_ScanOr.FlatStyle = FlatStyle.Flat;
             Cashier_ScanOr.ForeColor = Color.White;
-            Cashier_ScanOr.Location = new Point(3, 2);
-            Cashier_ScanOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_ScanOr.Location = new Point(3, 3);
             Cashier_ScanOr.Name = "Cashier_ScanOr";
-            Cashier_ScanOr.Size = new Size(106, 25);
+            Cashier_ScanOr.Size = new Size(122, 32);
             Cashier_ScanOr.TabIndex = 17;
             Cashier_ScanOr.Text = "Scan";
             Cashier_ScanOr.UseVisualStyleBackColor = false;
@@ -495,30 +480,28 @@ namespace POS_project
             // 
             // tableLayoutPanel8
             // 
-            tableLayoutPanel8.ColumnCount = 2;
+            tableLayoutPanel8.ColumnCount = 1;
             tableLayoutPanel8.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel8.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel8.Controls.Add(Cashier_SearchOr, 0, 0);
-            tableLayoutPanel8.Dock = DockStyle.Fill;
-            tableLayoutPanel8.Location = new Point(174, 6);
-            tableLayoutPanel8.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel8.Dock = DockStyle.Left;
+            tableLayoutPanel8.Location = new Point(200, 8);
             tableLayoutPanel8.Name = "tableLayoutPanel8";
             tableLayoutPanel8.RowCount = 1;
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel8.Size = new Size(254, 29);
-            tableLayoutPanel8.TabIndex = 1;
+            tableLayoutPanel8.Size = new Size(130, 38);
+            tableLayoutPanel8.TabIndex = 25;
             // 
             // Cashier_SearchOr
             // 
             Cashier_SearchOr.BackColor = Color.Teal;
-            Cashier_SearchOr.Dock = DockStyle.Bottom;
+            Cashier_SearchOr.Dock = DockStyle.Fill;
             Cashier_SearchOr.FlatStyle = FlatStyle.Flat;
             Cashier_SearchOr.ForeColor = Color.White;
             Cashier_SearchOr.Location = new Point(3, 3);
-            Cashier_SearchOr.Margin = new Padding(3, 2, 3, 2);
             Cashier_SearchOr.Name = "Cashier_SearchOr";
-            Cashier_SearchOr.Size = new Size(121, 24);
+            Cashier_SearchOr.Size = new Size(124, 32);
             Cashier_SearchOr.TabIndex = 19;
             Cashier_SearchOr.Text = "Search";
             Cashier_SearchOr.UseVisualStyleBackColor = false;
@@ -527,19 +510,19 @@ namespace POS_project
             // 
             searchBox.Dock = DockStyle.Bottom;
             searchBox.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            searchBox.Location = new Point(7, 7);
+            searchBox.Location = new Point(8, 11);
+            searchBox.Margin = new Padding(3, 4, 3, 4);
             searchBox.Name = "searchBox";
-            searchBox.Size = new Size(161, 29);
+            searchBox.Size = new Size(186, 34);
             searchBox.TabIndex = 18;
-            searchBox.TextChanged += searchBox_TextChanged;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Dock = DockStyle.Fill;
-            label1.Location = new Point(12, 8);
+            label1.Location = new Point(13, 10);
             label1.Name = "label1";
-            label1.Size = new Size(579, 31);
+            label1.Size = new Size(664, 41);
             label1.TabIndex = 1;
             label1.Text = "Available Products";
             label1.TextAlign = ContentAlignment.MiddleLeft;
@@ -557,8 +540,7 @@ namespace POS_project
             dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(12, 41);
-            dataGridView1.Margin = new Padding(3, 2, 3, 2);
+            dataGridView1.Location = new Point(13, 54);
             dataGridView1.Name = "dataGridView1";
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Control;
@@ -569,7 +551,7 @@ namespace POS_project
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(579, 279);
+            dataGridView1.Size = new Size(664, 371);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellClick += dataGridView1_CellClick;
             // 
@@ -578,10 +560,9 @@ namespace POS_project
             panel2.BackColor = Color.White;
             panel2.Controls.Add(tableLayoutPanel11);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(612, 2);
-            panel2.Margin = new Padding(3, 2, 3, 2);
+            panel2.Location = new Point(699, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(323, 557);
+            panel2.Size = new Size(370, 742);
             panel2.TabIndex = 1;
             // 
             // tableLayoutPanel11
@@ -589,6 +570,8 @@ namespace POS_project
             tableLayoutPanel11.BackColor = Color.PowderBlue;
             tableLayoutPanel11.ColumnCount = 1;
             tableLayoutPanel11.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel11.Controls.Add(Cashier_ReceiptOr, 0, 8);
+            tableLayoutPanel11.Controls.Add(Cashier_Pay_OrdersOr, 0, 7);
             tableLayoutPanel11.Controls.Add(tableLayoutPanel12, 0, 2);
             tableLayoutPanel11.Controls.Add(tableLayoutPanel13, 0, 1);
             tableLayoutPanel11.Controls.Add(dataGridView2, 0, 0);
@@ -596,12 +579,10 @@ namespace POS_project
             tableLayoutPanel11.Controls.Add(tableLayoutPanel14, 0, 3);
             tableLayoutPanel11.Controls.Add(tableLayoutPanel16, 0, 6);
             tableLayoutPanel11.Controls.Add(tableLayoutPanel15, 0, 5);
-            tableLayoutPanel11.Controls.Add(Cashier_Pay_OrdersOr, 0, 8);
             tableLayoutPanel11.Dock = DockStyle.Fill;
             tableLayoutPanel11.Location = new Point(0, 0);
-            tableLayoutPanel11.Margin = new Padding(3, 2, 3, 2);
             tableLayoutPanel11.Name = "tableLayoutPanel11";
-            tableLayoutPanel11.Padding = new Padding(9, 8, 9, 8);
+            tableLayoutPanel11.Padding = new Padding(10);
             tableLayoutPanel11.RowCount = 9;
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 51.02041F));
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 6.122449F));
@@ -612,8 +593,40 @@ namespace POS_project
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 6.122449F));
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 6.122449F));
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 6.122449F));
-            tableLayoutPanel11.Size = new Size(323, 557);
+            tableLayoutPanel11.Size = new Size(370, 742);
             tableLayoutPanel11.TabIndex = 25;
+            // 
+            // Cashier_ReceiptOr
+            // 
+            Cashier_ReceiptOr.BackColor = Color.Navy;
+            Cashier_ReceiptOr.Dock = DockStyle.Fill;
+            Cashier_ReceiptOr.FlatStyle = FlatStyle.Flat;
+            Cashier_ReceiptOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Cashier_ReceiptOr.ForeColor = Color.White;
+            Cashier_ReceiptOr.Location = new Point(13, 689);
+            Cashier_ReceiptOr.Name = "Cashier_ReceiptOr";
+            Cashier_ReceiptOr.Padding = new Padding(5);
+            Cashier_ReceiptOr.Size = new Size(344, 40);
+            Cashier_ReceiptOr.TabIndex = 16;
+            Cashier_ReceiptOr.Text = "Receipt";
+            Cashier_ReceiptOr.UseVisualStyleBackColor = false;
+            Cashier_ReceiptOr.Click += Cashier_ReceiptOr_Click;
+            // 
+            // Cashier_Pay_OrdersOr
+            // 
+            Cashier_Pay_OrdersOr.BackColor = Color.FromArgb(0, 192, 0);
+            Cashier_Pay_OrdersOr.Dock = DockStyle.Fill;
+            Cashier_Pay_OrdersOr.FlatStyle = FlatStyle.Flat;
+            Cashier_Pay_OrdersOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Cashier_Pay_OrdersOr.ForeColor = Color.White;
+            Cashier_Pay_OrdersOr.Location = new Point(13, 645);
+            Cashier_Pay_OrdersOr.Name = "Cashier_Pay_OrdersOr";
+            Cashier_Pay_OrdersOr.Padding = new Padding(5);
+            Cashier_Pay_OrdersOr.Size = new Size(344, 38);
+            Cashier_Pay_OrdersOr.TabIndex = 15;
+            Cashier_Pay_OrdersOr.Text = "Pay Orders";
+            Cashier_Pay_OrdersOr.UseVisualStyleBackColor = false;
+            Cashier_Pay_OrdersOr.Click += Cashier_Pay_OrdersOr_Click;
             // 
             // tableLayoutPanel12
             // 
@@ -623,13 +636,12 @@ namespace POS_project
             tableLayoutPanel12.Controls.Add(label8, 0, 0);
             tableLayoutPanel12.Controls.Add(label12, 1, 0);
             tableLayoutPanel12.Dock = DockStyle.Fill;
-            tableLayoutPanel12.Location = new Point(12, 319);
-            tableLayoutPanel12.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel12.Location = new Point(13, 425);
             tableLayoutPanel12.Name = "tableLayoutPanel12";
             tableLayoutPanel12.RowCount = 1;
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.Size = new Size(299, 29);
+            tableLayoutPanel12.Size = new Size(344, 38);
             tableLayoutPanel12.TabIndex = 26;
             // 
             // label8
@@ -639,8 +651,8 @@ namespace POS_project
             label8.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             label8.Location = new Point(3, 0);
             label8.Name = "label8";
-            label8.Padding = new Padding(9, 8, 0, 8);
-            label8.Size = new Size(143, 29);
+            label8.Padding = new Padding(10, 10, 0, 10);
+            label8.Size = new Size(166, 38);
             label8.TabIndex = 21;
             label8.Text = "Partial Price (₱):";
             label8.TextAlign = ContentAlignment.MiddleLeft;
@@ -650,9 +662,9 @@ namespace POS_project
             label12.AutoSize = true;
             label12.Dock = DockStyle.Fill;
             label12.Font = new Font("Tahoma", 9F, FontStyle.Bold);
-            label12.Location = new Point(152, 0);
+            label12.Location = new Point(175, 0);
             label12.Name = "label12";
-            label12.Size = new Size(144, 29);
+            label12.Size = new Size(166, 38);
             label12.TabIndex = 22;
             label12.Text = "0.00";
             label12.TextAlign = ContentAlignment.MiddleLeft;
@@ -665,13 +677,12 @@ namespace POS_project
             tableLayoutPanel13.Controls.Add(Cashier_Total_PriceOr, 1, 0);
             tableLayoutPanel13.Controls.Add(label9, 0, 0);
             tableLayoutPanel13.Dock = DockStyle.Fill;
-            tableLayoutPanel13.Location = new Point(12, 286);
-            tableLayoutPanel13.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel13.Location = new Point(13, 381);
             tableLayoutPanel13.Name = "tableLayoutPanel13";
             tableLayoutPanel13.RowCount = 1;
             tableLayoutPanel13.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel13.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel13.Size = new Size(299, 29);
+            tableLayoutPanel13.Size = new Size(344, 38);
             tableLayoutPanel13.TabIndex = 27;
             // 
             // Cashier_Total_PriceOr
@@ -679,9 +690,9 @@ namespace POS_project
             Cashier_Total_PriceOr.AutoSize = true;
             Cashier_Total_PriceOr.Dock = DockStyle.Fill;
             Cashier_Total_PriceOr.Font = new Font("Tahoma", 9F, FontStyle.Bold);
-            Cashier_Total_PriceOr.Location = new Point(152, 0);
+            Cashier_Total_PriceOr.Location = new Point(175, 0);
             Cashier_Total_PriceOr.Name = "Cashier_Total_PriceOr";
-            Cashier_Total_PriceOr.Size = new Size(144, 29);
+            Cashier_Total_PriceOr.Size = new Size(166, 38);
             Cashier_Total_PriceOr.TabIndex = 17;
             Cashier_Total_PriceOr.Text = "0.00";
             Cashier_Total_PriceOr.TextAlign = ContentAlignment.MiddleLeft;
@@ -694,8 +705,8 @@ namespace POS_project
             label9.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             label9.Location = new Point(3, 0);
             label9.Name = "label9";
-            label9.Padding = new Padding(9, 8, 0, 8);
-            label9.Size = new Size(143, 29);
+            label9.Padding = new Padding(10, 10, 0, 10);
+            label9.Size = new Size(166, 38);
             label9.TabIndex = 12;
             label9.Text = "Total Price (₱):";
             label9.TextAlign = ContentAlignment.MiddleLeft;
@@ -713,8 +724,7 @@ namespace POS_project
             dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.Dock = DockStyle.Fill;
-            dataGridView2.Location = new Point(12, 10);
-            dataGridView2.Margin = new Padding(3, 2, 3, 2);
+            dataGridView2.Location = new Point(13, 13);
             dataGridView2.Name = "dataGridView2";
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = SystemColors.Control;
@@ -725,7 +735,7 @@ namespace POS_project
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
             dataGridView2.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(299, 272);
+            dataGridView2.Size = new Size(344, 362);
             dataGridView2.TabIndex = 12;
             // 
             // tableLayoutPanel17
@@ -735,13 +745,12 @@ namespace POS_project
             tableLayoutPanel17.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel17.Controls.Add(label10, 0, 0);
             tableLayoutPanel17.Controls.Add(Cashier_AmountOr, 1, 0);
-            tableLayoutPanel17.Location = new Point(12, 385);
-            tableLayoutPanel17.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel17.Location = new Point(13, 513);
             tableLayoutPanel17.Name = "tableLayoutPanel17";
             tableLayoutPanel17.RowCount = 1;
             tableLayoutPanel17.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel17.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel17.Size = new Size(299, 28);
+            tableLayoutPanel17.Size = new Size(344, 38);
             tableLayoutPanel17.TabIndex = 30;
             // 
             // label10
@@ -751,8 +760,8 @@ namespace POS_project
             label10.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             label10.Location = new Point(3, 0);
             label10.Name = "label10";
-            label10.Padding = new Padding(9, 8, 0, 8);
-            label10.Size = new Size(143, 28);
+            label10.Padding = new Padding(10, 10, 0, 10);
+            label10.Size = new Size(166, 38);
             label10.TabIndex = 13;
             label10.Text = "Amount (₱):";
             label10.TextAlign = ContentAlignment.MiddleLeft;
@@ -761,10 +770,9 @@ namespace POS_project
             // 
             Cashier_AmountOr.Dock = DockStyle.Fill;
             Cashier_AmountOr.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Cashier_AmountOr.Location = new Point(152, 2);
-            Cashier_AmountOr.Margin = new Padding(3, 2, 3, 2);
+            Cashier_AmountOr.Location = new Point(175, 3);
             Cashier_AmountOr.Name = "Cashier_AmountOr";
-            Cashier_AmountOr.Size = new Size(144, 29);
+            Cashier_AmountOr.Size = new Size(166, 34);
             Cashier_AmountOr.TabIndex = 15;
             // 
             // tableLayoutPanel14
@@ -774,13 +782,12 @@ namespace POS_project
             tableLayoutPanel14.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel14.Controls.Add(Discount_Label, 0, 0);
             tableLayoutPanel14.Controls.Add(label7, 1, 0);
-            tableLayoutPanel14.Location = new Point(12, 352);
-            tableLayoutPanel14.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel14.Location = new Point(13, 469);
             tableLayoutPanel14.Name = "tableLayoutPanel14";
             tableLayoutPanel14.RowCount = 1;
             tableLayoutPanel14.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel14.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel14.Size = new Size(299, 28);
+            tableLayoutPanel14.Size = new Size(344, 38);
             tableLayoutPanel14.TabIndex = 27;
             // 
             // Discount_Label
@@ -790,8 +797,8 @@ namespace POS_project
             Discount_Label.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             Discount_Label.Location = new Point(3, 0);
             Discount_Label.Name = "Discount_Label";
-            Discount_Label.Padding = new Padding(9, 8, 0, 8);
-            Discount_Label.Size = new Size(143, 28);
+            Discount_Label.Padding = new Padding(10, 10, 0, 10);
+            Discount_Label.Size = new Size(166, 38);
             Discount_Label.TabIndex = 19;
             Discount_Label.Text = "Discount:";
             Discount_Label.TextAlign = ContentAlignment.MiddleLeft;
@@ -801,9 +808,9 @@ namespace POS_project
             label7.AutoSize = true;
             label7.Dock = DockStyle.Fill;
             label7.Font = new Font("Tahoma", 9F, FontStyle.Bold);
-            label7.Location = new Point(152, 0);
+            label7.Location = new Point(175, 0);
             label7.Name = "label7";
-            label7.Size = new Size(144, 28);
+            label7.Size = new Size(166, 38);
             label7.TabIndex = 20;
             label7.Text = "0.00";
             label7.TextAlign = ContentAlignment.MiddleLeft;
@@ -815,14 +822,13 @@ namespace POS_project
             tableLayoutPanel16.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel16.Controls.Add(label11, 0, 0);
             tableLayoutPanel16.Controls.Add(Cashier_ChangeOr, 1, 0);
-            tableLayoutPanel16.Location = new Point(12, 451);
-            tableLayoutPanel16.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel16.Location = new Point(13, 601);
             tableLayoutPanel16.Name = "tableLayoutPanel16";
-            tableLayoutPanel16.Padding = new Padding(9, 8, 9, 8);
+            tableLayoutPanel16.Padding = new Padding(10);
             tableLayoutPanel16.RowCount = 1;
             tableLayoutPanel16.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel16.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel16.Size = new Size(299, 28);
+            tableLayoutPanel16.Size = new Size(344, 38);
             tableLayoutPanel16.TabIndex = 29;
             // 
             // label11
@@ -832,9 +838,9 @@ namespace POS_project
             label11.Dock = DockStyle.Fill;
             label11.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             label11.ForeColor = SystemColors.ActiveCaptionText;
-            label11.Location = new Point(12, 8);
+            label11.Location = new Point(13, 10);
             label11.Name = "label11";
-            label11.Size = new Size(134, 12);
+            label11.Size = new Size(156, 18);
             label11.TabIndex = 14;
             label11.Text = "Change:";
             label11.TextAlign = ContentAlignment.MiddleLeft;
@@ -846,9 +852,9 @@ namespace POS_project
             Cashier_ChangeOr.Dock = DockStyle.Fill;
             Cashier_ChangeOr.Font = new Font("Tahoma", 9F, FontStyle.Bold);
             Cashier_ChangeOr.ForeColor = SystemColors.ActiveCaptionText;
-            Cashier_ChangeOr.Location = new Point(152, 8);
+            Cashier_ChangeOr.Location = new Point(175, 10);
             Cashier_ChangeOr.Name = "Cashier_ChangeOr";
-            Cashier_ChangeOr.Size = new Size(135, 12);
+            Cashier_ChangeOr.Size = new Size(156, 18);
             Cashier_ChangeOr.TabIndex = 18;
             Cashier_ChangeOr.Text = "0.00";
             Cashier_ChangeOr.TextAlign = ContentAlignment.MiddleLeft;
@@ -861,13 +867,12 @@ namespace POS_project
             tableLayoutPanel15.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel15.Controls.Add(vatLabel, 0, 0);
             tableLayoutPanel15.Controls.Add(vatValue, 1, 0);
-            tableLayoutPanel15.Location = new Point(12, 418);
-            tableLayoutPanel15.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel15.Location = new Point(13, 557);
             tableLayoutPanel15.Name = "tableLayoutPanel15";
             tableLayoutPanel15.RowCount = 1;
             tableLayoutPanel15.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel15.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel15.Size = new Size(299, 28);
+            tableLayoutPanel15.Size = new Size(344, 38);
             tableLayoutPanel15.TabIndex = 28;
             // 
             // vatLabel
@@ -877,8 +882,8 @@ namespace POS_project
             vatLabel.Font = new Font("Tahoma", 10.2F, FontStyle.Bold);
             vatLabel.Location = new Point(3, 0);
             vatLabel.Name = "vatLabel";
-            vatLabel.Padding = new Padding(9, 8, 0, 8);
-            vatLabel.Size = new Size(143, 28);
+            vatLabel.Padding = new Padding(10, 10, 0, 10);
+            vatLabel.Size = new Size(166, 38);
             vatLabel.TabIndex = 23;
             vatLabel.Text = "VAT (12%):";
             vatLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -889,29 +894,12 @@ namespace POS_project
             vatValue.Dock = DockStyle.Fill;
             vatValue.Font = new Font("Tahoma", 9F, FontStyle.Bold);
             vatValue.ImageAlign = ContentAlignment.BottomLeft;
-            vatValue.Location = new Point(152, 0);
+            vatValue.Location = new Point(175, 0);
             vatValue.Name = "vatValue";
-            vatValue.Size = new Size(144, 28);
+            vatValue.Size = new Size(166, 38);
             vatValue.TabIndex = 24;
             vatValue.Text = "0.00";
             vatValue.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // Cashier_Pay_OrdersOr
-            // 
-            Cashier_Pay_OrdersOr.BackColor = Color.FromArgb(0, 192, 0);
-            Cashier_Pay_OrdersOr.Dock = DockStyle.Fill;
-            Cashier_Pay_OrdersOr.FlatStyle = FlatStyle.Flat;
-            Cashier_Pay_OrdersOr.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            Cashier_Pay_OrdersOr.ForeColor = Color.White;
-            Cashier_Pay_OrdersOr.Location = new Point(12, 517);
-            Cashier_Pay_OrdersOr.Margin = new Padding(3, 2, 3, 2);
-            Cashier_Pay_OrdersOr.Name = "Cashier_Pay_OrdersOr";
-            Cashier_Pay_OrdersOr.Padding = new Padding(4);
-            Cashier_Pay_OrdersOr.Size = new Size(299, 30);
-            Cashier_Pay_OrdersOr.TabIndex = 15;
-            Cashier_Pay_OrdersOr.Text = "Pay Orders";
-            Cashier_Pay_OrdersOr.UseVisualStyleBackColor = false;
-            Cashier_Pay_OrdersOr.Click += Cashier_Pay_OrdersOr_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -922,22 +910,20 @@ namespace POS_project
             tableLayoutPanel1.Controls.Add(panel2, 1, 0);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
-            tableLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(938, 561);
+            tableLayoutPanel1.Size = new Size(1072, 748);
             tableLayoutPanel1.TabIndex = 2;
             // 
             // CashierOrder
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLight;
             Controls.Add(tableLayoutPanel1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "CashierOrder";
-            Size = new Size(938, 561);
+            Size = new Size(1072, 748);
             panel1.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
             tableLayoutPanel2.PerformLayout();
@@ -1004,6 +990,7 @@ namespace POS_project
         private TextBox Cashier_AmountOr;
         private Label label11;
         private Button Clear_CashierOr;
+        private Button Cashier_ReceiptOr;
         private Button Cashier_Pay_OrdersOr;
         private Label Cashier_ChangeOr;
         private Label Cashier_Total_PriceOr;

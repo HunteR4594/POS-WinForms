@@ -12,18 +12,20 @@ namespace POS_project
             InitializeComponent();
             _context = new AppDbContext();
             displayAllCategories();
+            dataGridView.DataBindingComplete += dataGridView_DataBindingComplete;
+        }
+
+        private void dataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            if (dataGridView.Columns.Contains("Products"))
+            {
+                dataGridView.Columns["Products"].Visible = false;
+            }
         }
 
         public void displayAllCategories()
         {
             var categories = _context.Categories.ToList();
-            
-            dataGridView.AutoGenerateColumns = false;
-            dataGridView.Columns.Clear();
-
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "id" });
-            dataGridView.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Category Name", DataPropertyName = "CategoryName" });
-            
             if (categories.Any())
             {
                 dataGridView.DataSource = categories;

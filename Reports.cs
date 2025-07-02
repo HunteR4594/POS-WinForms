@@ -60,8 +60,6 @@ namespace POS_project
             LoadCategories();
             FilterFortheTable.SelectedItem = "All Categories"; // Default to all
 
-            ResetFilters(); // Set default selections
-
             // Add event handlers
             presetDateTime_comboBox.SelectedIndexChanged += presetDateTime_comboBox_SelectedIndexChanged;
             cashier_Username.SelectedIndexChanged += cashier_Username_SelectedIndexChanged;
@@ -69,17 +67,8 @@ namespace POS_project
             button5.Click += button5_Click; // Search button
             button4.Click += button4_Click; // Clear button
             button6.Click += button6_Click; // Refresh button (assuming this is refresh based on designer)
+            button1.Click += button1_Click; // Export CSV
             button2.Click += button2_Click; // Print Report
-        }
-
-        private void ResetFilters()
-        {
-            productName_or_id_search.Text = "Search product name or ID";
-            startTime_picker.Value = DateTime.Now;
-            endTime_picker.Value = DateTime.Now.AddDays(1);
-            presetDateTime_comboBox.SelectedItem = "All"; // Set "All" as default
-            cashier_Username.SelectedItem = "All Cashiers";
-            FilterFortheTable.SelectedItem = "All Categories"; // Default to all
         }
 
         private void LoadReportData()
@@ -332,20 +321,46 @@ namespace POS_project
 
         private void button4_Click(object sender, EventArgs e) // Clear button click
         {
-            ResetFilters();
-            LoadReportData();
+            InitializeReportFilters(); // Reset all filters to default
+            LoadReportData(); // Reload data
         }
 
         private void button6_Click(object sender, EventArgs e) // Refresh button click
         {
-            ResetFilters();
-            LoadReportData();
+            LoadReportData(); // Simply reload data
+        }
+
+        private void button1_Click(object sender, EventArgs e) // Export CSV button click
+        {
+            // Implement CSV export logic.
+            // This will likely open a new form for preview and saving.
+            // MessageBox.Show("Export CSV functionality will be implemented here.");
+            if (dataGridView1.Rows.Count > 0)
+            {
+                DataTable dt = (DataTable)dataGridView1.DataSource;
+                ExportPreviewForm exportPreviewForm = new ExportPreviewForm(dt);
+                exportPreviewForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No data to export.", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e) // Print Report button click
         {
-            // Placeholder for Print Report
-            MessageBox.Show("Print Report functionality is not yet implemented.", "Coming Soon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Implement Print Report logic.
+            // This will likely open a new form for print preview.
+            // MessageBox.Show("Print Report functionality will be implemented here.");
+            if (dataGridView1.Rows.Count > 0)
+            {
+                PrintConfirmationForm printConfirmationForm = new PrintConfirmationForm(dataGridView1);
+                printConfirmationForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No data to print.", "Print Report", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
